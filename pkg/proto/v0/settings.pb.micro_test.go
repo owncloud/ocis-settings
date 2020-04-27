@@ -2,15 +2,15 @@ package proto_test
 
 import (
 	"context"
-	"testing"
 	"encoding/json"
+	"testing"
 
-	svc "github.com/owncloud/ocis-settings/pkg/service/v0"
 	"github.com/owncloud/ocis-pkg/v2/service/grpc"
-	"log"
-	"github.com/owncloud/ocis-settings/pkg/proto/v0"
 	"github.com/owncloud/ocis-settings/pkg/config"
+	"github.com/owncloud/ocis-settings/pkg/proto/v0"
+	svc "github.com/owncloud/ocis-settings/pkg/service/v0"
 	"github.com/stretchr/testify/assert"
+	"log"
 )
 
 var service = grpc.Service{}
@@ -193,7 +193,7 @@ func TestListSettingsBundlesWithSettings(t *testing.T) {
 			CustomError{},
 		},
 		{
-			"space in values",
+			"space in values & key",
 			"simple key",
 			"simple display name",
 			"simple extension name",
@@ -222,9 +222,9 @@ func TestListSettingsBundlesWithSettings(t *testing.T) {
 				Description: "setting.Description2",
 			})
 			bundle := proto.SettingsBundle{
-				Key:         testCase.Key,
-				Extension:   testCase.Extension,
-				Settings:    settings,
+				Key:       testCase.Key,
+				Extension: testCase.Extension,
+				Settings:  settings,
 			}
 			createRequest := proto.CreateSettingsBundleRequest{
 				SettingsBundle: &bundle,
@@ -241,6 +241,98 @@ func TestListSettingsBundlesWithSettings(t *testing.T) {
 			assert.Equal(t, testCase.Key, response.SettingsBundles[0].Key)
 			assert.Equal(t, "", response.SettingsBundles[0].DisplayName)
 			assert.Equal(t, testCase.Extension, response.SettingsBundles[0].Extension)
+		})
+	}
+}
+
+func TestGetSettingsBundles(t *testing.T) {
+	type TestSettingsStruct struct {
+		Key         string
+		DisplayName string
+		Description string
+	}
+	type TestStruct struct {
+		testDataName  string
+		Key           string
+		DisplayName   string
+		Extension     string
+		Settings      []TestSettingsStruct
+		expectedError CustomError
+	}
+
+	var tests = []TestStruct{
+		{
+			"ASCII",
+			"simple-key",
+			"simple-display-name",
+			"simple-extension",
+			[]TestSettingsStruct{
+				{"simple-setting-key", "simple-setting-name", "simple-setting-desc"},
+				{"second-setting-key", "second-setting-name", "second-setting-desc"},
+			},
+			CustomError{},
+		},
+		{
+			"space in values & key",
+			"simple key",
+			"simple display name",
+			"simple extension name",
+			[]TestSettingsStruct{
+				{"simple setting key", "simple setting name", "simple setting desc"},
+				{"second setting key", "second setting name", "second setting desc"},
+			},
+			CustomError{},
+		},
+		{
+			"UNICODE",
+			"सिम्पलेछबि",
+			"सिम्पले-name",
+			"सिम्पले-extension-name",
+			[]TestSettingsStruct{
+				{" सिम्पले-setting-key", " सिम्पले-setting-name", " सिम्पले-setting-desc"},
+				{" दोस्रो-setting-key", " दोस्रो-setting-name", " दोस्रो-setting-desc"},
+			},
+			CustomError{},
+		},
+	}
+	for _, testCase := range tests {
+		t.Run(testCase.testDataName, func(t *testing.T) {
+			var settings []*proto.Setting
+
+			for _, setting := range testCase.Settings {
+				settings = append(settings, &proto.Setting{
+					Key:         setting.Key,
+					DisplayName: setting.DisplayName,
+					Description: setting.Description,
+				})
+			}
+
+			bundle := proto.SettingsBundle{
+				Key:       testCase.Key,
+				Extension: testCase.Extension,
+				Settings:  settings,
+			}
+			createRequest := proto.CreateSettingsBundleRequest{
+				SettingsBundle: &bundle,
+			}
+
+			client := service.Client()
+			cl := proto.NewBundleService("com.owncloud.api.settings", client)
+
+			_, err := cl.CreateSettingsBundle(context.Background(), &createRequest)
+			assert.NoError(t, err)
+			request := proto.GetSettingsBundleRequest{Key: testCase.Key,
+				Extension: testCase.Extension}
+			response, err := cl.GetSettingsBundle(context.Background(), &request)
+			assert.NoError(t, err)
+
+			assert.Equal(t, len(testCase.Settings), len(response.SettingsBundle.Settings))
+
+			for keyI, respondedSetting := range response.SettingsBundle.Settings {
+				assert.Equal(t, testCase.Settings[keyI].Key, respondedSetting.Key)
+				assert.Equal(t, testCase.Settings[keyI].DisplayName, respondedSetting.DisplayName)
+				assert.Equal(t, testCase.Settings[keyI].Description, respondedSetting.Description)
+			}
 		})
 	}
 }
