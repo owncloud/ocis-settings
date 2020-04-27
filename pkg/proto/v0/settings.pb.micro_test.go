@@ -92,7 +92,12 @@ func TestCreateSettingsBundle(t *testing.T) {
 			"simple-key",
 			"simple-display-name",
 			"",
-			CustomError{},
+			CustomError{
+				Id:     "go.micro.client",
+				Code:   500,
+				Detail: "key cannot be empty",
+				Status: "Internal Server Error",
+			},
 		},
 	}
 	for _, testCase := range tests {
@@ -178,67 +183,67 @@ func TestListSettingsBundlesWithNoSettings(t *testing.T) {
 	}
 }
 
-//func TestListSettingsBundlesWithVariousSettings(t *testing.T) {
-//	var tests = []TestStruct{
-//		{
-//			"ASCII",
-//			"simple-key",
-//			"simple-display-name",
-//			"simple-extension-name",
-//			CustomError{},
-//		},
-//		{
-//			"space in values",
-//			"simple key",
-//			"simple display name",
-//			"simple extension name",
-//			CustomError{},
-//		},
-//		{
-//			"UNICODE",
-//			"सिम्पलेछबि",
-//			"सिम्पले-name",
-//			"सिम्पले-extension-name",
-//			CustomError{},
-//		},
-//	}
-//	for _, testCase := range tests {
-//		t.Run(testCase.testDataName, func(t *testing.T) {
-//			var settings []*proto.Setting
-//			var settingValues []*proto.SettingsValue
-//
-//			settingValues = append(settingValues, &proto.SettingsValue{Type: "string")
-//			settings = append(settings, &proto.Setting{
-//				Key:         testCase.Key,
-//				DisplayName: testCase.DisplayName,
-//				Description: testCase.Extension,
-//				Values: settingValues,
-//			})
-//			bundle := proto.SettingsBundle{
-//				Key:         "bundleKey",
-//				Extension:   "Extension",
-//				Settings:    settings,
-//			}
-//			createRequest := proto.CreateSettingsBundleRequest{
-//				SettingsBundle: &bundle,
-//			}
-//
-//			client := service.Client()
-//			cl := proto.NewBundleService("com.owncloud.api.settings", client)
-//
-//			cresponse, err := cl.CreateSettingsBundle(context.Background(), &createRequest)
-//			log.Print(cresponse)
-//			assert.NoError(t, err)
-//			request := proto.ListSettingsBundlesRequest{Extension: testCase.Extension}
-//			response, err := cl.ListSettingsBundles(context.Background(), &request)
-//			assert.NoError(t, err)
-//			//log.Fatal(response.SettingsBundles)
-//			assert.Equal(t, testCase.Key, response.SettingsBundles[0].Settings)
-//			//assert.Equal(t, "", response.SettingsBundles[0].DisplayName)
-//			//assert.Equal(t, testCase.Extension, response.SettingsBundles[0].Extension)
-//		})
-//	}
-//}
+func TestListSettingsBundlesWithSettings(t *testing.T) {
+	var tests = []TestStruct{
+		{
+			"ASCII",
+			"simple-key",
+			"simple-display-name",
+			"simple-extension-name",
+			CustomError{},
+		},
+		{
+			"space in values",
+			"simple key",
+			"simple display name",
+			"simple extension name",
+			CustomError{},
+		},
+		{
+			"UNICODE",
+			"सिम्पलेछबि",
+			"सिम्पले-name",
+			"सिम्पले-extension-name",
+			CustomError{},
+		},
+	}
+	for _, testCase := range tests {
+		t.Run(testCase.testDataName, func(t *testing.T) {
+			var settings []*proto.Setting
+
+			settings = append(settings, &proto.Setting{
+				Key:         "setting.Key1",
+				DisplayName: "setting.DisplayName1",
+				Description: "setting.Description1",
+			})
+			settings = append(settings, &proto.Setting{
+				Key:         "setting.Key2",
+				DisplayName: "setting.DisplayName2",
+				Description: "setting.Description2",
+			})
+			bundle := proto.SettingsBundle{
+				Key:         testCase.Key,
+				Extension:   testCase.Extension,
+				Settings:    settings,
+			}
+			createRequest := proto.CreateSettingsBundleRequest{
+				SettingsBundle: &bundle,
+			}
+
+			client := service.Client()
+			cl := proto.NewBundleService("com.owncloud.api.settings", client)
+
+			_, err := cl.CreateSettingsBundle(context.Background(), &createRequest)
+			assert.NoError(t, err)
+			request := proto.ListSettingsBundlesRequest{Extension: testCase.Extension}
+			response, err := cl.ListSettingsBundles(context.Background(), &request)
+			assert.NoError(t, err)
+			assert.Equal(t, testCase.Key, response.SettingsBundles[0].Key)
+			assert.Equal(t, "", response.SettingsBundles[0].DisplayName)
+			assert.Equal(t, testCase.Extension, response.SettingsBundles[0].Extension)
+		})
+	}
+}
 
 //func xTestRubbish(t *testing.T) {
 //	var settings []*proto.Setting
