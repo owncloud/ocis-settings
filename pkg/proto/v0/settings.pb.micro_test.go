@@ -250,6 +250,7 @@ func TestGetSettingsBundles(t *testing.T) {
 		Key         string
 		DisplayName string
 		Description string
+		Value       string
 	}
 	type TestStruct struct {
 		testDataName  string
@@ -267,8 +268,8 @@ func TestGetSettingsBundles(t *testing.T) {
 			"simple-display-name",
 			"simple-extension",
 			[]TestSettingsStruct{
-				{"simple-setting-key", "simple-setting-name", "simple-setting-desc"},
-				{"second-setting-key", "second-setting-name", "second-setting-desc"},
+				{"simple-setting-key", "simple-setting-name", "simple-setting-desc", "simple-value"},
+				{"second-setting-key", "second-setting-name", "second-setting-desc", "second-value"},
 			},
 			CustomError{},
 		},
@@ -278,8 +279,8 @@ func TestGetSettingsBundles(t *testing.T) {
 			"simple display name",
 			"simple extension name",
 			[]TestSettingsStruct{
-				{"simple setting key", "simple setting name", "simple setting desc"},
-				{"second setting key", "second setting name", "second setting desc"},
+				{"simple setting key", "simple setting name", "simple setting desc", "simple-value"},
+				{"second setting key", "second setting name", "second setting desc", "second-value"},
 			},
 			CustomError{},
 		},
@@ -289,8 +290,48 @@ func TestGetSettingsBundles(t *testing.T) {
 			"सिम्पले-name",
 			"सिम्पले-extension-name",
 			[]TestSettingsStruct{
-				{" सिम्पले-setting-key", " सिम्पले-setting-name", " सिम्पले-setting-desc"},
-				{" दोस्रो-setting-key", " दोस्रो-setting-name", " दोस्रो-setting-desc"},
+				{" सिम्पले-setting-key", " सिम्पले-setting-name", " सिम्पले-setting-desc", " सिम्पले-setting-value"},
+				{" दोस्रो-setting-key", " दोस्रो-setting-name", " दोस्रो-setting-desc", " दोस्रो-setting-value"},
+			},
+			CustomError{},
+		},
+		{
+			"empty settings key",
+			"simple-key",
+			"simple-display-name",
+			"simple-extension",
+			[]TestSettingsStruct{
+				{"", "simple-setting-name", "simple-setting-desc", "simple-value"},
+			},
+			CustomError{},
+		},
+		{
+			"empty settings display name",
+			"simple-key",
+			"simple-display-name",
+			"simple-extension",
+			[]TestSettingsStruct{
+				{"simple-setting-key", "", "simple-setting-desc", "simple-value"},
+			},
+			CustomError{},
+		},
+		{
+			"empty settings description",
+			"simple-key",
+			"simple-display-name",
+			"simple-extension",
+			[]TestSettingsStruct{
+				{"simple-setting-key", "simple-setting-name", "", "simple-value"},
+			},
+			CustomError{},
+		},
+		{
+			"empty settings value",
+			"simple-key",
+			"simple-display-name",
+			"simple-extension",
+			[]TestSettingsStruct{
+				{"simple-setting-key", "simple-setting-name", "simple-setting-desc", ""},
 			},
 			CustomError{},
 		},
@@ -304,6 +345,7 @@ func TestGetSettingsBundles(t *testing.T) {
 					Key:         setting.Key,
 					DisplayName: setting.DisplayName,
 					Description: setting.Description,
+					//Value:       setting.Value,
 				})
 			}
 
@@ -332,38 +374,8 @@ func TestGetSettingsBundles(t *testing.T) {
 				assert.Equal(t, testCase.Settings[keyI].Key, respondedSetting.Key)
 				assert.Equal(t, testCase.Settings[keyI].DisplayName, respondedSetting.DisplayName)
 				assert.Equal(t, testCase.Settings[keyI].Description, respondedSetting.Description)
+				//assert.Equal(t, testCase.Settings[keyI].Value, respondedSetting.Value)
 			}
 		})
 	}
 }
-
-//func xTestRubbish(t *testing.T) {
-//	var settings []*proto.Setting
-//
-//
-//	settings = append(settings, &proto.Setting	{
-//		Key:                  "settingKey",
-//		DisplayName:          "settingDisplay",
-//		Description:          "settingDesc",
-//		Values:               nil,
-//	})
-//	bundle:=proto.SettingsBundle{
-//		Key:                  "testkey",
-//		DisplayName:          "test-name",
-//		Extension:            "test-extension",
-//		Settings:             settings,
-//	}
-//	createRequest := proto.CreateSettingsBundleRequest{
-//		SettingsBundle:       &bundle,
-//	}
-//	request := proto.ListSettingsBundlesRequest{Extension: "test-extension"}
-//	client := service.Client()
-//	cl := proto.NewBundleService("com.owncloud.api.settings", client)
-//
-//	cresponse, _ := cl.CreateSettingsBundle(context.Background(), &createRequest)
-//	log.Printf(cresponse.String())
-//	response, _ := cl.ListSettingsBundles(context.Background(), &request)
-//	log.Printf(response.String())
-//
-//	assert.Equal(t, "", response.String())
-//}
