@@ -63,15 +63,15 @@ export default {
   },
   computed: {
     dropElementId () {
-      return `single-choice-drop-${this.bundle.identifier.bundleKey}-${this.setting.settingKey}`
+      return `single-choice-drop-${this.bundle.identifier.bundle}-${this.setting.name}`
     },
     buttonElementId () {
-      return `single-choice-toggle-${this.bundle.identifier.bundleKey}-${this.setting.settingKey}`
+      return `single-choice-toggle-${this.bundle.identifier.bundle}-${this.setting.name}`
     }
   },
   methods: {
     getOptionElementId (index) {
-      return `${this.bundle.identifier.bundleKey}-${this.setting.settingKey}-${index}`
+      return `${this.bundle.identifier.bundle}-${this.setting.name}-${index}`
     },
     async onSelectedOption () {
       const values = []

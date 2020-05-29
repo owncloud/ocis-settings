@@ -268,10 +268,10 @@
         "extension": {
           "type": "string"
         },
-        "bundle_key": {
+        "bundle": {
           "type": "string"
         },
-        "setting_key": {
+        "setting": {
           "type": "string"
         },
         "account_uuid": {
@@ -428,7 +428,7 @@
     "protoSetting": {
       "type": "object",
       "properties": {
-        "setting_key": {
+        "name": {
           "type": "string"
         },
         "display_name": {

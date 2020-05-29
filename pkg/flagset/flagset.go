@@ -159,6 +159,7 @@ func ServerWithConfig(cfg *config.Config) []cli.Flag {
 		},
 		&cli.StringFlag{
 			Name:        "mount-path",
+			Value:       "/var/tmp/ocis-settings",
 			Usage:       "Mount path for the storage",
 			EnvVars:     []string{"SETTINGS_ROOT_MOUNT_PATH"},
 			Destination: &cfg.Storage.RootMountPath,

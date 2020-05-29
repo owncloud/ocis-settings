@@ -19,7 +19,7 @@
         <template v-if="settingsValuesLoaded">
           <settings-bundle
             v-for="bundle in selectedSettingsBundles"
-            :key="'bundle-' + bundle.identifier.bundleKey"
+            :key="'bundle-' + bundle.identifier.bundle"
             :bundle="bundle"
             class="uk-margin-top"
           />

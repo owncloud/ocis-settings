@@ -61,10 +61,10 @@ func validateListSettingsValues(req *proto.ListSettingsValuesRequest) error {
 		req.Identifier,
 		validation.Field(&req.Identifier.AccountUuid, is.UUID),
 		validation.Field(&req.Identifier.Extension, validation.Match(regexForKeys)),
-		validation.Field(&req.Identifier.Extension, validation.When(req.Identifier.BundleKey != "", validation.Required)),
-		validation.Field(&req.Identifier.BundleKey, validation.Match(regexForKeys)),
-		validation.Field(&req.Identifier.BundleKey, validation.When(req.Identifier.SettingKey != "", validation.Required)),
-		validation.Field(&req.Identifier.SettingKey, validation.Match(regexForKeys)),
+		validation.Field(&req.Identifier.Extension, validation.When(req.Identifier.Bundle != "", validation.Required)),
+		validation.Field(&req.Identifier.Bundle, validation.Match(regexForKeys)),
+		validation.Field(&req.Identifier.Bundle, validation.When(req.Identifier.Setting != "", validation.Required)),
+		validation.Field(&req.Identifier.Setting, validation.Match(regexForKeys)),
 	)
 }
 
@@ -72,7 +72,7 @@ func validateBundleIdentifier(identifier *proto.Identifier) error {
 	return validation.ValidateStruct(
 		identifier,
 		validation.Field(&identifier.Extension, keyRule...),
-		validation.Field(&identifier.BundleKey, keyRule...),
+		validation.Field(&identifier.Bundle, keyRule...),
 	)
 }
 
@@ -80,8 +80,8 @@ func validateValueIdentifier(identifier *proto.Identifier) error {
 	return validation.ValidateStruct(
 		identifier,
 		validation.Field(&identifier.Extension, keyRule...),
-		validation.Field(&identifier.BundleKey, keyRule...),
-		validation.Field(&identifier.SettingKey, settingKeyRule...),
+		validation.Field(&identifier.Bundle, keyRule...),
+		validation.Field(&identifier.Setting, settingKeyRule...),
 		validation.Field(&identifier.AccountUuid, accountUUIDRule...),
 	)
 }

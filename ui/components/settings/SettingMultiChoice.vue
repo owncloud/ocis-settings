@@ -65,15 +65,15 @@ export default {
       return Array.from(this.selectedOptions).map(option => option.displayValue).join(', ')
     },
     dropElementId () {
-      return `multi-choice-drop-${this.bundle.identifier.bundleKey}-${this.setting.settingKey}`
+      return `multi-choice-drop-${this.bundle.identifier.bundle}-${this.setting.name}`
     },
     buttonElementId () {
-      return `multi-choice-toggle-${this.bundle.identifier.bundleKey}-${this.setting.settingKey}`
+      return `multi-choice-toggle-${this.bundle.identifier.bundle}-${this.setting.name}`
     }
   },
   methods: {
     getOptionElementId (index) {
-      return `${this.bundle.identifier.bundleKey}-${this.setting.settingKey}-${index}`
+      return `${this.bundle.identifier.bundle}-${this.setting.name}-${index}`
     },
     async onSelectedOption () {
       const values = []

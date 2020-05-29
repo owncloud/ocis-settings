@@ -49,7 +49,7 @@ func (s Store) ListBundles(identifier *proto.Identifier) ([]*proto.SettingsBundl
 // ReadBundle tries to find a bundle by the given identifier within the mountPath.
 // Extension and BundleKey within the identifier are required.
 func (s Store) ReadBundle(identifier *proto.Identifier) (*proto.SettingsBundle, error) {
-	filePath := s.buildFilePathFromBundleArgs(identifier.Extension, identifier.BundleKey, false)
+	filePath := s.buildFilePathFromBundleArgs(identifier.Extension, identifier.Bundle, false)
 	record := proto.SettingsBundle{}
 	if err := s.parseRecordFromFile(&record, filePath); err != nil {
 		return nil, err

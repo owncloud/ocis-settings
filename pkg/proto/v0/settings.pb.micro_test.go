@@ -20,7 +20,7 @@ var (
 	dummySettings = []*proto.Setting{
 		{
 			DisplayName: "dummy setting",
-			SettingKey:  "dummy-setting",
+			Name:        "dummy-setting",
 			Value: &proto.Setting_IntValue{
 				IntValue: &proto.IntSetting{
 					Default: 42,
@@ -264,8 +264,8 @@ func TestSettingsBundleProperties(t *testing.T) {
 		t.Run(testCase.testDataName, func(t *testing.T) {
 			identifier := proto.Identifier{
 				Extension:   testCase.Extension,
-				BundleKey:   testCase.BundleKey,
-				SettingKey:  testCase.SettingKey,
+				Bundle:      testCase.BundleKey,
+				Setting:     testCase.SettingKey,
 				AccountUuid: testCase.UUID,
 			}
 			bundle := proto.SettingsBundle{
@@ -291,8 +291,8 @@ func TestSettingsBundleProperties(t *testing.T) {
 				assert.Equal(t, testCase.expectedError.Status, errorData.Status)
 			} else {
 				assert.Equal(t, testCase.Extension, cresponse.SettingsBundle.Identifier.Extension)
-				assert.Equal(t, testCase.BundleKey, cresponse.SettingsBundle.Identifier.BundleKey)
-				assert.Equal(t, testCase.SettingKey, cresponse.SettingsBundle.Identifier.SettingKey)
+				assert.Equal(t, testCase.BundleKey, cresponse.SettingsBundle.Identifier.Bundle)
+				assert.Equal(t, testCase.SettingKey, cresponse.SettingsBundle.Identifier.Setting)
 				assert.Equal(t, testCase.UUID, cresponse.SettingsBundle.Identifier.AccountUuid)
 				assert.Equal(t, testCase.DisplayName, cresponse.SettingsBundle.DisplayName)
 
@@ -300,8 +300,8 @@ func TestSettingsBundleProperties(t *testing.T) {
 				getResponse, err := cl.GetSettingsBundle(context.Background(), &getRequest)
 				assert.NoError(t, err)
 				assert.Equal(t, testCase.Extension, getResponse.SettingsBundle.Identifier.Extension)
-				assert.Equal(t, testCase.BundleKey, getResponse.SettingsBundle.Identifier.BundleKey)
-				assert.Equal(t, testCase.SettingKey, getResponse.SettingsBundle.Identifier.SettingKey)
+				assert.Equal(t, testCase.BundleKey, getResponse.SettingsBundle.Identifier.Bundle)
+				assert.Equal(t, testCase.SettingKey, getResponse.SettingsBundle.Identifier.Setting)
 				assert.Equal(t, testCase.UUID, getResponse.SettingsBundle.Identifier.AccountUuid)
 				assert.Equal(t, testCase.DisplayName, getResponse.SettingsBundle.DisplayName)
 			}
@@ -318,7 +318,7 @@ func TestSettingsBundleWithoutSettings(t *testing.T) {
 		SettingsBundle: &proto.SettingsBundle{
 			Identifier: &proto.Identifier{
 				Extension: "great-extension",
-				BundleKey: "alices-bundle",
+				Bundle:    "alices-bundle",
 			},
 			DisplayName: "Alice's Bundle",
 		},
@@ -341,8 +341,8 @@ testing that setting getting and listing a settings bundle works correctly with 
 func TestSaveGetListSettingsBundle(t *testing.T) {
 	identifier := proto.Identifier{
 		Extension:   "my-extension",
-		BundleKey:   "simple-bundle-with-setting",
-		SettingKey:  "simple-key",
+		Bundle:      "simple-bundle-with-setting",
+		Setting:     "simple-key",
 		AccountUuid: "123e4567-e89b-12d3-a456-426652340000",
 	}
 	var settings []*proto.Setting
@@ -355,7 +355,7 @@ func TestSaveGetListSettingsBundle(t *testing.T) {
 		Placeholder: "Int value",
 	}
 	settings = append(settings, &proto.Setting{
-		SettingKey:  "int",
+		Name:        "int",
 		DisplayName: "an integer value",
 		Description: "with some description",
 		Value: &proto.Setting_IntValue{
@@ -371,7 +371,7 @@ func TestSaveGetListSettingsBundle(t *testing.T) {
 		Placeholder: "a string value",
 	}
 	settings = append(settings, &proto.Setting{
-		SettingKey:  "string",
+		Name:        "string",
 		DisplayName: "a string value",
 		Description: "with some description",
 		Value: &proto.Setting_StringValue{
@@ -384,7 +384,7 @@ func TestSaveGetListSettingsBundle(t *testing.T) {
 		Label:   "bool setting",
 	}
 	settings = append(settings, &proto.Setting{
-		SettingKey:  "bool",
+		Name:        "bool",
 		DisplayName: "a bool value",
 		Description: "with some description",
 		Value: &proto.Setting_BoolValue{
@@ -416,7 +416,7 @@ func TestSaveGetListSettingsBundle(t *testing.T) {
 	}
 
 	settings = append(settings, &proto.Setting{
-		SettingKey:  "multiple choice",
+		Name:        "multiple choice",
 		DisplayName: "a multiple choice setting",
 		Description: "with some description",
 		Value: &proto.Setting_MultiChoiceValue{
@@ -430,7 +430,7 @@ func TestSaveGetListSettingsBundle(t *testing.T) {
 	}
 
 	settings = append(settings, &proto.Setting{
-		SettingKey:  "single choice",
+		Name:        "single choice",
 		DisplayName: "a single choice setting",
 		Description: "with some description",
 		Value: &proto.Setting_SingleChoiceValue{
@@ -478,7 +478,7 @@ func TestSaveGetListSettingsBundle(t *testing.T) {
 func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 	var tests = []proto.Setting{
 		{
-			SettingKey: "intValue default is out of range",
+			Name: "intValue default is out of range",
 			Value: &proto.Setting_IntValue{
 				IntValue: &proto.IntSetting{
 					Default: 30,
@@ -488,7 +488,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 		},
 		{
-			SettingKey: "intValue min > max",
+			Name: "intValue min > max",
 			Value: &proto.Setting_IntValue{
 				IntValue: &proto.IntSetting{
 					Default: 100,
@@ -498,7 +498,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 		},
 		{
-			SettingKey: "intValue step > max-min",
+			Name: "intValue step > max-min",
 			Value: &proto.Setting_IntValue{
 				IntValue: &proto.IntSetting{
 					Min:  10,
@@ -508,7 +508,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 		},
 		{
-			SettingKey: "intValue step = 0",
+			Name: "intValue step = 0",
 			Value: &proto.Setting_IntValue{
 				IntValue: &proto.IntSetting{
 					Min:  10,
@@ -518,7 +518,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 		},
 		{
-			SettingKey: "intValue step < 0",
+			Name: "intValue step < 0",
 			Value: &proto.Setting_IntValue{
 				IntValue: &proto.IntSetting{
 					Min:  10,
@@ -528,7 +528,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 		},
 		{
-			SettingKey: "stringValue MinLength > MaxLength",
+			Name: "stringValue MinLength > MaxLength",
 			Value: &proto.Setting_StringValue{
 				StringValue: &proto.StringSetting{
 					MinLength: 255,
@@ -537,7 +537,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 		},
 		{
-			SettingKey: "stringValue MaxLength = 0",
+			Name: "stringValue MaxLength = 0",
 			Value: &proto.Setting_StringValue{
 				StringValue: &proto.StringSetting{
 					MaxLength: 0,
@@ -545,7 +545,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 		},
 		{
-			SettingKey: "stringValue MinLength < 0",
+			Name: "stringValue MinLength < 0",
 			Value: &proto.Setting_StringValue{
 				StringValue: &proto.StringSetting{
 					MinLength: -1,
@@ -553,7 +553,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 		},
 		{
-			SettingKey: "stringValue MaxLength < 0",
+			Name: "stringValue MaxLength < 0",
 			Value: &proto.Setting_StringValue{
 				StringValue: &proto.StringSetting{
 					MaxLength: -1,
@@ -561,7 +561,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 		},
 		{
-			SettingKey: "multiChoice multiple options are default",
+			Name: "multiChoice multiple options are default",
 			Value: &proto.Setting_MultiChoiceValue{
 				MultiChoiceValue: &proto.MultiChoiceListSetting{
 					Options: []*proto.ListOption{
@@ -582,7 +582,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 		},
 		{
-			SettingKey: "singleChoice multiple options are default",
+			Name: "singleChoice multiple options are default",
 			Value: &proto.Setting_SingleChoiceValue{
 				SingleChoiceValue: &proto.SingleChoiceListSetting{
 					Options: []*proto.ListOption{
@@ -606,14 +606,14 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 
 	identifier := proto.Identifier{
 		Extension:   "my-extension",
-		BundleKey:   "bundle-with-invalid-settings",
-		SettingKey:  "simple-key",
+		Bundle:      "bundle-with-invalid-settings",
+		Setting:     "simple-key",
 		AccountUuid: "123e4567-d89b-12e3-a656-426652340000",
 	}
 
 	for index := range tests {
 		index := index
-		t.Run(tests[index].SettingKey, func(t *testing.T) {
+		t.Run(tests[index].Name, func(t *testing.T) {
 
 			var settings []*proto.Setting
 
@@ -646,7 +646,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 func TestGetSettingsBundleCreatesFolder(t *testing.T) {
 	identifier := proto.Identifier{
 		Extension: "not-existing-extension",
-		BundleKey: "not-existing-bundle",
+		Bundle:    "not-existing-bundle",
 	}
 
 	client := service.Client()
@@ -666,7 +666,7 @@ func TestGetSettingsBundleAccessOtherBundle(t *testing.T) {
 	aliceBundle := proto.SettingsBundle{
 		Identifier: &proto.Identifier{
 			Extension: "alice-extension",
-			BundleKey: "alice-bundle",
+			Bundle:    "alice-bundle",
 		},
 		DisplayName: "alice settings bundle",
 		Settings:    dummySettings,
@@ -679,7 +679,7 @@ func TestGetSettingsBundleAccessOtherBundle(t *testing.T) {
 
 	bobIdentifier := proto.Identifier{
 		Extension: "../bundles/alice-extension/",
-		BundleKey: "alice-bundle",
+		Bundle:    "alice-bundle",
 	}
 
 	getRequest := proto.GetSettingsBundleRequest{Identifier: &bobIdentifier}
@@ -768,8 +768,8 @@ func TestGetSettingsBundleWithInvalidIdentifier(t *testing.T) {
 		t.Run(testCase.testDataName, func(t *testing.T) {
 			identifier := proto.Identifier{
 				Extension:   testCase.Extension,
-				BundleKey:   testCase.BundleKey,
-				SettingKey:  testCase.SettingKey,
+				Bundle:      testCase.BundleKey,
+				Setting:     testCase.SettingKey,
 				AccountUuid: testCase.UUID,
 			}
 
@@ -803,7 +803,7 @@ func TestListMultipleSettingsBundlesOfSameExtension(t *testing.T) {
 		SettingsBundle: &proto.SettingsBundle{
 			Identifier: &proto.Identifier{
 				Extension: "great-extension",
-				BundleKey: "alices-bundle",
+				Bundle:    "alices-bundle",
 			},
 			DisplayName: "Alice's Bundle",
 			Settings:    dummySettings,
@@ -816,7 +816,7 @@ func TestListMultipleSettingsBundlesOfSameExtension(t *testing.T) {
 		SettingsBundle: &proto.SettingsBundle{
 			Identifier: &proto.Identifier{
 				Extension: "great-extension",
-				BundleKey: "bobs-bundle",
+				Bundle:    "bobs-bundle",
 			},
 			DisplayName: "Bob's Bundle",
 			Settings:    dummySettings,
@@ -829,7 +829,7 @@ func TestListMultipleSettingsBundlesOfSameExtension(t *testing.T) {
 		SettingsBundle: &proto.SettingsBundle{
 			Identifier: &proto.Identifier{
 				Extension: "an-other-extension",
-				BundleKey: "bobs-bundle",
+				Bundle:    "bobs-bundle",
 			},
 			DisplayName: "Bob's Bundle",
 			Settings:    dummySettings,
@@ -843,10 +843,10 @@ func TestListMultipleSettingsBundlesOfSameExtension(t *testing.T) {
 	response, err := cl.ListSettingsBundles(context.Background(), &listRequest)
 	assert.NoError(t, err)
 	assert.Equal(t, response.SettingsBundles[0].Identifier.Extension, "great-extension")
-	assert.Equal(t, response.SettingsBundles[0].Identifier.BundleKey, "alices-bundle")
+	assert.Equal(t, response.SettingsBundles[0].Identifier.Bundle, "alices-bundle")
 
 	assert.Equal(t, response.SettingsBundles[1].Identifier.Extension, "great-extension")
-	assert.Equal(t, response.SettingsBundles[1].Identifier.BundleKey, "bobs-bundle")
+	assert.Equal(t, response.SettingsBundles[1].Identifier.Bundle, "bobs-bundle")
 	assert.Equal(t, 2, len(response.SettingsBundles))
 	_ = os.RemoveAll("ocis-settings-store")
 }
@@ -859,7 +859,7 @@ func TestListAllSettingsBundlesOfSameExtension(t *testing.T) {
 		SettingsBundle: &proto.SettingsBundle{
 			Identifier: &proto.Identifier{
 				Extension: "great-extension",
-				BundleKey: "alices-bundle",
+				Bundle:    "alices-bundle",
 			},
 			DisplayName: "Alice's Bundle",
 			Settings:    dummySettings,
@@ -872,7 +872,7 @@ func TestListAllSettingsBundlesOfSameExtension(t *testing.T) {
 		SettingsBundle: &proto.SettingsBundle{
 			Identifier: &proto.Identifier{
 				Extension: "great-extension",
-				BundleKey: "bobs-bundle",
+				Bundle:    "bobs-bundle",
 			},
 			DisplayName: "Bob's Bundle",
 			Settings:    dummySettings,
@@ -885,7 +885,7 @@ func TestListAllSettingsBundlesOfSameExtension(t *testing.T) {
 		SettingsBundle: &proto.SettingsBundle{
 			Identifier: &proto.Identifier{
 				Extension: "an-other-extension",
-				BundleKey: "bobs-bundle",
+				Bundle:    "bobs-bundle",
 			},
 			DisplayName: "Bob's Bundle",
 			Settings:    dummySettings,
@@ -899,13 +899,13 @@ func TestListAllSettingsBundlesOfSameExtension(t *testing.T) {
 	response, err := cl.ListSettingsBundles(context.Background(), &listRequest)
 	assert.NoError(t, err)
 	assert.Equal(t, response.SettingsBundles[0].Identifier.Extension, "an-other-extension")
-	assert.Equal(t, response.SettingsBundles[0].Identifier.BundleKey, "bobs-bundle")
+	assert.Equal(t, response.SettingsBundles[0].Identifier.Bundle, "bobs-bundle")
 
 	assert.Equal(t, response.SettingsBundles[1].Identifier.Extension, "great-extension")
-	assert.Equal(t, response.SettingsBundles[1].Identifier.BundleKey, "alices-bundle")
+	assert.Equal(t, response.SettingsBundles[1].Identifier.Bundle, "alices-bundle")
 
 	assert.Equal(t, response.SettingsBundles[2].Identifier.Extension, "great-extension")
-	assert.Equal(t, response.SettingsBundles[2].Identifier.BundleKey, "bobs-bundle")
+	assert.Equal(t, response.SettingsBundles[2].Identifier.Bundle, "bobs-bundle")
 	assert.Equal(t, 3, len(response.SettingsBundles))
 	_ = os.RemoveAll("ocis-settings-store")
 }
@@ -930,7 +930,7 @@ func TestListSettingsBundlesInFoldersThatAreNotAccessible(t *testing.T) {
 		SettingsBundle: &proto.SettingsBundle{
 			Identifier: &proto.Identifier{
 				Extension: "great-extension",
-				BundleKey: "alices-bundle",
+				Bundle:    "alices-bundle",
 			},
 			DisplayName: "Alice's Bundle",
 			Settings:    dummySettings,
@@ -943,7 +943,7 @@ func TestListSettingsBundlesInFoldersThatAreNotAccessible(t *testing.T) {
 		SettingsBundle: &proto.SettingsBundle{
 			Identifier: &proto.Identifier{
 				Extension: "great-extension",
-				BundleKey: "bobs-bundle",
+				Bundle:    "bobs-bundle",
 			},
 			DisplayName: "Bob's Bundle",
 			Settings:    dummySettings,
@@ -956,7 +956,7 @@ func TestListSettingsBundlesInFoldersThatAreNotAccessible(t *testing.T) {
 		SettingsBundle: &proto.SettingsBundle{
 			Identifier: &proto.Identifier{
 				Extension: "an-other-extension",
-				BundleKey: "bobs-bundle",
+				Bundle:    "bobs-bundle",
 			},
 			DisplayName: "Bob's Bundle",
 			Settings:    dummySettings,
@@ -992,9 +992,9 @@ func TestSaveGetListSettingsValues(t *testing.T) {
 			SettingsValue: proto.SettingsValue{
 				Identifier: &proto.Identifier{
 					Extension:   "great-extension",
-					BundleKey:   "alices-bundle",
+					Bundle:      "alices-bundle",
 					AccountUuid: "123e4567-e89b-12d3-a456-426652340000",
-					SettingKey:  "age",
+					Setting:     "age",
 				},
 				Value: &proto.SettingsValue_IntValue{IntValue: 12},
 			},
@@ -1004,9 +1004,9 @@ func TestSaveGetListSettingsValues(t *testing.T) {
 			SettingsValue: proto.SettingsValue{
 				Identifier: &proto.Identifier{
 					Extension:   "great-extension",
-					BundleKey:   "alices-bundle",
+					Bundle:      "alices-bundle",
 					AccountUuid: "123e4567-e89b-12d3-a456-426652340000",
-					SettingKey:  "location",
+					Setting:     "location",
 				},
 				Value: &proto.SettingsValue_StringValue{StringValue: "पोखरा"},
 			},
@@ -1016,9 +1016,9 @@ func TestSaveGetListSettingsValues(t *testing.T) {
 			SettingsValue: proto.SettingsValue{
 				Identifier: &proto.Identifier{
 					Extension:   "great-extension",
-					BundleKey:   "alices-bundle",
+					Bundle:      "alices-bundle",
 					AccountUuid: "123e4567-e89b-12d3-a456-426652340000",
-					SettingKey:  "locked",
+					Setting:     "locked",
 				},
 				Value: &proto.SettingsValue_BoolValue{BoolValue: false},
 			},
@@ -1028,9 +1028,9 @@ func TestSaveGetListSettingsValues(t *testing.T) {
 			SettingsValue: proto.SettingsValue{
 				Identifier: &proto.Identifier{
 					Extension:   "great-extension",
-					BundleKey:   "alices-bundle",
+					Bundle:      "alices-bundle",
 					AccountUuid: "123e4567-e89b-12d3-a456-426652340000",
-					SettingKey:  "currencies",
+					Setting:     "currencies",
 				},
 				Value: &proto.SettingsValue_ListValue{
 					ListValue: &proto.ListValue{
@@ -1048,9 +1048,9 @@ func TestSaveGetListSettingsValues(t *testing.T) {
 			SettingsValue: proto.SettingsValue{
 				Identifier: &proto.Identifier{
 					Extension:   "great-extension",
-					BundleKey:   "alices-bundle",
+					Bundle:      "alices-bundle",
 					AccountUuid: "123e4567-e89b-12d3-a456-426652340000",
-					SettingKey:  "font-size",
+					Setting:     "font-size",
 				},
 				Value: &proto.SettingsValue_ListValue{
 					ListValue: &proto.ListValue{
@@ -1069,9 +1069,9 @@ func TestSaveGetListSettingsValues(t *testing.T) {
 			SettingsValue: proto.SettingsValue{
 				Identifier: &proto.Identifier{
 					Extension:   "great-extension",
-					BundleKey:   "alices-bundle",
+					Bundle:      "alices-bundle",
 					AccountUuid: "123e4567-e89b-12d3-a456-426652340000",
-					SettingKey:  "apple-and-peaches",
+					Setting:     "apple-and-peaches",
 				},
 				Value: &proto.SettingsValue_ListValue{
 					ListValue: &proto.ListValue{
@@ -1088,9 +1088,9 @@ func TestSaveGetListSettingsValues(t *testing.T) {
 			SettingsValue: proto.SettingsValue{
 				Identifier: &proto.Identifier{
 					Extension:   "",
-					BundleKey:   "alices-bundle",
+					Bundle:      "alices-bundle",
 					AccountUuid: "123e4567-e89b-12d3-a456-426652340000",
-					SettingKey:  "locked",
+					Setting:     "locked",
 				},
 				Value: &proto.SettingsValue_BoolValue{BoolValue: false},
 			},
@@ -1106,9 +1106,9 @@ func TestSaveGetListSettingsValues(t *testing.T) {
 			SettingsValue: proto.SettingsValue{
 				Identifier: &proto.Identifier{
 					Extension:   "great-extension",
-					BundleKey:   "",
+					Bundle:      "",
 					AccountUuid: "123e4567-e89b-12d3-a456-426652340000",
-					SettingKey:  "locked",
+					Setting:     "locked",
 				},
 				Value: &proto.SettingsValue_BoolValue{BoolValue: false},
 			},
@@ -1124,9 +1124,9 @@ func TestSaveGetListSettingsValues(t *testing.T) {
 			SettingsValue: proto.SettingsValue{
 				Identifier: &proto.Identifier{
 					Extension:   "great-extension",
-					BundleKey:   "bobs-bundle",
+					Bundle:      "bobs-bundle",
 					AccountUuid: "",
-					SettingKey:  "locked",
+					Setting:     "locked",
 				},
 				Value: &proto.SettingsValue_BoolValue{BoolValue: false},
 			},
@@ -1142,9 +1142,9 @@ func TestSaveGetListSettingsValues(t *testing.T) {
 			SettingsValue: proto.SettingsValue{
 				Identifier: &proto.Identifier{
 					Extension:   "great-extension",
-					BundleKey:   "bobs-bundle",
+					Bundle:      "bobs-bundle",
 					AccountUuid: "123e4567-e89b-12d3-a456-426652340000",
-					SettingKey:  "",
+					Setting:     "",
 				},
 				Value: &proto.SettingsValue_BoolValue{BoolValue: false},
 			},
@@ -1160,9 +1160,9 @@ func TestSaveGetListSettingsValues(t *testing.T) {
 			SettingsValue: proto.SettingsValue{
 				Identifier: &proto.Identifier{
 					Extension:   "great-extension",
-					BundleKey:   "../bobs-bundle",
+					Bundle:      "../bobs-bundle",
 					AccountUuid: "123e4567-e89b-12d3-a456-426652340000",
-					SettingKey:  "should-not-be-possible",
+					Setting:     "should-not-be-possible",
 				},
 				Value: &proto.SettingsValue_BoolValue{BoolValue: false},
 			},
@@ -1178,9 +1178,9 @@ func TestSaveGetListSettingsValues(t *testing.T) {
 			SettingsValue: proto.SettingsValue{
 				Identifier: &proto.Identifier{
 					Extension:   "great-extension",
-					BundleKey:   "bobs-bundle",
+					Bundle:      "bobs-bundle",
 					AccountUuid: "../123e4567-e89b-12d3-a456-426652340000",
-					SettingKey:  "should-not-be-possible",
+					Setting:     "should-not-be-possible",
 				},
 				Value: &proto.SettingsValue_BoolValue{BoolValue: false},
 			},
@@ -1196,9 +1196,9 @@ func TestSaveGetListSettingsValues(t *testing.T) {
 			SettingsValue: proto.SettingsValue{
 				Identifier: &proto.Identifier{
 					Extension:   "\\-extension",
-					BundleKey:   "\\-bundle",
+					Bundle:      "\\-bundle",
 					AccountUuid: "\\123e4567-e89b-12d3-a456-426652340000",
-					SettingKey:  "should-not-be-possible",
+					Setting:     "should-not-be-possible",
 				},
 				Value: &proto.SettingsValue_BoolValue{BoolValue: false},
 			},

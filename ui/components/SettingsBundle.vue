@@ -42,7 +42,7 @@ export default {
   methods: {
     ...mapActions('Settings', ['saveSettingsValue']),
     getElementId (bundle, setting) {
-      return `setting-${bundle.identifier.bundleKey}-${setting.settingKey}`
+      return `setting-${bundle.identifier.bundle}-${setting.name}`
     },
     getSettingComponent (setting) {
       return 'Setting' + setting.type[0].toUpperCase() + setting.type.substr(1)
@@ -50,8 +50,8 @@ export default {
     getSettingsValue (bundle, setting) {
       const identifier = {
         extension: bundle.identifier.extension,
-        bundleKey: bundle.identifier.bundleKey,
-        settingKey: setting.settingKey
+        bundle: bundle.identifier.bundle,
+        setting: setting.name
       }
       return this.getSettingsValueByIdentifier(identifier)
     },
@@ -60,8 +60,8 @@ export default {
         identifier: {
           accountUuid: 'me',
           extension: bundle.identifier.extension,
-          bundleKey: bundle.identifier.bundleKey,
-          settingKey: setting.settingKey
+          bundle: bundle.identifier.bundle,
+          setting: setting.name
         },
         ...value
       }

@@ -21,7 +21,7 @@ func (s Store) buildFolderPathBundles(mkdir bool) string {
 
 // Builds a unique file name from the given settings bundle. If mkdir is true, folders in the path will be created if necessary.
 func (s Store) buildFilePathFromBundle(bundle *proto.SettingsBundle, mkdir bool) string {
-	return s.buildFilePathFromBundleArgs(bundle.Identifier.Extension, bundle.Identifier.BundleKey, mkdir)
+	return s.buildFilePathFromBundleArgs(bundle.Identifier.Extension, bundle.Identifier.Bundle, mkdir)
 }
 
 // Builds a unique file name from the given params. If mkdir is true, folders in the path will be created if necessary.
@@ -35,7 +35,7 @@ func (s Store) buildFilePathFromBundleArgs(extension string, bundleKey string, m
 
 // Builds a unique file name from the given settings value. If mkdir is true, folders in the path will be created if necessary.
 func (s Store) buildFilePathFromValue(value *proto.SettingsValue, mkdir bool) string {
-	return s.buildFilePathFromValueArgs(value.Identifier.AccountUuid, value.Identifier.Extension, value.Identifier.BundleKey, mkdir)
+	return s.buildFilePathFromValueArgs(value.Identifier.AccountUuid, value.Identifier.Extension, value.Identifier.Bundle, mkdir)
 }
 
 // Builds a unique file name from the given params. If mkdir is true, folders in the path will be created if necessary.

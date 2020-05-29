@@ -14,12 +14,12 @@ import (
 // ReadValue tries to find a value by the given identifier attributes within the mountPath
 // All identifier fields are required.
 func (s Store) ReadValue(identifier *proto.Identifier) (*proto.SettingsValue, error) {
-	filePath := s.buildFilePathFromValueArgs(identifier.AccountUuid, identifier.Extension, identifier.BundleKey, false)
+	filePath := s.buildFilePathFromValueArgs(identifier.AccountUuid, identifier.Extension, identifier.Bundle, false)
 	values, err := s.readValuesMapFromFile(filePath)
 	if err != nil {
 		return nil, err
 	}
-	if value := values.Values[identifier.SettingKey]; value != nil {
+	if value := values.Values[identifier.Setting]; value != nil {
 		return value, nil
 	}
 	// TODO: we want to return sensible defaults here, when the value was not found
@@ -34,7 +34,7 @@ func (s Store) WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, err
 	if err != nil {
 		return nil, err
 	}
-	values.Values[value.Identifier.SettingKey] = value
+	values.Values[value.Identifier.Setting] = value
 	if err := s.writeRecordToFile(values, filePath); err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (s Store) ListValues(identifier *proto.Identifier) ([]*proto.SettingsValue,
 			s.Logger.Err(err).Msgf("error reading %v", accountFolderPath)
 			return values, nil
 		}
-	} else if len(identifier.BundleKey) < 1 {
+	} else if len(identifier.Bundle) < 1 {
 		extensionPath := path.Join(accountFolderPath, identifier.Extension)
 		if err := filepath.Walk(extensionPath, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -76,7 +76,7 @@ func (s Store) ListValues(identifier *proto.Identifier) ([]*proto.SettingsValue,
 			return values, nil
 		}
 	} else {
-		bundlePath := path.Join(accountFolderPath, identifier.Extension, identifier.BundleKey+".json")
+		bundlePath := path.Join(accountFolderPath, identifier.Extension, identifier.Bundle+".json")
 		valueFilePaths = append(valueFilePaths, bundlePath)
 	}
 

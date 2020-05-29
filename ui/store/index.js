@@ -21,7 +21,7 @@ const getters = {
   getSettingsBundlesByExtension: state => extension => {
     if (state.settingsBundles.has(extension)) {
       return Array.from(state.settingsBundles.get(extension).values()).sort((b1, b2) => {
-        return b1.identifier.bundleKey.localeCompare(b2.identifier.bundleKey)
+        return b1.identifier.bundle.localeCompare(b2.identifier.bundle)
       })
     }
     return []
@@ -38,7 +38,7 @@ const mutations = {
       if (!map.has(bundle.identifier.extension)) {
         map.set(bundle.identifier.extension, new Map())
       }
-      map.get(bundle.identifier.extension).set(bundle.identifier.bundleKey, bundle)
+      map.get(bundle.identifier.extension).set(bundle.identifier.bundle, bundle)
     })
     state.settingsBundles = map
   },
