@@ -135,6 +135,7 @@ message SettingsBundle {
   Identifier identifier = 1;
   string display_name = 2;
   repeated Setting settings = 3;
+  Resource resource = 4;
 }
 
 message Setting {
@@ -147,7 +148,9 @@ message Setting {
     BoolSetting bool_value = 6;
     SingleChoiceListSetting single_choice_value = 7;
     MultiChoiceListSetting multi_choice_value = 8;
+    PermissionSetting permission_value = 9;
   }
+  Resource resource = 10;
 }
 
 message IntSetting {
@@ -183,6 +186,43 @@ message ListOption {
   ListOptionValue value = 1;
   bool default = 2;
   string display_value = 3;
+}
+
+// a permission can be constructed by ADMIN users, by setting a resource, an operation and a constraint. need a new ui element for that.
+message PermissionSetting {
+  enum Operation {
+    UNKNOWN = 0;
+    CREATE = 1;
+    READ = 2;
+    UPDATE = 3;
+    DELETE = 4;
+  }
+  Operation operation = 1;
+  Constraint constraint = 2;
+}
+
+message Resource {
+  enum Type {
+    UNKNOWN = 0;
+    SYSTEM = 1;
+    FILE = 2;
+    SHARE = 3;
+    SETTING = 4;
+    USER = 5;
+    GROUP = 6;
+  }
+  Type type = 1;
+  repeated string values = 2;// think about "all", "me", etc. other than that: list of ids (file ids, share ids, etc).
+}
+
+message Constraint {
+  enum Type {
+    UNKNOWN = 0;
+    USER = 1;
+    GROUP = 2;
+  }
+  Type type = 1;
+  repeated string values = 2;
 }
 
 // payloads for settings values

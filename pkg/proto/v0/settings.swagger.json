@@ -230,6 +230,29 @@
         }
       }
     },
+    "protoConstraint": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/protoConstraintType"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "protoConstraintType": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "USER",
+        "GROUP"
+      ],
+      "default": "UNKNOWN"
+    },
     "protoGetSettingsBundleRequest": {
       "type": "object",
       "properties": {
@@ -391,6 +414,56 @@
         }
       }
     },
+    "protoPermissionSetting": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "$ref": "#/definitions/protoPermissionSettingOperation"
+        },
+        "constraint": {
+          "$ref": "#/definitions/protoConstraint"
+        }
+      },
+      "description": "a permission can be constructed by ADMIN users, by setting a resource, an operation and a constraint. need a new ui element for that."
+    },
+    "protoPermissionSettingOperation": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "CREATE",
+        "READ",
+        "UPDATE",
+        "DELETE"
+      ],
+      "default": "UNKNOWN"
+    },
+    "protoResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/protoResourceType"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "protoResourceType": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "SYSTEM",
+        "FILE",
+        "SHARE",
+        "SETTING",
+        "USER",
+        "GROUP"
+      ],
+      "default": "UNKNOWN"
+    },
     "protoSaveSettingsBundleRequest": {
       "type": "object",
       "properties": {
@@ -451,6 +524,12 @@
         },
         "multi_choice_value": {
           "$ref": "#/definitions/protoMultiChoiceListSetting"
+        },
+        "permission_value": {
+          "$ref": "#/definitions/protoPermissionSetting"
+        },
+        "resource": {
+          "$ref": "#/definitions/protoResource"
         }
       }
     },
@@ -468,6 +547,9 @@
           "items": {
             "$ref": "#/definitions/protoSetting"
           }
+        },
+        "resource": {
+          "$ref": "#/definitions/protoResource"
         }
       },
       "title": "payloads for settings bundles"

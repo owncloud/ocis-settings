@@ -953,6 +953,114 @@ func (m *ListOption) UnmarshalJSON(b []byte) error {
 
 var _ json.Unmarshaler = (*ListOption)(nil)
 
+// PermissionSettingJSONMarshaler describes the default jsonpb.Marshaler used by all
+// instances of PermissionSetting. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var PermissionSettingJSONMarshaler = new(jsonpb.Marshaler)
+
+// MarshalJSON satisfies the encoding/json Marshaler interface. This method
+// uses the more correct jsonpb package to correctly marshal the message.
+func (m *PermissionSetting) MarshalJSON() ([]byte, error) {
+	if m == nil {
+		return json.Marshal(nil)
+	}
+
+	buf := &bytes.Buffer{}
+
+	if err := PermissionSettingJSONMarshaler.Marshal(buf, m); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
+var _ json.Marshaler = (*PermissionSetting)(nil)
+
+// PermissionSettingJSONUnmarshaler describes the default jsonpb.Unmarshaler used by all
+// instances of PermissionSetting. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var PermissionSettingJSONUnmarshaler = new(jsonpb.Unmarshaler)
+
+// UnmarshalJSON satisfies the encoding/json Unmarshaler interface. This method
+// uses the more correct jsonpb package to correctly unmarshal the message.
+func (m *PermissionSetting) UnmarshalJSON(b []byte) error {
+	return PermissionSettingJSONUnmarshaler.Unmarshal(bytes.NewReader(b), m)
+}
+
+var _ json.Unmarshaler = (*PermissionSetting)(nil)
+
+// ResourceJSONMarshaler describes the default jsonpb.Marshaler used by all
+// instances of Resource. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var ResourceJSONMarshaler = new(jsonpb.Marshaler)
+
+// MarshalJSON satisfies the encoding/json Marshaler interface. This method
+// uses the more correct jsonpb package to correctly marshal the message.
+func (m *Resource) MarshalJSON() ([]byte, error) {
+	if m == nil {
+		return json.Marshal(nil)
+	}
+
+	buf := &bytes.Buffer{}
+
+	if err := ResourceJSONMarshaler.Marshal(buf, m); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
+var _ json.Marshaler = (*Resource)(nil)
+
+// ResourceJSONUnmarshaler describes the default jsonpb.Unmarshaler used by all
+// instances of Resource. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var ResourceJSONUnmarshaler = new(jsonpb.Unmarshaler)
+
+// UnmarshalJSON satisfies the encoding/json Unmarshaler interface. This method
+// uses the more correct jsonpb package to correctly unmarshal the message.
+func (m *Resource) UnmarshalJSON(b []byte) error {
+	return ResourceJSONUnmarshaler.Unmarshal(bytes.NewReader(b), m)
+}
+
+var _ json.Unmarshaler = (*Resource)(nil)
+
+// ConstraintJSONMarshaler describes the default jsonpb.Marshaler used by all
+// instances of Constraint. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var ConstraintJSONMarshaler = new(jsonpb.Marshaler)
+
+// MarshalJSON satisfies the encoding/json Marshaler interface. This method
+// uses the more correct jsonpb package to correctly marshal the message.
+func (m *Constraint) MarshalJSON() ([]byte, error) {
+	if m == nil {
+		return json.Marshal(nil)
+	}
+
+	buf := &bytes.Buffer{}
+
+	if err := ConstraintJSONMarshaler.Marshal(buf, m); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
+var _ json.Marshaler = (*Constraint)(nil)
+
+// ConstraintJSONUnmarshaler describes the default jsonpb.Unmarshaler used by all
+// instances of Constraint. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var ConstraintJSONUnmarshaler = new(jsonpb.Unmarshaler)
+
+// UnmarshalJSON satisfies the encoding/json Unmarshaler interface. This method
+// uses the more correct jsonpb package to correctly unmarshal the message.
+func (m *Constraint) UnmarshalJSON(b []byte) error {
+	return ConstraintJSONUnmarshaler.Unmarshal(bytes.NewReader(b), m)
+}
+
+var _ json.Unmarshaler = (*Constraint)(nil)
+
 // SettingsValueJSONMarshaler describes the default jsonpb.Marshaler used by all
 // instances of SettingsValue. This struct is safe to replace or modify but
 // should not be done so concurrently.
