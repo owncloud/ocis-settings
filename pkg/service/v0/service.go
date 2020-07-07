@@ -4,6 +4,7 @@ import (
 	"context"
 	"strings"
 
+	"github.com/owncloud/ocis-pkg/v2/log"
 	"github.com/owncloud/ocis-pkg/v2/middleware"
 	"github.com/owncloud/ocis-settings/pkg/config"
 	"github.com/owncloud/ocis-settings/pkg/proto/v0"
@@ -14,15 +15,21 @@ import (
 // Service represents a service.
 type Service struct {
 	config  *config.Config
+	logger  log.Logger
 	manager settings.Manager
 }
 
 // NewService returns a service implementation for Service.
-func NewService(cfg *config.Config) Service {
-	return Service{
+func NewService(cfg *config.Config, logger log.Logger) Service {
+	service := Service{
 		config:  cfg,
+		logger:  logger,
 		manager: store.New(cfg),
 	}
+	if _, err := service.manager.WriteBundle(generateSettingsBundleAdminRole()); err != nil {
+		logger.Error().Err(err).Msg("Failed to register roles")
+	}
+	return service
 }
 
 // SaveSettingsBundle implements the BundleServiceHandler interface
