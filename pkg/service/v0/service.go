@@ -26,8 +26,14 @@ func NewService(cfg *config.Config, logger log.Logger) Service {
 		logger:  logger,
 		manager: store.New(cfg),
 	}
-	if _, err := service.manager.WriteBundle(generateSettingsBundleAdminRole()); err != nil {
-		logger.Error().Err(err).Msg("Failed to register roles")
+	for _, role := range generateSettingsBundlesDefaultRoles() {
+		_, err := service.manager.WriteBundle(role)
+		bundleId := role.Identifier.Extension + "." + role.Identifier.Bundle
+		if err != nil {
+			logger.Error().Err(err).Msgf("Failed to register settings bundle %v", bundleId)
+		} else {
+			logger.Info().Msgf("Successfully registered settings bundle %v", bundleId)
+		}
 	}
 	return service
 }
