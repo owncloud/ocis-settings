@@ -4,12 +4,16 @@ package store
 import (
 	"io/ioutil"
 	"path"
+	"sync"
 
 	"github.com/owncloud/ocis-settings/pkg/proto/v0"
 )
 
+var m *sync.RWMutex = &sync.RWMutex{}
+
 // ListBundles returns all bundles in the mountPath folder belonging to the given extension
 func (s Store) ListBundles(identifier *proto.Identifier) ([]*proto.SettingsBundle, error) {
+	m.RLock()
 	var records []*proto.SettingsBundle
 	bundlesFolder := s.buildFolderPathBundles(false)
 	extensionFolders, err := ioutil.ReadDir(bundlesFolder)
@@ -43,17 +47,21 @@ func (s Store) ListBundles(identifier *proto.Identifier) ([]*proto.SettingsBundl
 		}
 	}
 
+	m.RUnlock()
+
 	return records, nil
 }
 
 // ReadBundle tries to find a bundle by the given identifier within the mountPath.
 // Extension and BundleKey within the identifier are required.
 func (s Store) ReadBundle(identifier *proto.Identifier) (*proto.SettingsBundle, error) {
+	m.RLock()
 	filePath := s.buildFilePathFromBundleArgs(identifier.Extension, identifier.Bundle, false)
 	record := proto.SettingsBundle{}
 	if err := s.parseRecordFromFile(&record, filePath); err != nil {
 		return nil, err
 	}
+	m.RUnlock()
 
 	s.Logger.Debug().Msgf("read contents from file: %v", filePath)
 	return &record, nil
@@ -62,10 +70,13 @@ func (s Store) ReadBundle(identifier *proto.Identifier) (*proto.SettingsBundle, 
 // WriteBundle writes the given record into a file within the mountPath
 // Extension and BundleKey within the record identifier are required.
 func (s Store) WriteBundle(record *proto.SettingsBundle) (*proto.SettingsBundle, error) {
+	m.Lock()
 	filePath := s.buildFilePathFromBundle(record, true)
 	if err := s.writeRecordToFile(record, filePath); err != nil {
 		return nil, err
 	}
+
+	m.Unlock()
 
 	s.Logger.Debug().Msgf("request contents written to file: %v", filePath)
 	return record, nil

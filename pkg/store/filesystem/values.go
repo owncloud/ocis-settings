@@ -14,6 +14,8 @@ import (
 // ReadValue tries to find a value by the given identifier attributes within the mountPath
 // All identifier fields are required.
 func (s Store) ReadValue(identifier *proto.Identifier) (*proto.SettingsValue, error) {
+	//s.Mutex.Lock()
+	//	defer s.Mutex.Unlock()
 	filePath := s.buildFilePathFromValueArgs(identifier.AccountUuid, identifier.Extension, identifier.Bundle, false)
 	values, err := s.readValuesMapFromFile(filePath)
 	if err != nil {
@@ -29,6 +31,9 @@ func (s Store) ReadValue(identifier *proto.Identifier) (*proto.SettingsValue, er
 // WriteValue writes the given SettingsValue into a file within the mountPath
 // All identifier fields within the value are required.
 func (s Store) WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, error) {
+	//s.Mutex.Lock()
+	//	defer s.Mutex.Unlock()
+	s.Logger.Debug().Str("value", value.String()).Msg("writing value")
 	filePath := s.buildFilePathFromValue(value, true)
 	values, err := s.readValuesMapFromFile(filePath)
 	if err != nil {
@@ -44,6 +49,8 @@ func (s Store) WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, err
 // ListValues reads all values within the scope of the given identifier
 // AccountUuid is required.
 func (s Store) ListValues(identifier *proto.Identifier) ([]*proto.SettingsValue, error) {
+	//s.Mutex.Lock()
+	//	defer s.Mutex.Unlock()
 	accountFolderPath := path.Join(s.mountPath, folderNameValues, identifier.AccountUuid)
 	var values []*proto.SettingsValue
 	if _, err := os.Stat(accountFolderPath); err != nil {
@@ -96,6 +103,8 @@ func (s Store) ListValues(identifier *proto.Identifier) ([]*proto.SettingsValue,
 
 // Reads SettingsValues as map from the given file or returns an empty map if the file doesn't exist.
 func (s Store) readValuesMapFromFile(filePath string) (*proto.SettingsValues, error) {
+	//s.Mutex.Lock()
+	//	defer s.Mutex.Unlock()
 	values := &proto.SettingsValues{}
 	err := s.parseRecordFromFile(values, filePath)
 	if err != nil {

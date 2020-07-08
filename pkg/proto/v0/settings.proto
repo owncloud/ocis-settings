@@ -8,7 +8,7 @@ import "protoc-gen-swagger/options/annotations.proto";
 
 option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
   info: {
-    title: "Settings";
+    title: "Settings"
     version: "1.0";
     contact: {
       name: "ownCloud GmbH";

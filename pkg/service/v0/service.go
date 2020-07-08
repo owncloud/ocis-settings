@@ -6,6 +6,7 @@ import (
 
 	"github.com/owncloud/ocis-pkg/v2/log"
 	"github.com/owncloud/ocis-pkg/v2/middleware"
+
 	"github.com/owncloud/ocis-settings/pkg/config"
 	"github.com/owncloud/ocis-settings/pkg/proto/v0"
 	"github.com/owncloud/ocis-settings/pkg/settings"
@@ -26,14 +27,13 @@ func NewService(cfg *config.Config, logger log.Logger) Service {
 		logger:  logger,
 		manager: store.New(cfg),
 	}
-	for _, role := range generateSettingsBundlesDefaultRoles() {
+	for _, role := range GenerateSettingsBundlesDefaultRoles() {
 		_, err := service.manager.WriteBundle(role)
-		bundleId := role.Identifier.Extension + "." + role.Identifier.Bundle
+		bundleID := role.Identifier.Extension + "." + role.Identifier.Bundle
 		if err != nil {
-			logger.Error().Err(err).Msgf("Failed to register settings bundle %v", bundleId)
-		} else {
-			logger.Info().Msgf("Successfully registered settings bundle %v", bundleId)
+			logger.Error().Err(err).Msgf("Failed to register settings bundle %v", bundleID)
 		}
+		logger.Debug().Msgf("Successfully registered settings bundle %v", bundleID)
 	}
 	return service
 }
