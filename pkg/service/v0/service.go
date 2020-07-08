@@ -2,12 +2,11 @@ package svc
 
 import (
 	"context"
-	"github.com/golang/protobuf/ptypes/empty"
 	"strings"
 
+	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/owncloud/ocis-pkg/v2/log"
 	"github.com/owncloud/ocis-pkg/v2/middleware"
-
 	"github.com/owncloud/ocis-settings/pkg/config"
 	"github.com/owncloud/ocis-settings/pkg/proto/v0"
 	"github.com/owncloud/ocis-settings/pkg/settings"
@@ -162,7 +161,7 @@ func getFailsafeIdentifier(c context.Context, identifier *proto.Identifier) *pro
 	if identifier == nil {
 		identifier = &proto.Identifier{}
 	}
-	identifier.AccountUuid = getValidatedAccountUuid(c, identifier.AccountUuid)
+	identifier.AccountUuid = getValidatedAccountUUID(c, identifier.AccountUuid)
 	return identifier
 }
 
@@ -171,13 +170,13 @@ func getFailsafeRoleAssignment(c context.Context, assignment *proto.RoleAssignme
 	if assignment == nil {
 		assignment = &proto.RoleAssignmentIdentifier{}
 	}
-	assignment.AccountUuid = getValidatedAccountUuid(c, assignment.AccountUuid)
+	assignment.AccountUuid = getValidatedAccountUUID(c, assignment.AccountUuid)
 	return assignment
 }
 
-// getValidatedAccountUuid converts `me` into an actual account uuid from the context, if possible.
+// getValidatedAccountUUID converts `me` into an actual account uuid from the context, if possible.
 // the result of this function will always be a valid lower-case UUID or an empty string.
-func getValidatedAccountUuid(c context.Context, accountUUID string) string {
+func getValidatedAccountUUID(c context.Context, accountUUID string) string {
 	if accountUUID == "me" {
 		ownAccountUUID := c.Value(middleware.UUIDKey)
 		if ownAccountUUID != nil && len(ownAccountUUID.(string)) > 0 {

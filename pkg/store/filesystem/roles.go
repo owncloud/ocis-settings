@@ -2,8 +2,9 @@
 package store
 
 import (
-	"github.com/owncloud/ocis-settings/pkg/proto/v0"
 	"os"
+
+	"github.com/owncloud/ocis-settings/pkg/proto/v0"
 )
 
 // ListRoleAssignments loads and returns all role assignments matching the given assignment identifier.
