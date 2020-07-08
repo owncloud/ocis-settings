@@ -2,6 +2,7 @@ package svc
 
 import (
 	"context"
+	"github.com/golang/protobuf/ptypes/empty"
 	"strings"
 
 	"github.com/owncloud/ocis-pkg/v2/log"
@@ -122,21 +123,69 @@ func (g Service) ListSettingsValues(c context.Context, req *proto.ListSettingsVa
 	return nil
 }
 
+// ListUserRoles implements the RoleServiceHandler interface
+func (g Service) ListRoleAssignments(c context.Context, req *proto.ListRoleAssignmentsRequest, res *proto.UserRoleAssignments) error {
+	req.Assignment = getFailsafeRoleAssignment(c, req.Assignment)
+	// TODO: validation. At least the accountUuid is required, rest is optional (but must comply if present).
+	r, err := g.manager.ListRoleAssignments(req.Assignment)
+	if err != nil {
+		return err
+	}
+	res.Assignments = r.Assignments
+	return nil
+}
+
+// AssignRoleToUser implements the RoleServiceHandler interface
+func (g Service) AssignRoleToUser(c context.Context, req *proto.AssignRoleToUserRequest, _ *empty.Empty) error {
+	req.Assignment = getFailsafeRoleAssignment(c, req.Assignment)
+	// TODO: validation. If a role is not associated with a resource, it has to be set to SYSTEM.
+	err := g.manager.WriteRoleAssignment(req.Assignment)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// RemoveRoleFromUser implements the RoleServiceHandler interface
+func (g Service) RemoveRoleFromUser(c context.Context, req *proto.RemoveRoleFromUserRequest, _ *empty.Empty) error {
+	req.Assignment = getFailsafeRoleAssignment(c, req.Assignment)
+	// TODO: validation. If a role is not associated with a resource, it has to be set to SYSTEM.
+	err := g.manager.DeleteRoleAssignment(req.Assignment)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // getFailsafeIdentifier makes sure that there is an identifier, and that the account uuid is injected if needed.
 func getFailsafeIdentifier(c context.Context, identifier *proto.Identifier) *proto.Identifier {
 	if identifier == nil {
 		identifier = &proto.Identifier{}
 	}
-	if identifier.AccountUuid == "me" {
-		ownAccountUUID := c.Value(middleware.UUIDKey).(string)
-		if len(ownAccountUUID) > 0 {
-			identifier.AccountUuid = ownAccountUUID
-		} else {
-			// might be valid for the request not having an AccountUuid in the identifier.
-			// but clear it, instead of passing on `me`.
-			identifier.AccountUuid = ""
-		}
-	}
-	identifier.AccountUuid = strings.ToLower(identifier.AccountUuid)
+	identifier.AccountUuid = getValidatedAccountUuid(c, identifier.AccountUuid)
 	return identifier
+}
+
+// getFailsafeRoleAssignment makes sure that there is an assignment identifier, and that the account uuid is injected if needed.
+func getFailsafeRoleAssignment(c context.Context, assignment *proto.RoleAssignmentIdentifier) *proto.RoleAssignmentIdentifier {
+	if assignment == nil {
+		assignment = &proto.RoleAssignmentIdentifier{}
+	}
+	assignment.AccountUuid = getValidatedAccountUuid(c, assignment.AccountUuid)
+	return assignment
+}
+
+// getValidatedAccountUuid converts `me` into an actual account uuid from the context, if possible.
+// the result of this function will always be a valid lower-case UUID or an empty string.
+func getValidatedAccountUuid(c context.Context, accountUUID string) string {
+	if accountUUID == "me" {
+		ownAccountUUID := c.Value(middleware.UUIDKey)
+		if ownAccountUUID != nil && len(ownAccountUUID.(string)) > 0 {
+			return strings.ToLower(ownAccountUUID.(string))
+		}
+		// might be valid for the request not having an AccountUUID in the context.
+		// but clear it, instead of passing on the provided `me`.
+		return ""
+	}
+	return strings.ToLower(accountUUID)
 }

@@ -17,6 +17,7 @@ type RegisterFunc func(*config.Config) Manager
 type Manager interface {
 	BundleManager
 	ValueManager
+	RoleAssignmentManager
 }
 
 // BundleManager is a bundle service interface for abstraction of storage implementations
@@ -31,4 +32,11 @@ type ValueManager interface {
 	ReadValue(identifier *proto.Identifier) (*proto.SettingsValue, error)
 	WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, error)
 	ListValues(identifier *proto.Identifier) ([]*proto.SettingsValue, error)
+}
+
+// RoleAssignmentManager is a role assignment service interface for abstraction of storage implementations
+type RoleAssignmentManager interface {
+	ListRoleAssignments(identifier *proto.RoleAssignmentIdentifier) (*proto.UserRoleAssignments, error)
+	WriteRoleAssignment(identifier *proto.RoleAssignmentIdentifier) error
+	DeleteRoleAssignment(identifier *proto.RoleAssignmentIdentifier) error
 }

@@ -9,6 +9,7 @@ import (
 
 const folderNameBundles = "bundles"
 const folderNameValues = "values"
+const folderNameRoleAssignments = "role-assignments"
 
 // Builds the folder path for storing settings bundles. If mkdir is true, folders in the path will be created if necessary.
 func (s Store) buildFolderPathBundles(mkdir bool) string {
@@ -45,6 +46,15 @@ func (s Store) buildFilePathFromValueArgs(accountUUID string, extension string, 
 		s.ensureFolderExists(extensionFolder)
 	}
 	return path.Join(extensionFolder, bundleKey+".json")
+}
+
+// Builds a unique file name from the given params. If mkdir is true, folders in the path will be created if necessary.
+func (s Store) buildFilePathFromRoleAssignmentArgs(accountUUID string, mkdir bool) string {
+	roleAssignmentsFolder := path.Join(s.mountPath, folderNameRoleAssignments)
+	if mkdir {
+		s.ensureFolderExists(roleAssignmentsFolder)
+	}
+	return path.Join(roleAssignmentsFolder, accountUUID+".json")
 }
 
 // Checks if the given path is an existing folder and creates one if not existing

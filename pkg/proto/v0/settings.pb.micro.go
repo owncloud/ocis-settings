@@ -6,6 +6,7 @@ package proto
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	empty "github.com/golang/protobuf/ptypes/empty"
 	_ "github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	math "math"
@@ -305,4 +306,140 @@ func (h *valueServiceHandler) GetSettingsValue(ctx context.Context, in *GetSetti
 
 func (h *valueServiceHandler) ListSettingsValues(ctx context.Context, in *ListSettingsValuesRequest, out *ListSettingsValuesResponse) error {
 	return h.ValueServiceHandler.ListSettingsValues(ctx, in, out)
+}
+
+// Api Endpoints for RoleService service
+
+func NewRoleServiceEndpoints() []*api.Endpoint {
+	return []*api.Endpoint{
+		&api.Endpoint{
+			Name:    "RoleService.ListRoleAssignments",
+			Path:    []string{"/api/v0/settings/roles-list"},
+			Method:  []string{"POST"},
+			Body:    "*",
+			Handler: "rpc",
+		},
+		&api.Endpoint{
+			Name:    "RoleService.AssignRoleToUser",
+			Path:    []string{"/api/v0/settings/roles-assign"},
+			Method:  []string{"POST"},
+			Body:    "*",
+			Handler: "rpc",
+		},
+		&api.Endpoint{
+			Name:    "RoleService.RemoveRoleFromUser",
+			Path:    []string{"/api/v0/settings/roles-remove"},
+			Method:  []string{"POST"},
+			Body:    "*",
+			Handler: "rpc",
+		},
+	}
+}
+
+// Client API for RoleService service
+
+type RoleService interface {
+	ListRoleAssignments(ctx context.Context, in *ListRoleAssignmentsRequest, opts ...client.CallOption) (*UserRoleAssignments, error)
+	AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, opts ...client.CallOption) (*empty.Empty, error)
+	RemoveRoleFromUser(ctx context.Context, in *RemoveRoleFromUserRequest, opts ...client.CallOption) (*empty.Empty, error)
+}
+
+type roleService struct {
+	c    client.Client
+	name string
+}
+
+func NewRoleService(name string, c client.Client) RoleService {
+	return &roleService{
+		c:    c,
+		name: name,
+	}
+}
+
+func (c *roleService) ListRoleAssignments(ctx context.Context, in *ListRoleAssignmentsRequest, opts ...client.CallOption) (*UserRoleAssignments, error) {
+	req := c.c.NewRequest(c.name, "RoleService.ListRoleAssignments", in)
+	out := new(UserRoleAssignments)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleService) AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, opts ...client.CallOption) (*empty.Empty, error) {
+	req := c.c.NewRequest(c.name, "RoleService.AssignRoleToUser", in)
+	out := new(empty.Empty)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleService) RemoveRoleFromUser(ctx context.Context, in *RemoveRoleFromUserRequest, opts ...client.CallOption) (*empty.Empty, error) {
+	req := c.c.NewRequest(c.name, "RoleService.RemoveRoleFromUser", in)
+	out := new(empty.Empty)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for RoleService service
+
+type RoleServiceHandler interface {
+	ListRoleAssignments(context.Context, *ListRoleAssignmentsRequest, *UserRoleAssignments) error
+	AssignRoleToUser(context.Context, *AssignRoleToUserRequest, *empty.Empty) error
+	RemoveRoleFromUser(context.Context, *RemoveRoleFromUserRequest, *empty.Empty) error
+}
+
+func RegisterRoleServiceHandler(s server.Server, hdlr RoleServiceHandler, opts ...server.HandlerOption) error {
+	type roleService interface {
+		ListRoleAssignments(ctx context.Context, in *ListRoleAssignmentsRequest, out *UserRoleAssignments) error
+		AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, out *empty.Empty) error
+		RemoveRoleFromUser(ctx context.Context, in *RemoveRoleFromUserRequest, out *empty.Empty) error
+	}
+	type RoleService struct {
+		roleService
+	}
+	h := &roleServiceHandler{hdlr}
+	opts = append(opts, api.WithEndpoint(&api.Endpoint{
+		Name:    "RoleService.ListRoleAssignments",
+		Path:    []string{"/api/v0/settings/roles-list"},
+		Method:  []string{"POST"},
+		Body:    "*",
+		Handler: "rpc",
+	}))
+	opts = append(opts, api.WithEndpoint(&api.Endpoint{
+		Name:    "RoleService.AssignRoleToUser",
+		Path:    []string{"/api/v0/settings/roles-assign"},
+		Method:  []string{"POST"},
+		Body:    "*",
+		Handler: "rpc",
+	}))
+	opts = append(opts, api.WithEndpoint(&api.Endpoint{
+		Name:    "RoleService.RemoveRoleFromUser",
+		Path:    []string{"/api/v0/settings/roles-remove"},
+		Method:  []string{"POST"},
+		Body:    "*",
+		Handler: "rpc",
+	}))
+	return s.Handle(s.NewHandler(&RoleService{h}, opts...))
+}
+
+type roleServiceHandler struct {
+	RoleServiceHandler
+}
+
+func (h *roleServiceHandler) ListRoleAssignments(ctx context.Context, in *ListRoleAssignmentsRequest, out *UserRoleAssignments) error {
+	return h.RoleServiceHandler.ListRoleAssignments(ctx, in, out)
+}
+
+func (h *roleServiceHandler) AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, out *empty.Empty) error {
+	return h.RoleServiceHandler.AssignRoleToUser(ctx, in, out)
+}
+
+func (h *roleServiceHandler) RemoveRoleFromUser(ctx context.Context, in *RemoveRoleFromUserRequest, out *empty.Empty) error {
+	return h.RoleServiceHandler.RemoveRoleFromUser(ctx, in, out)
 }

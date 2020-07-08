@@ -101,7 +101,8 @@ func (s Store) ListValues(identifier *proto.Identifier) ([]*proto.SettingsValue,
 	return values, nil
 }
 
-// Reads SettingsValues as map from the given file or returns an empty map if the file doesn't exist.
+// readValuesMapFromFile reads SettingsValues as map from the given file or returns an
+// empty map if the file doesn't exist.
 func (s Store) readValuesMapFromFile(filePath string) (*proto.SettingsValues, error) {
 	//s.Mutex.Lock()
 	//	defer s.Mutex.Unlock()
