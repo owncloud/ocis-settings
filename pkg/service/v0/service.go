@@ -122,7 +122,7 @@ func (g Service) ListSettingsValues(c context.Context, req *proto.ListSettingsVa
 	return nil
 }
 
-// ListUserRoles implements the RoleServiceHandler interface
+// ListRoleAssignments implements the RoleServiceHandler interface
 func (g Service) ListRoleAssignments(c context.Context, req *proto.ListRoleAssignmentsRequest, res *proto.UserRoleAssignments) error {
 	req.Assignment = getFailsafeRoleAssignment(c, req.Assignment)
 	// TODO: validation. At least the accountUuid is required, rest is optional (but must comply if present).
