@@ -72,7 +72,6 @@ func (s Store) ensureFolderExists(path string) {
 func getResourceFolderName(resource *proto.Resource) string {
 	if resource != nil {
 		return filepath.Join(strings.ToLower(proto.ResourceType_name[int32(resource.Type)]) + "-" + resource.Id)
-	} else {
-		return virtualSystemFolder
 	}
+	return virtualSystemFolder
 }
