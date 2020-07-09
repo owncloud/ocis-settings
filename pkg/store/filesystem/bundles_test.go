@@ -5,6 +5,7 @@ import (
 
 	olog "github.com/owncloud/ocis-pkg/v2/log"
 	"github.com/owncloud/ocis-settings/pkg/proto/v0"
+	"github.com/stretchr/testify/assert"
 )
 
 var scenarios = []struct {
@@ -129,7 +130,7 @@ var scenarios = []struct {
 	},
 }
 
-func TestWriteRecordToFile(t *testing.T) {
+func TestWriteSettingsBundleToFile(t *testing.T) {
 	s := Store{
 		dataPath: "/var/tmp/herecomesthesun",
 		Logger: olog.NewLogger(
@@ -146,6 +147,7 @@ func TestWriteRecordToFile(t *testing.T) {
 			if err := s.writeRecordToFile(scenarios[index].in.record, filePath); err != nil {
 				t.Error(err)
 			}
+			assert.FileExists(t, filePath)
 		})
 	}
 }

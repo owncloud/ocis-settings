@@ -20,7 +20,7 @@ require (
 	github.com/owncloud/ocis-pkg/v2 v2.2.2-0.20200527082518-5641fa4a4c8c
 	github.com/restic/calens v0.2.0
 	github.com/spf13/viper v1.6.3
-	github.com/stretchr/testify v1.6.0 // indirect
+	github.com/stretchr/testify v1.6.0
 	go.opencensus.io v0.22.3
 	golang.org/x/lint v0.0.0-20191125180803-fdd1cda4f05f
 	golang.org/x/mod v0.3.0 // indirect
