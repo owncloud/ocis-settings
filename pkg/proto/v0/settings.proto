@@ -105,6 +105,7 @@ message SaveSettingsBundleResponse {
 
 message GetSettingsBundleRequest {
   Identifier identifier = 1;
+  Resource resource = 2;// if resource is nil, then the system wide settings bundle is to be fetched
 }
 
 message GetSettingsBundleResponse {
@@ -113,6 +114,7 @@ message GetSettingsBundleResponse {
 
 message ListSettingsBundlesRequest {
   Identifier identifier = 1;
+  Resource resource = 2;// if resource is nil, then the system wide settings bundle is to be fetched
 }
 
 message ListSettingsBundlesResponse {
@@ -130,6 +132,7 @@ message SaveSettingsValueResponse {
 
 message GetSettingsValueRequest {
   Identifier identifier = 1;
+  Resource resource = 2;// if resource is nil, then the default settings value is to be fetched (either user-specific or system wide)
 }
 
 message GetSettingsValueResponse {
@@ -138,6 +141,7 @@ message GetSettingsValueResponse {
 
 message ListSettingsValuesRequest {
   Identifier identifier = 1;
+  Resource resource = 2;// if resource is nil, then the default settings values are to be fetched (either user-specific or system wide)
 }
 
 message ListSettingsValuesResponse {
@@ -160,8 +164,7 @@ message RemoveRoleFromUserRequest {
 message RoleAssignmentIdentifier {
   string account_uuid = 1;
   string role = 2;
-  ResourceType resourceType = 3;
-  string resourceValue = 4;
+  Resource resource = 3;// if resource is nil, then the system side role assignment is to be fetched
 }
 
 // generic payloads
@@ -174,17 +177,16 @@ message Identifier {
 
 enum ResourceType {
   UNKNOWN = 0;
-  SYSTEM = 1;
-  FILE = 2;
-  SHARE = 3;
-  SETTING = 4;
-  USER = 5;
-  GROUP = 6;
+  FILE = 1;
+  SHARE = 2;
+  SETTING = 3;
+  USER = 4;
+  GROUP = 5;
 }
 
 message Resource {
   ResourceType type = 1;
-  repeated string values = 2;// think about "all", "me", etc. other than that: list of ids (file ids, share ids, etc).
+  string id = 2;// think about virtual ids like "me"
 }
 
 // payloads for settings bundles
@@ -192,6 +194,7 @@ message SettingsBundle {
   Identifier identifier = 1;
   string display_name = 2;
   repeated Setting settings = 3;
+  // if resource is nil, then the settings bundle is system wide
   Resource resource = 4;
 }
 
@@ -207,6 +210,7 @@ message Setting {
     MultiChoiceListSetting multi_choice_value = 8;
     PermissionSetting permission_value = 9;
   }
+  // if resource is nil, then the setting is system wide
   Resource resource = 10;
 }
 
@@ -271,11 +275,13 @@ message Constraint {
 // payloads for settings values
 message SettingsValue {
   Identifier identifier = 1;
+  // if resource is nil, then the value is system wide
+  Resource resource = 2;
   oneof value {
-    bool bool_value = 2;
-    int64 int_value = 3;
-    string string_value = 4;
-    ListValue list_value = 5;
+    bool bool_value = 3;
+    int64 int_value = 4;
+    string string_value = 5;
+    ListValue list_value = 6;
   }
 }
 

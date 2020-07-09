@@ -31,7 +31,7 @@ func (s Store) WriteRoleAssignment(assignment *proto.RoleAssignmentIdentifier) e
 
 	// check if role assignment exists
 	for _, a := range assignments.Assignments {
-		if equalAssignments(assignment, a) {
+		if assignment.String() == a.String() {
 			return nil
 		}
 	}
@@ -52,7 +52,7 @@ func (s Store) DeleteRoleAssignment(assignment *proto.RoleAssignmentIdentifier) 
 
 	// delete role assignment if it exists
 	for index, a := range assignments.Assignments {
-		if equalAssignments(assignment, a) {
+		if assignment.String() == a.String() {
 			assignments.Assignments = append(assignments.Assignments[:index], assignments.Assignments[index+1:]...)
 			filePath := s.buildFilePathFromRoleAssignmentArgs(assignment.AccountUuid, true)
 			err = s.writeRecordToFile(assignments, filePath)
@@ -60,12 +60,4 @@ func (s Store) DeleteRoleAssignment(assignment *proto.RoleAssignmentIdentifier) 
 		}
 	}
 	return nil
-}
-
-// equalAssignments checks if the two given role assignments have the same properties.
-func equalAssignments(a1, a2 *proto.RoleAssignmentIdentifier) bool {
-	return a1.AccountUuid == a2.AccountUuid &&
-		a1.Role == a2.Role &&
-		a1.ResourceType == a2.ResourceType &&
-		a1.ResourceValue == a2.ResourceValue
 }

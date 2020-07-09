@@ -3,35 +3,37 @@ package store
 import (
 	"os"
 	"path"
+	"strings"
 
 	"github.com/owncloud/ocis-settings/pkg/proto/v0"
 )
 
+const virtualSystemFolder = "system"
 const folderNameBundles = "bundles"
 const folderNameValues = "values"
 const folderNameRoleAssignments = "role-assignments"
 
 // Builds the folder path for storing settings bundles. If mkdir is true, folders in the path will be created if necessary.
-func (s Store) buildFolderPathBundles(mkdir bool) string {
+func (s Store) buildFolderPathBundles(resource *proto.Resource, mkdir bool) string {
 	folderPath := path.Join(s.dataPath, folderNameBundles)
+	if resource != nil {
+		folderPath = path.Join(folderPath, strings.ToLower(proto.ResourceType_name[int32(resource.Type)]) + "-" + resource.Id)
+	} else {
+		folderPath = path.Join(folderPath, virtualSystemFolder)
+	}
 	if mkdir {
 		s.ensureFolderExists(folderPath)
 	}
 	return folderPath
 }
 
-// Builds a unique file name from the given settings bundle. If mkdir is true, folders in the path will be created if necessary.
-func (s Store) buildFilePathFromBundle(bundle *proto.SettingsBundle, mkdir bool) string {
-	return s.buildFilePathFromBundleArgs(bundle.Identifier.Extension, bundle.Identifier.Bundle, mkdir)
-}
-
 // Builds a unique file name from the given params. If mkdir is true, folders in the path will be created if necessary.
-func (s Store) buildFilePathFromBundleArgs(extension string, bundleKey string, mkdir bool) string {
-	extensionFolder := path.Join(s.dataPath, folderNameBundles, extension)
+func (s Store) buildFilePathForBundle(identifier *proto.Identifier, resource *proto.Resource, mkdir bool) string {
+	extensionFolder := path.Join(s.buildFolderPathBundles(resource, mkdir), identifier.Extension)
 	if mkdir {
 		s.ensureFolderExists(extensionFolder)
 	}
-	return path.Join(extensionFolder, bundleKey+".json")
+	return path.Join(extensionFolder, identifier.Bundle+".json")
 }
 
 // Builds a unique file name from the given settings value. If mkdir is true, folders in the path will be created if necessary.

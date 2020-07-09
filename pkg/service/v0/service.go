@@ -38,6 +38,8 @@ func NewService(cfg *config.Config, logger log.Logger) Service {
 	return service
 }
 
+// TODO: check permissions on every request
+
 // SaveSettingsBundle implements the BundleServiceHandler interface
 func (g Service) SaveSettingsBundle(c context.Context, req *proto.SaveSettingsBundleRequest, res *proto.SaveSettingsBundleResponse) error {
 	req.SettingsBundle.Identifier = getFailsafeIdentifier(c, req.SettingsBundle.Identifier)
@@ -58,7 +60,7 @@ func (g Service) GetSettingsBundle(c context.Context, req *proto.GetSettingsBund
 	if validationError := validateGetSettingsBundle(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ReadBundle(req.Identifier)
+	r, err := g.manager.ReadBundle(req.Identifier, req.Resource)
 	if err != nil {
 		return err
 	}
@@ -72,7 +74,7 @@ func (g Service) ListSettingsBundles(c context.Context, req *proto.ListSettingsB
 	if validationError := validateListSettingsBundles(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ListBundles(req.Identifier)
+	r, err := g.manager.ListBundles(req.Identifier, req.Resource)
 	if err != nil {
 		return err
 	}
@@ -100,7 +102,7 @@ func (g Service) GetSettingsValue(c context.Context, req *proto.GetSettingsValue
 	if validationError := validateGetSettingsValue(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ReadValue(req.Identifier)
+	r, err := g.manager.ReadValue(req.Identifier, req.Resource)
 	if err != nil {
 		return err
 	}
@@ -114,7 +116,7 @@ func (g Service) ListSettingsValues(c context.Context, req *proto.ListSettingsVa
 	if validationError := validateListSettingsValues(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ListValues(req.Identifier)
+	r, err := g.manager.ListValues(req.Identifier, req.Resource)
 	if err != nil {
 		return err
 	}

@@ -13,7 +13,7 @@ import (
 
 // ReadValue tries to find a value by the given identifier attributes within the dataPath
 // All identifier fields are required.
-func (s Store) ReadValue(identifier *proto.Identifier) (*proto.SettingsValue, error) {
+func (s Store) ReadValue(identifier *proto.Identifier, resource *proto.Resource) (*proto.SettingsValue, error) {
 	//s.Mutex.Lock()
 	//	defer s.Mutex.Unlock()
 	filePath := s.buildFilePathFromValueArgs(identifier.AccountUuid, identifier.Extension, identifier.Bundle, false)
@@ -48,7 +48,7 @@ func (s Store) WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, err
 
 // ListValues reads all values within the scope of the given identifier
 // AccountUuid is required.
-func (s Store) ListValues(identifier *proto.Identifier) ([]*proto.SettingsValue, error) {
+func (s Store) ListValues(identifier *proto.Identifier, resource *proto.Resource) ([]*proto.SettingsValue, error) {
 	//s.Mutex.Lock()
 	//	defer s.Mutex.Unlock()
 	accountFolderPath := path.Join(s.dataPath, folderNameValues, identifier.AccountUuid)

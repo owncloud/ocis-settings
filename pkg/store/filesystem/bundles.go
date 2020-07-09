@@ -12,10 +12,10 @@ import (
 var m *sync.RWMutex = &sync.RWMutex{}
 
 // ListBundles returns all bundles in the dataPath folder belonging to the given extension
-func (s Store) ListBundles(identifier *proto.Identifier) ([]*proto.SettingsBundle, error) {
+func (s Store) ListBundles(identifier *proto.Identifier, resource *proto.Resource) ([]*proto.SettingsBundle, error) {
 	m.RLock()
 	var records []*proto.SettingsBundle
-	bundlesFolder := s.buildFolderPathBundles(false)
+	bundlesFolder := s.buildFolderPathBundles(resource, false)
 	extensionFolders, err := ioutil.ReadDir(bundlesFolder)
 	if err != nil {
 		return records, nil
@@ -54,9 +54,9 @@ func (s Store) ListBundles(identifier *proto.Identifier) ([]*proto.SettingsBundl
 
 // ReadBundle tries to find a bundle by the given identifier within the dataPath.
 // Extension and BundleKey within the identifier are required.
-func (s Store) ReadBundle(identifier *proto.Identifier) (*proto.SettingsBundle, error) {
+func (s Store) ReadBundle(identifier *proto.Identifier, resource *proto.Resource) (*proto.SettingsBundle, error) {
 	m.RLock()
-	filePath := s.buildFilePathFromBundleArgs(identifier.Extension, identifier.Bundle, false)
+	filePath := s.buildFilePathForBundle(identifier, resource, false)
 	record := proto.SettingsBundle{}
 	if err := s.parseRecordFromFile(&record, filePath); err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ func (s Store) ReadBundle(identifier *proto.Identifier) (*proto.SettingsBundle, 
 // Extension and BundleKey within the record identifier are required.
 func (s Store) WriteBundle(record *proto.SettingsBundle) (*proto.SettingsBundle, error) {
 	m.Lock()
-	filePath := s.buildFilePathFromBundle(record, true)
+	filePath := s.buildFilePathForBundle(record.Identifier, record.Resource, true)
 	if err := s.writeRecordToFile(record, filePath); err != nil {
 		return nil, err
 	}

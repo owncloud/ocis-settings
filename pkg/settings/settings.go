@@ -22,21 +22,21 @@ type Manager interface {
 
 // BundleManager is a bundle service interface for abstraction of storage implementations
 type BundleManager interface {
-	ReadBundle(identifier *proto.Identifier) (*proto.SettingsBundle, error)
+	ReadBundle(identifier *proto.Identifier, resource *proto.Resource) (*proto.SettingsBundle, error)
 	WriteBundle(bundle *proto.SettingsBundle) (*proto.SettingsBundle, error)
-	ListBundles(identifier *proto.Identifier) ([]*proto.SettingsBundle, error)
+	ListBundles(identifier *proto.Identifier, resource *proto.Resource) ([]*proto.SettingsBundle, error)
 }
 
 // ValueManager is a value service interface for abstraction of storage implementations
 type ValueManager interface {
-	ReadValue(identifier *proto.Identifier) (*proto.SettingsValue, error)
+	ReadValue(identifier *proto.Identifier, resource *proto.Resource) (*proto.SettingsValue, error)
 	WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, error)
-	ListValues(identifier *proto.Identifier) ([]*proto.SettingsValue, error)
+	ListValues(identifier *proto.Identifier, resource *proto.Resource) ([]*proto.SettingsValue, error)
 }
 
 // RoleAssignmentManager is a role assignment service interface for abstraction of storage implementations
 type RoleAssignmentManager interface {
-	ListRoleAssignments(identifier *proto.RoleAssignmentIdentifier) (*proto.UserRoleAssignments, error)
-	WriteRoleAssignment(identifier *proto.RoleAssignmentIdentifier) error
-	DeleteRoleAssignment(identifier *proto.RoleAssignmentIdentifier) error
+	ListRoleAssignments(assignment *proto.RoleAssignmentIdentifier) (*proto.UserRoleAssignments, error)
+	WriteRoleAssignment(assignment *proto.RoleAssignmentIdentifier) error
+	DeleteRoleAssignment(assignment *proto.RoleAssignmentIdentifier) error
 }
