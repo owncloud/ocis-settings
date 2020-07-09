@@ -3,7 +3,6 @@ package store
 
 import (
 	"os"
-	"path"
 	"path/filepath"
 
 	"github.com/owncloud/ocis-settings/pkg/proto/v0"
@@ -14,8 +13,6 @@ import (
 // ReadValue tries to find a value by the given identifier attributes within the dataPath
 // All identifier fields are required.
 func (s Store) ReadValue(identifier *proto.Identifier, resource *proto.Resource) (*proto.SettingsValue, error) {
-	//s.Mutex.Lock()
-	//	defer s.Mutex.Unlock()
 	filePath := s.buildFilePathFromValueArgs(identifier.AccountUuid, identifier.Extension, identifier.Bundle, false)
 	values, err := s.readValuesMapFromFile(filePath)
 	if err != nil {
@@ -31,8 +28,6 @@ func (s Store) ReadValue(identifier *proto.Identifier, resource *proto.Resource)
 // WriteValue writes the given SettingsValue into a file within the dataPath
 // All identifier fields within the value are required.
 func (s Store) WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, error) {
-	//s.Mutex.Lock()
-	//	defer s.Mutex.Unlock()
 	s.Logger.Debug().Str("value", value.String()).Msg("writing value")
 	filePath := s.buildFilePathFromValue(value, true)
 	values, err := s.readValuesMapFromFile(filePath)
@@ -49,9 +44,7 @@ func (s Store) WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, err
 // ListValues reads all values within the scope of the given identifier
 // AccountUuid is required.
 func (s Store) ListValues(identifier *proto.Identifier, resource *proto.Resource) ([]*proto.SettingsValue, error) {
-	//s.Mutex.Lock()
-	//	defer s.Mutex.Unlock()
-	accountFolderPath := path.Join(s.dataPath, folderNameValues, identifier.AccountUuid)
+	accountFolderPath := filepath.Join(s.dataPath, folderNameValues, identifier.AccountUuid)
 	var values []*proto.SettingsValue
 	if _, err := os.Stat(accountFolderPath); err != nil {
 		return values, nil
@@ -71,7 +64,7 @@ func (s Store) ListValues(identifier *proto.Identifier, resource *proto.Resource
 			return values, nil
 		}
 	} else if len(identifier.Bundle) < 1 {
-		extensionPath := path.Join(accountFolderPath, identifier.Extension)
+		extensionPath := filepath.Join(accountFolderPath, identifier.Extension)
 		if err := filepath.Walk(extensionPath, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
@@ -83,7 +76,7 @@ func (s Store) ListValues(identifier *proto.Identifier, resource *proto.Resource
 			return values, nil
 		}
 	} else {
-		bundlePath := path.Join(accountFolderPath, identifier.Extension, identifier.Bundle+".json")
+		bundlePath := filepath.Join(accountFolderPath, identifier.Extension, identifier.Bundle+".json")
 		valueFilePaths = append(valueFilePaths, bundlePath)
 	}
 
@@ -104,8 +97,6 @@ func (s Store) ListValues(identifier *proto.Identifier, resource *proto.Resource
 // readValuesMapFromFile reads SettingsValues as map from the given file or returns an
 // empty map if the file doesn't exist.
 func (s Store) readValuesMapFromFile(filePath string) (*proto.SettingsValues, error) {
-	//s.Mutex.Lock()
-	//	defer s.Mutex.Unlock()
 	values := &proto.SettingsValues{}
 	err := s.parseRecordFromFile(values, filePath)
 	if err != nil {

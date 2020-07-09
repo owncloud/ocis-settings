@@ -3,7 +3,7 @@ package store
 
 import (
 	"io/ioutil"
-	"path"
+	"path/filepath"
 	"sync"
 
 	"github.com/owncloud/ocis-settings/pkg/proto/v0"
@@ -27,12 +27,12 @@ func (s Store) ListBundles(identifier *proto.Identifier, resource *proto.Resourc
 		s.Logger.Info().Msgf("listing bundles by extension %v", identifier.Extension)
 	}
 	for _, extensionFolder := range extensionFolders {
-		extensionPath := path.Join(bundlesFolder, extensionFolder.Name())
+		extensionPath := filepath.Join(bundlesFolder, extensionFolder.Name())
 		bundleFiles, err := ioutil.ReadDir(extensionPath)
 		if err == nil {
 			for _, bundleFile := range bundleFiles {
 				record := proto.SettingsBundle{}
-				bundlePath := path.Join(extensionPath, bundleFile.Name())
+				bundlePath := filepath.Join(extensionPath, bundleFile.Name())
 				err = s.parseRecordFromFile(&record, bundlePath)
 				if err != nil {
 					s.Logger.Warn().Msgf("error reading %v", bundlePath)
