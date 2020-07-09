@@ -13,7 +13,7 @@ import (
 // ReadValue tries to find a value by the given identifier attributes within the dataPath
 // All identifier fields are required.
 func (s Store) ReadValue(identifier *proto.Identifier, resource *proto.Resource) (*proto.SettingsValue, error) {
-	filePath := s.buildFilePathFromValueArgs(identifier.AccountUuid, identifier.Extension, identifier.Bundle, false)
+	filePath := s.buildFilePathForValue(identifier, resource, false)
 	values, err := s.readValuesMapFromFile(filePath)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func (s Store) ReadValue(identifier *proto.Identifier, resource *proto.Resource)
 // All identifier fields within the value are required.
 func (s Store) WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, error) {
 	s.Logger.Debug().Str("value", value.String()).Msg("writing value")
-	filePath := s.buildFilePathFromValue(value, true)
+	filePath := s.buildFilePathForValue(value.Identifier, value.Resource, true)
 	values, err := s.readValuesMapFromFile(filePath)
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func (s Store) WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, err
 // ListValues reads all values within the scope of the given identifier
 // AccountUuid is required.
 func (s Store) ListValues(identifier *proto.Identifier, resource *proto.Resource) ([]*proto.SettingsValue, error) {
-	accountFolderPath := filepath.Join(s.dataPath, folderNameValues, identifier.AccountUuid)
+	accountFolderPath := s.buildFolderPathForValues(identifier, resource, false)
 	var values []*proto.SettingsValue
 	if _, err := os.Stat(accountFolderPath); err != nil {
 		return values, nil

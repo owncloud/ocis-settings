@@ -40,18 +40,13 @@ func (s Store) buildFolderPathForValues(identifier *proto.Identifier, resource *
 	return folderPath
 }
 
-// buildFilePathFromValue builds a unique file name from the given settings value. If mkdir is true, folders in the path will be created if necessary.
-func (s Store) buildFilePathFromValue(value *proto.SettingsValue, mkdir bool) string {
-	return s.buildFilePathFromValueArgs(value.Identifier.AccountUuid, value.Identifier.Extension, value.Identifier.Bundle, mkdir)
-}
-
-// buildFilePathFromValueArgs builds a unique file name from the given params. If mkdir is true, folders in the path will be created if necessary.
-func (s Store) buildFilePathFromValueArgs(accountUUID string, extension string, bundleKey string, mkdir bool) string {
-	extensionFolder := filepath.Join(s.dataPath, folderNameValues, accountUUID, extension)
+// buildFilePathForValue builds a unique file name from the given params. If mkdir is true, folders in the path will be created if necessary.
+func (s Store) buildFilePathForValue(identifier *proto.Identifier, resource *proto.Resource, mkdir bool) string {
+	extensionFolder := filepath.Join(s.buildFolderPathForValues(identifier, resource, mkdir), identifier.Extension)
 	if mkdir {
 		s.ensureFolderExists(extensionFolder)
 	}
-	return filepath.Join(extensionFolder, bundleKey+".json")
+	return filepath.Join(extensionFolder, identifier.Bundle+".json")
 }
 
 // buildFilePathFromRoleAssignmentArgs builds a unique file name from the given params. If mkdir is true, folders in the path will be created if necessary.
