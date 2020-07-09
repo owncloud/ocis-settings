@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var scenarios = []struct {
+var bundleScenarios = []struct {
 	name string
 	in   struct {
 		record   *proto.SettingsBundle
@@ -25,10 +25,8 @@ var scenarios = []struct {
 			record: &proto.SettingsBundle{
 				DisplayName: "test1",
 				Identifier: &proto.Identifier{
-					AccountUuid: "c4572da7-6142-4383-8fc6-efde3d463036",
-					Bundle:      "test-bundle-1",
-					Extension:   "test-extension-1",
-					Setting:     "test-settings",
+					Bundle:      bundle1,
+					Extension:   extension1,
 				},
 				Resource: &proto.Resource{
 					Type: proto.ResourceType_FILE,
@@ -65,10 +63,8 @@ var scenarios = []struct {
 			record: &proto.SettingsBundle{
 				DisplayName: "test1",
 				Identifier: &proto.Identifier{
-					AccountUuid: "c4572da7-6142-4383-8fc6-efde3d463034",
-					Bundle:      "test-bundle-2",
-					Extension:   "test-extension-2",
-					Setting:     "test-settings",
+					Bundle:      bundle2,
+					Extension:   extension2,
 				},
 				Resource: &proto.Resource{
 					Type: proto.ResourceType_FILE,
@@ -105,10 +101,8 @@ var scenarios = []struct {
 			record: &proto.SettingsBundle{
 				DisplayName: "test1",
 				Identifier: &proto.Identifier{
-					AccountUuid: "c4572da7-6142-4383-8fc6-efde3d463038",
-					Bundle:      "test-global-bundle",
-					Extension:   "test-extension-1",
-					Setting:     "test-settings",
+					Bundle:      bundle1,
+					Extension:   extension1,
 				},
 				Settings: []*proto.Setting{
 					{
@@ -139,12 +133,12 @@ func TestWriteSettingsBundleToFile(t *testing.T) {
 			olog.Level("info"),
 		),
 	}
-	for i := range scenarios {
+	for i := range bundleScenarios {
 		index := i
-		t.Run(scenarios[index].name, func(t *testing.T) {
+		t.Run(bundleScenarios[index].name, func(t *testing.T) {
 			t.Parallel()
-			filePath := s.buildFilePathForBundle(scenarios[index].in.record.Identifier, scenarios[index].in.record.Resource, true)
-			if err := s.writeRecordToFile(scenarios[index].in.record, filePath); err != nil {
+			filePath := s.buildFilePathForBundle(bundleScenarios[index].in.record.Identifier, bundleScenarios[index].in.record.Resource, true)
+			if err := s.writeRecordToFile(bundleScenarios[index].in.record, filePath); err != nil {
 				t.Error(err)
 			}
 			assert.FileExists(t, filePath)
