@@ -13,7 +13,7 @@ const folderNameRoleAssignments = "role-assignments"
 
 // Builds the folder path for storing settings bundles. If mkdir is true, folders in the path will be created if necessary.
 func (s Store) buildFolderPathBundles(mkdir bool) string {
-	folderPath := path.Join(s.mountPath, folderNameBundles)
+	folderPath := path.Join(s.dataPath, folderNameBundles)
 	if mkdir {
 		s.ensureFolderExists(folderPath)
 	}
@@ -27,7 +27,7 @@ func (s Store) buildFilePathFromBundle(bundle *proto.SettingsBundle, mkdir bool)
 
 // Builds a unique file name from the given params. If mkdir is true, folders in the path will be created if necessary.
 func (s Store) buildFilePathFromBundleArgs(extension string, bundleKey string, mkdir bool) string {
-	extensionFolder := path.Join(s.mountPath, folderNameBundles, extension)
+	extensionFolder := path.Join(s.dataPath, folderNameBundles, extension)
 	if mkdir {
 		s.ensureFolderExists(extensionFolder)
 	}
@@ -41,7 +41,7 @@ func (s Store) buildFilePathFromValue(value *proto.SettingsValue, mkdir bool) st
 
 // Builds a unique file name from the given params. If mkdir is true, folders in the path will be created if necessary.
 func (s Store) buildFilePathFromValueArgs(accountUUID string, extension string, bundleKey string, mkdir bool) string {
-	extensionFolder := path.Join(s.mountPath, folderNameValues, accountUUID, extension)
+	extensionFolder := path.Join(s.dataPath, folderNameValues, accountUUID, extension)
 	if mkdir {
 		s.ensureFolderExists(extensionFolder)
 	}
@@ -50,7 +50,7 @@ func (s Store) buildFilePathFromValueArgs(accountUUID string, extension string, 
 
 // Builds a unique file name from the given params. If mkdir is true, folders in the path will be created if necessary.
 func (s Store) buildFilePathFromRoleAssignmentArgs(accountUUID string, mkdir bool) string {
-	roleAssignmentsFolder := path.Join(s.mountPath, folderNameRoleAssignments)
+	roleAssignmentsFolder := path.Join(s.dataPath, folderNameRoleAssignments)
 	if mkdir {
 		s.ensureFolderExists(roleAssignmentsFolder)
 	}

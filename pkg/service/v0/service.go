@@ -138,22 +138,14 @@ func (g Service) ListRoleAssignments(c context.Context, req *proto.ListRoleAssig
 func (g Service) AssignRoleToUser(c context.Context, req *proto.AssignRoleToUserRequest, _ *empty.Empty) error {
 	req.Assignment = getFailsafeRoleAssignment(c, req.Assignment)
 	// TODO: validation. If a role is not associated with a resource, it has to be set to SYSTEM.
-	err := g.manager.WriteRoleAssignment(req.Assignment)
-	if err != nil {
-		return err
-	}
-	return nil
+	return g.manager.WriteRoleAssignment(req.Assignment)
 }
 
 // RemoveRoleFromUser implements the RoleServiceHandler interface
 func (g Service) RemoveRoleFromUser(c context.Context, req *proto.RemoveRoleFromUserRequest, _ *empty.Empty) error {
 	req.Assignment = getFailsafeRoleAssignment(c, req.Assignment)
 	// TODO: validation. If a role is not associated with a resource, it has to be set to SYSTEM.
-	err := g.manager.DeleteRoleAssignment(req.Assignment)
-	if err != nil {
-		return err
-	}
-	return nil
+	return g.manager.DeleteRoleAssignment(req.Assignment)
 }
 
 // getFailsafeIdentifier makes sure that there is an identifier, and that the account uuid is injected if needed.

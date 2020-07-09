@@ -11,7 +11,7 @@ import (
 	gstatus "google.golang.org/grpc/status"
 )
 
-// ReadValue tries to find a value by the given identifier attributes within the mountPath
+// ReadValue tries to find a value by the given identifier attributes within the dataPath
 // All identifier fields are required.
 func (s Store) ReadValue(identifier *proto.Identifier) (*proto.SettingsValue, error) {
 	//s.Mutex.Lock()
@@ -28,7 +28,7 @@ func (s Store) ReadValue(identifier *proto.Identifier) (*proto.SettingsValue, er
 	return nil, gstatus.Error(codes.NotFound, "SettingsValue not set")
 }
 
-// WriteValue writes the given SettingsValue into a file within the mountPath
+// WriteValue writes the given SettingsValue into a file within the dataPath
 // All identifier fields within the value are required.
 func (s Store) WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, error) {
 	//s.Mutex.Lock()
@@ -51,7 +51,7 @@ func (s Store) WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, err
 func (s Store) ListValues(identifier *proto.Identifier) ([]*proto.SettingsValue, error) {
 	//s.Mutex.Lock()
 	//	defer s.Mutex.Unlock()
-	accountFolderPath := path.Join(s.mountPath, folderNameValues, identifier.AccountUuid)
+	accountFolderPath := path.Join(s.dataPath, folderNameValues, identifier.AccountUuid)
 	var values []*proto.SettingsValue
 	if _, err := os.Stat(accountFolderPath); err != nil {
 		return values, nil

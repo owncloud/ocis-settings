@@ -11,7 +11,7 @@ import (
 
 var m *sync.RWMutex = &sync.RWMutex{}
 
-// ListBundles returns all bundles in the mountPath folder belonging to the given extension
+// ListBundles returns all bundles in the dataPath folder belonging to the given extension
 func (s Store) ListBundles(identifier *proto.Identifier) ([]*proto.SettingsBundle, error) {
 	m.RLock()
 	var records []*proto.SettingsBundle
@@ -52,7 +52,7 @@ func (s Store) ListBundles(identifier *proto.Identifier) ([]*proto.SettingsBundl
 	return records, nil
 }
 
-// ReadBundle tries to find a bundle by the given identifier within the mountPath.
+// ReadBundle tries to find a bundle by the given identifier within the dataPath.
 // Extension and BundleKey within the identifier are required.
 func (s Store) ReadBundle(identifier *proto.Identifier) (*proto.SettingsBundle, error) {
 	m.RLock()
@@ -67,7 +67,7 @@ func (s Store) ReadBundle(identifier *proto.Identifier) (*proto.SettingsBundle, 
 	return &record, nil
 }
 
-// WriteBundle writes the given record into a file within the mountPath
+// WriteBundle writes the given record into a file within the dataPath
 // Extension and BundleKey within the record identifier are required.
 func (s Store) WriteBundle(record *proto.SettingsBundle) (*proto.SettingsBundle, error) {
 	m.Lock()

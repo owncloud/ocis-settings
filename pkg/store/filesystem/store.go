@@ -17,8 +17,8 @@ var (
 
 // Store interacts with the filesystem to manage settings information
 type Store struct {
-	mountPath string
-	Logger    olog.Logger
+	dataPath string
+	Logger   olog.Logger
 }
 
 // New creates a new store
@@ -39,7 +39,7 @@ func New(cfg *config.Config) settings.Manager {
 		}
 	}
 
-	s.mountPath = cfg.Storage.DataPath
+	s.dataPath = cfg.Storage.DataPath
 	return &s
 }
 
