@@ -15,7 +15,7 @@ var m *sync.RWMutex = &sync.RWMutex{}
 func (s Store) ListBundles(identifier *proto.Identifier, resource *proto.Resource) ([]*proto.SettingsBundle, error) {
 	m.RLock()
 	var records []*proto.SettingsBundle
-	bundlesFolder := s.buildFolderPathBundles(resource, false)
+	bundlesFolder := s.buildFolderPathForBundles(resource, false)
 	extensionFolders, err := ioutil.ReadDir(bundlesFolder)
 	if err != nil {
 		return records, nil
