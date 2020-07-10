@@ -33,7 +33,11 @@ func (s Store) buildFilePathForBundle(identifier *proto.Identifier, resource *pr
 
 // buildFolderPathForValues builds a unique folder path for storing settings values. If mkdir is true, folders in the path will be created if necessary.
 func (s Store) buildFolderPathForValues(identifier *proto.Identifier, resource *proto.Resource, mkdir bool) string {
-	folderPath := filepath.Join(s.dataPath, folderNameValues, identifier.AccountUuid, getResourceFolderName(resource))
+	folderPath := filepath.Join(s.dataPath, folderNameValues)
+	if resource != nil {
+		folderPath = filepath.Join(folderPath, identifier.AccountUuid)
+	}
+	folderPath = filepath.Join(folderPath, getResourceFolderName(resource))
 	if mkdir {
 		s.ensureFolderExists(folderPath)
 	}
@@ -71,7 +75,7 @@ func (s Store) ensureFolderExists(path string) {
 // getResourceFolderName returns a proper resource folder name for the provided resource
 func getResourceFolderName(resource *proto.Resource) string {
 	if resource != nil {
-		return filepath.Join(strings.ToLower(proto.ResourceType_name[int32(resource.Type)]) + "-" + resource.Id)
+		return filepath.Join(strings.ToLower(proto.ResourceType_name[int32(resource.Type)]), resource.Id)
 	}
 	return virtualSystemFolder
 }

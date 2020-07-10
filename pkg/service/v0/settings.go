@@ -19,9 +19,6 @@ func generateSettingsBundleAdminRole() *settings.SettingsBundle {
 		},
 		DisplayName: "Admin",
 		Settings:    []*settings.Setting{},
-		Resource: &settings.Resource{
-			Type: settings.ResourceType_SYSTEM,
-		},
 	}
 }
 
@@ -33,9 +30,6 @@ func generateSettingsBundleUserRole() *settings.SettingsBundle {
 		},
 		DisplayName: "User",
 		Settings:    []*settings.Setting{},
-		Resource: &settings.Resource{
-			Type: settings.ResourceType_SYSTEM,
-		},
 	}
 }
 
@@ -47,8 +41,5 @@ func generateSettingsBundleGuestRole() *settings.SettingsBundle {
 		},
 		DisplayName: "Guest",
 		Settings:    []*settings.Setting{},
-		Resource: &settings.Resource{
-			Type: settings.ResourceType_SYSTEM,
-		},
 	}
 }
