@@ -25,12 +25,12 @@ var bundleScenarios = []struct {
 			record: &proto.SettingsBundle{
 				DisplayName: "test1",
 				Identifier: &proto.Identifier{
-					Bundle:      bundle1,
-					Extension:   extension1,
+					Bundle:    bundle1,
+					Extension: extension1,
 				},
 				Resource: &proto.Resource{
 					Type: proto.ResourceType_FILE,
-					Id: "beep",
+					Id:   "beep",
 				},
 				Settings: []*proto.Setting{
 					{
@@ -39,7 +39,7 @@ var bundleScenarios = []struct {
 						Name:        "test-name-1",
 						Resource: &proto.Resource{
 							Type: proto.ResourceType_FILE,
-							Id: "bleep",
+							Id:   "bleep",
 						},
 						Value: &proto.Setting_IntValue{
 							IntValue: &proto.IntSetting{
@@ -63,12 +63,12 @@ var bundleScenarios = []struct {
 			record: &proto.SettingsBundle{
 				DisplayName: "test1",
 				Identifier: &proto.Identifier{
-					Bundle:      bundle2,
-					Extension:   extension2,
+					Bundle:    bundle2,
+					Extension: extension2,
 				},
 				Resource: &proto.Resource{
 					Type: proto.ResourceType_FILE,
-					Id: "boop",
+					Id:   "boop",
 				},
 				Settings: []*proto.Setting{
 					{
@@ -77,7 +77,7 @@ var bundleScenarios = []struct {
 						Name:        "test-name-2",
 						Resource: &proto.Resource{
 							Type: proto.ResourceType_FILE,
-							Id: "blorg",
+							Id:   "blorg",
 						},
 						Value: &proto.Setting_IntValue{
 							IntValue: &proto.IntSetting{
@@ -101,8 +101,8 @@ var bundleScenarios = []struct {
 			record: &proto.SettingsBundle{
 				DisplayName: "test1",
 				Identifier: &proto.Identifier{
-					Bundle:      bundle1,
-					Extension:   extension1,
+					Bundle:    bundle1,
+					Extension: extension1,
 				},
 				Settings: []*proto.Setting{
 					{

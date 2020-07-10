@@ -1,7 +1,6 @@
 package svc
 
 import (
-	"fmt"
 	"regexp"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
@@ -56,7 +55,6 @@ func validateGetSettingsValue(req *proto.GetSettingsValueRequest) error {
 }
 
 func validateListSettingsValues(req *proto.ListSettingsValuesRequest) error {
-	fmt.Println(req.Identifier)
 	return validation.ValidateStruct(
 		req.Identifier,
 		validation.Field(&req.Identifier.AccountUuid, is.UUID),
@@ -68,6 +66,24 @@ func validateListSettingsValues(req *proto.ListSettingsValuesRequest) error {
 	)
 }
 
+func validateListRoleAssignments(req *proto.ListRoleAssignmentsRequest) error {
+	return validation.ValidateStruct(
+		req.Assignment,
+		validation.Field(&req.Assignment.AccountUuid, is.UUID),
+		validation.Field(&req.Assignment.Role, validation.When(req.Assignment.Role != "", validation.Match(regexForKeys))),
+		// TODO: if resource is present (it's not required), how do we validate the resource types and ids?
+	)
+}
+
+func validateAssignRoleToUser(req *proto.AssignRoleToUserRequest) error {
+	return validateRoleAssignmentIdentifier(req.Assignment)
+}
+
+func validateRemoveRoleFromUser(req *proto.RemoveRoleFromUserRequest) error {
+	return validateRoleAssignmentIdentifier(req.Assignment)
+}
+
+// validateBundleIdentifier is an internal helper for request validation.
 func validateBundleIdentifier(identifier *proto.Identifier) error {
 	return validation.ValidateStruct(
 		identifier,
@@ -76,6 +92,7 @@ func validateBundleIdentifier(identifier *proto.Identifier) error {
 	)
 }
 
+// validateValueIdentifier is an internal helper for request validation.
 func validateValueIdentifier(identifier *proto.Identifier) error {
 	return validation.ValidateStruct(
 		identifier,
@@ -83,5 +100,15 @@ func validateValueIdentifier(identifier *proto.Identifier) error {
 		validation.Field(&identifier.Bundle, keyRule...),
 		validation.Field(&identifier.Setting, settingKeyRule...),
 		validation.Field(&identifier.AccountUuid, accountUUIDRule...),
+	)
+}
+
+// validateRoleAssignmentIdentifier is an internal helper for request validation.
+func validateRoleAssignmentIdentifier(assignment *proto.RoleAssignmentIdentifier) error {
+	return validation.ValidateStruct(
+		assignment,
+		validation.Field(&assignment.AccountUuid, is.UUID),
+		validation.Field(&assignment.Role, validation.Match(regexForKeys)),
+		// TODO: if resource is present (it's not required), how do we validate the resource types and ids?
 	)
 }

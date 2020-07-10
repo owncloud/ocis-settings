@@ -127,7 +127,10 @@ func (g Service) ListSettingsValues(c context.Context, req *proto.ListSettingsVa
 // ListRoleAssignments implements the RoleServiceHandler interface
 func (g Service) ListRoleAssignments(c context.Context, req *proto.ListRoleAssignmentsRequest, res *proto.UserRoleAssignments) error {
 	req.Assignment = getFailsafeRoleAssignment(c, req.Assignment)
-	// TODO: validation. At least the accountUuid is required, rest is optional (but must comply if present).
+	// TODO: if a resource is present in the request, we need to check if the given type is valid and maybe also validate resource IDs.
+	if validationError := validateListRoleAssignments(req); validationError != nil {
+		return validationError
+	}
 	r, err := g.manager.ListRoleAssignments(req.Assignment)
 	if err != nil {
 		return err
@@ -139,14 +142,20 @@ func (g Service) ListRoleAssignments(c context.Context, req *proto.ListRoleAssig
 // AssignRoleToUser implements the RoleServiceHandler interface
 func (g Service) AssignRoleToUser(c context.Context, req *proto.AssignRoleToUserRequest, _ *empty.Empty) error {
 	req.Assignment = getFailsafeRoleAssignment(c, req.Assignment)
-	// TODO: validation. If a role is not associated with a resource, it has to be set to SYSTEM.
+	// TODO: if a resource is present in the request, we need to check if the given type is valid and maybe also validate resource IDs.
+	if validationError := validateAssignRoleToUser(req); validationError != nil {
+		return validationError
+	}
 	return g.manager.WriteRoleAssignment(req.Assignment)
 }
 
 // RemoveRoleFromUser implements the RoleServiceHandler interface
 func (g Service) RemoveRoleFromUser(c context.Context, req *proto.RemoveRoleFromUserRequest, _ *empty.Empty) error {
 	req.Assignment = getFailsafeRoleAssignment(c, req.Assignment)
-	// TODO: validation. If a role is not associated with a resource, it has to be set to SYSTEM.
+	// TODO: if a resource is present in the request, we need to check if the given type is valid and maybe also validate resource IDs.
+	if validationError := validateRemoveRoleFromUser(req); validationError != nil {
+		return validationError
+	}
 	return g.manager.DeleteRoleAssignment(req.Assignment)
 }
 
