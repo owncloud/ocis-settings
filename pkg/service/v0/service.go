@@ -82,6 +82,16 @@ func (g Service) ListSettingsBundles(c context.Context, req *proto.ListSettingsB
 	return nil
 }
 
+// AddSettingToSettingsBundle implements the BundleServiceHandler interface
+func (g Service) AddSettingToSettingsBundle(ctx context.Context, req *proto.AddSettingToSettingsBundleRequest, _ *empty.Empty) error {
+	panic("not implemented")
+}
+
+// RemoveSettingFromSettingsBundle implements the BundleServiceHandler interface
+func (g Service) RemoveSettingFromSettingsBundle(ctx context.Context, req *proto.RemoveSettingFromSettingsBundleRequest, _ *empty.Empty) error {
+	panic("not implemented")
+}
+
 // SaveSettingsValue implements the ValueServiceHandler interface
 func (g Service) SaveSettingsValue(c context.Context, req *proto.SaveSettingsValueRequest, res *proto.SaveSettingsValueResponse) error {
 	req.SettingsValue.Identifier = getFailsafeIdentifier(c, req.SettingsValue.Identifier)

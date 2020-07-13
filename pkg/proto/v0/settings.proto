@@ -50,6 +50,18 @@ service BundleService {
       body: "*"
     };
   };
+  rpc AddSettingToSettingsBundle(AddSettingToSettingsBundleRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v0/settings/bundles-add-setting",
+      body: "*"
+    };
+  }
+  rpc RemoveSettingFromSettingsBundle(RemoveSettingFromSettingsBundleRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v0/settings/bundles-remove-setting",
+      body: "*"
+    };
+  }
 }
 
 service ValueService {
@@ -119,6 +131,17 @@ message ListSettingsBundlesRequest {
 
 message ListSettingsBundlesResponse {
   repeated SettingsBundle settings_bundles = 1;
+}
+
+message AddSettingToSettingsBundleRequest {
+  Identifier identifier = 1;
+  Resource resource = 2;
+  Setting setting = 3;
+}
+
+message RemoveSettingFromSettingsBundleRequest {
+  Identifier identifier = 1;
+  Resource resource = 2;
 }
 
 // requests and responses for settings values

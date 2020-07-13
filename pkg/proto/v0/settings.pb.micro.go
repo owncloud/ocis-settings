@@ -61,6 +61,20 @@ func NewBundleServiceEndpoints() []*api.Endpoint {
 			Body:    "*",
 			Handler: "rpc",
 		},
+		&api.Endpoint{
+			Name:    "BundleService.AddSettingToSettingsBundle",
+			Path:    []string{"/api/v0/settings/bundles-add-setting"},
+			Method:  []string{"POST"},
+			Body:    "*",
+			Handler: "rpc",
+		},
+		&api.Endpoint{
+			Name:    "BundleService.RemoveSettingFromSettingsBundle",
+			Path:    []string{"/api/v0/settings/bundles-remove-setting"},
+			Method:  []string{"POST"},
+			Body:    "*",
+			Handler: "rpc",
+		},
 	}
 }
 
@@ -70,6 +84,8 @@ type BundleService interface {
 	SaveSettingsBundle(ctx context.Context, in *SaveSettingsBundleRequest, opts ...client.CallOption) (*SaveSettingsBundleResponse, error)
 	GetSettingsBundle(ctx context.Context, in *GetSettingsBundleRequest, opts ...client.CallOption) (*GetSettingsBundleResponse, error)
 	ListSettingsBundles(ctx context.Context, in *ListSettingsBundlesRequest, opts ...client.CallOption) (*ListSettingsBundlesResponse, error)
+	AddSettingToSettingsBundle(ctx context.Context, in *AddSettingToSettingsBundleRequest, opts ...client.CallOption) (*empty.Empty, error)
+	RemoveSettingFromSettingsBundle(ctx context.Context, in *RemoveSettingFromSettingsBundleRequest, opts ...client.CallOption) (*empty.Empty, error)
 }
 
 type bundleService struct {
@@ -114,12 +130,34 @@ func (c *bundleService) ListSettingsBundles(ctx context.Context, in *ListSetting
 	return out, nil
 }
 
+func (c *bundleService) AddSettingToSettingsBundle(ctx context.Context, in *AddSettingToSettingsBundleRequest, opts ...client.CallOption) (*empty.Empty, error) {
+	req := c.c.NewRequest(c.name, "BundleService.AddSettingToSettingsBundle", in)
+	out := new(empty.Empty)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *bundleService) RemoveSettingFromSettingsBundle(ctx context.Context, in *RemoveSettingFromSettingsBundleRequest, opts ...client.CallOption) (*empty.Empty, error) {
+	req := c.c.NewRequest(c.name, "BundleService.RemoveSettingFromSettingsBundle", in)
+	out := new(empty.Empty)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for BundleService service
 
 type BundleServiceHandler interface {
 	SaveSettingsBundle(context.Context, *SaveSettingsBundleRequest, *SaveSettingsBundleResponse) error
 	GetSettingsBundle(context.Context, *GetSettingsBundleRequest, *GetSettingsBundleResponse) error
 	ListSettingsBundles(context.Context, *ListSettingsBundlesRequest, *ListSettingsBundlesResponse) error
+	AddSettingToSettingsBundle(context.Context, *AddSettingToSettingsBundleRequest, *empty.Empty) error
+	RemoveSettingFromSettingsBundle(context.Context, *RemoveSettingFromSettingsBundleRequest, *empty.Empty) error
 }
 
 func RegisterBundleServiceHandler(s server.Server, hdlr BundleServiceHandler, opts ...server.HandlerOption) error {
@@ -127,6 +165,8 @@ func RegisterBundleServiceHandler(s server.Server, hdlr BundleServiceHandler, op
 		SaveSettingsBundle(ctx context.Context, in *SaveSettingsBundleRequest, out *SaveSettingsBundleResponse) error
 		GetSettingsBundle(ctx context.Context, in *GetSettingsBundleRequest, out *GetSettingsBundleResponse) error
 		ListSettingsBundles(ctx context.Context, in *ListSettingsBundlesRequest, out *ListSettingsBundlesResponse) error
+		AddSettingToSettingsBundle(ctx context.Context, in *AddSettingToSettingsBundleRequest, out *empty.Empty) error
+		RemoveSettingFromSettingsBundle(ctx context.Context, in *RemoveSettingFromSettingsBundleRequest, out *empty.Empty) error
 	}
 	type BundleService struct {
 		bundleService
@@ -153,6 +193,20 @@ func RegisterBundleServiceHandler(s server.Server, hdlr BundleServiceHandler, op
 		Body:    "*",
 		Handler: "rpc",
 	}))
+	opts = append(opts, api.WithEndpoint(&api.Endpoint{
+		Name:    "BundleService.AddSettingToSettingsBundle",
+		Path:    []string{"/api/v0/settings/bundles-add-setting"},
+		Method:  []string{"POST"},
+		Body:    "*",
+		Handler: "rpc",
+	}))
+	opts = append(opts, api.WithEndpoint(&api.Endpoint{
+		Name:    "BundleService.RemoveSettingFromSettingsBundle",
+		Path:    []string{"/api/v0/settings/bundles-remove-setting"},
+		Method:  []string{"POST"},
+		Body:    "*",
+		Handler: "rpc",
+	}))
 	return s.Handle(s.NewHandler(&BundleService{h}, opts...))
 }
 
@@ -170,6 +224,14 @@ func (h *bundleServiceHandler) GetSettingsBundle(ctx context.Context, in *GetSet
 
 func (h *bundleServiceHandler) ListSettingsBundles(ctx context.Context, in *ListSettingsBundlesRequest, out *ListSettingsBundlesResponse) error {
 	return h.BundleServiceHandler.ListSettingsBundles(ctx, in, out)
+}
+
+func (h *bundleServiceHandler) AddSettingToSettingsBundle(ctx context.Context, in *AddSettingToSettingsBundleRequest, out *empty.Empty) error {
+	return h.BundleServiceHandler.AddSettingToSettingsBundle(ctx, in, out)
+}
+
+func (h *bundleServiceHandler) RemoveSettingFromSettingsBundle(ctx context.Context, in *RemoveSettingFromSettingsBundleRequest, out *empty.Empty) error {
+	return h.BundleServiceHandler.RemoveSettingFromSettingsBundle(ctx, in, out)
 }
 
 // Api Endpoints for ValueService service

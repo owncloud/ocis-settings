@@ -96,6 +96,52 @@ func (h *webBundleServiceHandler) ListSettingsBundles(w http.ResponseWriter, r *
 	render.JSON(w, r, resp)
 }
 
+func (h *webBundleServiceHandler) AddSettingToSettingsBundle(w http.ResponseWriter, r *http.Request) {
+
+	req := &AddSettingToSettingsBundleRequest{}
+	resp := &empty.Empty{}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, err.Error(), http.StatusPreconditionFailed)
+		return
+	}
+
+	if err := h.h.AddSettingToSettingsBundle(
+		r.Context(),
+		req,
+		resp,
+	); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	render.Status(r, http.StatusNoContent)
+	render.NoContent(w, r)
+}
+
+func (h *webBundleServiceHandler) RemoveSettingFromSettingsBundle(w http.ResponseWriter, r *http.Request) {
+
+	req := &RemoveSettingFromSettingsBundleRequest{}
+	resp := &empty.Empty{}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, err.Error(), http.StatusPreconditionFailed)
+		return
+	}
+
+	if err := h.h.RemoveSettingFromSettingsBundle(
+		r.Context(),
+		req,
+		resp,
+	); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	render.Status(r, http.StatusNoContent)
+	render.NoContent(w, r)
+}
+
 func RegisterBundleServiceWeb(r chi.Router, i BundleServiceHandler, middlewares ...func(http.Handler) http.Handler) {
 	handler := &webBundleServiceHandler{
 		r: r,
@@ -105,6 +151,8 @@ func RegisterBundleServiceWeb(r chi.Router, i BundleServiceHandler, middlewares 
 	r.MethodFunc("POST", "/api/v0/settings/bundle-save", handler.SaveSettingsBundle)
 	r.MethodFunc("POST", "/api/v0/settings/bundle-get", handler.GetSettingsBundle)
 	r.MethodFunc("POST", "/api/v0/settings/bundles-list", handler.ListSettingsBundles)
+	r.MethodFunc("POST", "/api/v0/settings/bundles-add-setting", handler.AddSettingToSettingsBundle)
+	r.MethodFunc("POST", "/api/v0/settings/bundles-remove-setting", handler.RemoveSettingFromSettingsBundle)
 }
 
 type webValueServiceHandler struct {
@@ -504,6 +552,78 @@ func (m *ListSettingsBundlesResponse) UnmarshalJSON(b []byte) error {
 }
 
 var _ json.Unmarshaler = (*ListSettingsBundlesResponse)(nil)
+
+// AddSettingToSettingsBundleRequestJSONMarshaler describes the default jsonpb.Marshaler used by all
+// instances of AddSettingToSettingsBundleRequest. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var AddSettingToSettingsBundleRequestJSONMarshaler = new(jsonpb.Marshaler)
+
+// MarshalJSON satisfies the encoding/json Marshaler interface. This method
+// uses the more correct jsonpb package to correctly marshal the message.
+func (m *AddSettingToSettingsBundleRequest) MarshalJSON() ([]byte, error) {
+	if m == nil {
+		return json.Marshal(nil)
+	}
+
+	buf := &bytes.Buffer{}
+
+	if err := AddSettingToSettingsBundleRequestJSONMarshaler.Marshal(buf, m); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
+var _ json.Marshaler = (*AddSettingToSettingsBundleRequest)(nil)
+
+// AddSettingToSettingsBundleRequestJSONUnmarshaler describes the default jsonpb.Unmarshaler used by all
+// instances of AddSettingToSettingsBundleRequest. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var AddSettingToSettingsBundleRequestJSONUnmarshaler = new(jsonpb.Unmarshaler)
+
+// UnmarshalJSON satisfies the encoding/json Unmarshaler interface. This method
+// uses the more correct jsonpb package to correctly unmarshal the message.
+func (m *AddSettingToSettingsBundleRequest) UnmarshalJSON(b []byte) error {
+	return AddSettingToSettingsBundleRequestJSONUnmarshaler.Unmarshal(bytes.NewReader(b), m)
+}
+
+var _ json.Unmarshaler = (*AddSettingToSettingsBundleRequest)(nil)
+
+// RemoveSettingFromSettingsBundleRequestJSONMarshaler describes the default jsonpb.Marshaler used by all
+// instances of RemoveSettingFromSettingsBundleRequest. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var RemoveSettingFromSettingsBundleRequestJSONMarshaler = new(jsonpb.Marshaler)
+
+// MarshalJSON satisfies the encoding/json Marshaler interface. This method
+// uses the more correct jsonpb package to correctly marshal the message.
+func (m *RemoveSettingFromSettingsBundleRequest) MarshalJSON() ([]byte, error) {
+	if m == nil {
+		return json.Marshal(nil)
+	}
+
+	buf := &bytes.Buffer{}
+
+	if err := RemoveSettingFromSettingsBundleRequestJSONMarshaler.Marshal(buf, m); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
+var _ json.Marshaler = (*RemoveSettingFromSettingsBundleRequest)(nil)
+
+// RemoveSettingFromSettingsBundleRequestJSONUnmarshaler describes the default jsonpb.Unmarshaler used by all
+// instances of RemoveSettingFromSettingsBundleRequest. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var RemoveSettingFromSettingsBundleRequestJSONUnmarshaler = new(jsonpb.Unmarshaler)
+
+// UnmarshalJSON satisfies the encoding/json Unmarshaler interface. This method
+// uses the more correct jsonpb package to correctly unmarshal the message.
+func (m *RemoveSettingFromSettingsBundleRequest) UnmarshalJSON(b []byte) error {
+	return RemoveSettingFromSettingsBundleRequestJSONUnmarshaler.Unmarshal(bytes.NewReader(b), m)
+}
+
+var _ json.Unmarshaler = (*RemoveSettingFromSettingsBundleRequest)(nil)
 
 // SaveSettingsValueRequestJSONMarshaler describes the default jsonpb.Marshaler used by all
 // instances of SaveSettingsValueRequest. This struct is safe to replace or modify but

@@ -88,6 +88,38 @@
         ]
       }
     },
+    "/api/v0/settings/bundles-add-setting": {
+      "post": {
+        "operationId": "BundleService_AddSettingToSettingsBundle",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/protoAddSettingToSettingsBundleRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BundleService"
+        ]
+      }
+    },
     "/api/v0/settings/bundles-list": {
       "post": {
         "operationId": "BundleService_ListSettingsBundles",
@@ -112,6 +144,38 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/protoListSettingsBundlesRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BundleService"
+        ]
+      }
+    },
+    "/api/v0/settings/bundles-remove-setting": {
+      "post": {
+        "operationId": "BundleService_RemoveSettingFromSettingsBundle",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/protoRemoveSettingFromSettingsBundleRequest"
             }
           }
         ],
@@ -314,6 +378,20 @@
     }
   },
   "definitions": {
+    "protoAddSettingToSettingsBundleRequest": {
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "$ref": "#/definitions/protoIdentifier"
+        },
+        "resource": {
+          "$ref": "#/definitions/protoResource"
+        },
+        "setting": {
+          "$ref": "#/definitions/protoSetting"
+        }
+      }
+    },
     "protoAssignRoleToUserRequest": {
       "type": "object",
       "properties": {
@@ -567,6 +645,17 @@
       "properties": {
         "assignment": {
           "$ref": "#/definitions/protoRoleAssignmentIdentifier"
+        }
+      }
+    },
+    "protoRemoveSettingFromSettingsBundleRequest": {
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "$ref": "#/definitions/protoIdentifier"
+        },
+        "resource": {
+          "$ref": "#/definitions/protoResource"
         }
       }
     },
