@@ -84,7 +84,7 @@ type BundleService interface {
 	SaveSettingsBundle(ctx context.Context, in *SaveSettingsBundleRequest, opts ...client.CallOption) (*SaveSettingsBundleResponse, error)
 	GetSettingsBundle(ctx context.Context, in *GetSettingsBundleRequest, opts ...client.CallOption) (*GetSettingsBundleResponse, error)
 	ListSettingsBundles(ctx context.Context, in *ListSettingsBundlesRequest, opts ...client.CallOption) (*ListSettingsBundlesResponse, error)
-	AddSettingToSettingsBundle(ctx context.Context, in *AddSettingToSettingsBundleRequest, opts ...client.CallOption) (*empty.Empty, error)
+	AddSettingToSettingsBundle(ctx context.Context, in *AddSettingToSettingsBundleRequest, opts ...client.CallOption) (*AddSettingToSettingsBundleResponse, error)
 	RemoveSettingFromSettingsBundle(ctx context.Context, in *RemoveSettingFromSettingsBundleRequest, opts ...client.CallOption) (*empty.Empty, error)
 }
 
@@ -130,9 +130,9 @@ func (c *bundleService) ListSettingsBundles(ctx context.Context, in *ListSetting
 	return out, nil
 }
 
-func (c *bundleService) AddSettingToSettingsBundle(ctx context.Context, in *AddSettingToSettingsBundleRequest, opts ...client.CallOption) (*empty.Empty, error) {
+func (c *bundleService) AddSettingToSettingsBundle(ctx context.Context, in *AddSettingToSettingsBundleRequest, opts ...client.CallOption) (*AddSettingToSettingsBundleResponse, error) {
 	req := c.c.NewRequest(c.name, "BundleService.AddSettingToSettingsBundle", in)
-	out := new(empty.Empty)
+	out := new(AddSettingToSettingsBundleResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -156,7 +156,7 @@ type BundleServiceHandler interface {
 	SaveSettingsBundle(context.Context, *SaveSettingsBundleRequest, *SaveSettingsBundleResponse) error
 	GetSettingsBundle(context.Context, *GetSettingsBundleRequest, *GetSettingsBundleResponse) error
 	ListSettingsBundles(context.Context, *ListSettingsBundlesRequest, *ListSettingsBundlesResponse) error
-	AddSettingToSettingsBundle(context.Context, *AddSettingToSettingsBundleRequest, *empty.Empty) error
+	AddSettingToSettingsBundle(context.Context, *AddSettingToSettingsBundleRequest, *AddSettingToSettingsBundleResponse) error
 	RemoveSettingFromSettingsBundle(context.Context, *RemoveSettingFromSettingsBundleRequest, *empty.Empty) error
 }
 
@@ -165,7 +165,7 @@ func RegisterBundleServiceHandler(s server.Server, hdlr BundleServiceHandler, op
 		SaveSettingsBundle(ctx context.Context, in *SaveSettingsBundleRequest, out *SaveSettingsBundleResponse) error
 		GetSettingsBundle(ctx context.Context, in *GetSettingsBundleRequest, out *GetSettingsBundleResponse) error
 		ListSettingsBundles(ctx context.Context, in *ListSettingsBundlesRequest, out *ListSettingsBundlesResponse) error
-		AddSettingToSettingsBundle(ctx context.Context, in *AddSettingToSettingsBundleRequest, out *empty.Empty) error
+		AddSettingToSettingsBundle(ctx context.Context, in *AddSettingToSettingsBundleRequest, out *AddSettingToSettingsBundleResponse) error
 		RemoveSettingFromSettingsBundle(ctx context.Context, in *RemoveSettingFromSettingsBundleRequest, out *empty.Empty) error
 	}
 	type BundleService struct {
@@ -226,7 +226,7 @@ func (h *bundleServiceHandler) ListSettingsBundles(ctx context.Context, in *List
 	return h.BundleServiceHandler.ListSettingsBundles(ctx, in, out)
 }
 
-func (h *bundleServiceHandler) AddSettingToSettingsBundle(ctx context.Context, in *AddSettingToSettingsBundleRequest, out *empty.Empty) error {
+func (h *bundleServiceHandler) AddSettingToSettingsBundle(ctx context.Context, in *AddSettingToSettingsBundleRequest, out *AddSettingToSettingsBundleResponse) error {
 	return h.BundleServiceHandler.AddSettingToSettingsBundle(ctx, in, out)
 }
 
@@ -375,22 +375,29 @@ func (h *valueServiceHandler) ListSettingsValues(ctx context.Context, in *ListSe
 func NewRoleServiceEndpoints() []*api.Endpoint {
 	return []*api.Endpoint{
 		&api.Endpoint{
-			Name:    "RoleService.ListRoleAssignments",
+			Name:    "RoleService.ListRoles",
 			Path:    []string{"/api/v0/settings/roles-list"},
 			Method:  []string{"POST"},
 			Body:    "*",
 			Handler: "rpc",
 		},
 		&api.Endpoint{
+			Name:    "RoleService.ListRoleAssignments",
+			Path:    []string{"/api/v0/settings/assignments-list"},
+			Method:  []string{"POST"},
+			Body:    "*",
+			Handler: "rpc",
+		},
+		&api.Endpoint{
 			Name:    "RoleService.AssignRoleToUser",
-			Path:    []string{"/api/v0/settings/roles-assign"},
+			Path:    []string{"/api/v0/settings/assignments-add"},
 			Method:  []string{"POST"},
 			Body:    "*",
 			Handler: "rpc",
 		},
 		&api.Endpoint{
 			Name:    "RoleService.RemoveRoleFromUser",
-			Path:    []string{"/api/v0/settings/roles-remove"},
+			Path:    []string{"/api/v0/settings/assignments-remove"},
 			Method:  []string{"POST"},
 			Body:    "*",
 			Handler: "rpc",
@@ -401,8 +408,9 @@ func NewRoleServiceEndpoints() []*api.Endpoint {
 // Client API for RoleService service
 
 type RoleService interface {
-	ListRoleAssignments(ctx context.Context, in *ListRoleAssignmentsRequest, opts ...client.CallOption) (*UserRoleAssignments, error)
-	AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, opts ...client.CallOption) (*empty.Empty, error)
+	ListRoles(ctx context.Context, in *ListSettingsBundlesRequest, opts ...client.CallOption) (*ListSettingsBundlesResponse, error)
+	ListRoleAssignments(ctx context.Context, in *ListRoleAssignmentsRequest, opts ...client.CallOption) (*ListRoleAssignmentsResponse, error)
+	AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, opts ...client.CallOption) (*AssignRoleToUserResponse, error)
 	RemoveRoleFromUser(ctx context.Context, in *RemoveRoleFromUserRequest, opts ...client.CallOption) (*empty.Empty, error)
 }
 
@@ -418,9 +426,9 @@ func NewRoleService(name string, c client.Client) RoleService {
 	}
 }
 
-func (c *roleService) ListRoleAssignments(ctx context.Context, in *ListRoleAssignmentsRequest, opts ...client.CallOption) (*UserRoleAssignments, error) {
-	req := c.c.NewRequest(c.name, "RoleService.ListRoleAssignments", in)
-	out := new(UserRoleAssignments)
+func (c *roleService) ListRoles(ctx context.Context, in *ListSettingsBundlesRequest, opts ...client.CallOption) (*ListSettingsBundlesResponse, error) {
+	req := c.c.NewRequest(c.name, "RoleService.ListRoles", in)
+	out := new(ListSettingsBundlesResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -428,9 +436,19 @@ func (c *roleService) ListRoleAssignments(ctx context.Context, in *ListRoleAssig
 	return out, nil
 }
 
-func (c *roleService) AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, opts ...client.CallOption) (*empty.Empty, error) {
+func (c *roleService) ListRoleAssignments(ctx context.Context, in *ListRoleAssignmentsRequest, opts ...client.CallOption) (*ListRoleAssignmentsResponse, error) {
+	req := c.c.NewRequest(c.name, "RoleService.ListRoleAssignments", in)
+	out := new(ListRoleAssignmentsResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleService) AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, opts ...client.CallOption) (*AssignRoleToUserResponse, error) {
 	req := c.c.NewRequest(c.name, "RoleService.AssignRoleToUser", in)
-	out := new(empty.Empty)
+	out := new(AssignRoleToUserResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -451,15 +469,17 @@ func (c *roleService) RemoveRoleFromUser(ctx context.Context, in *RemoveRoleFrom
 // Server API for RoleService service
 
 type RoleServiceHandler interface {
-	ListRoleAssignments(context.Context, *ListRoleAssignmentsRequest, *UserRoleAssignments) error
-	AssignRoleToUser(context.Context, *AssignRoleToUserRequest, *empty.Empty) error
+	ListRoles(context.Context, *ListSettingsBundlesRequest, *ListSettingsBundlesResponse) error
+	ListRoleAssignments(context.Context, *ListRoleAssignmentsRequest, *ListRoleAssignmentsResponse) error
+	AssignRoleToUser(context.Context, *AssignRoleToUserRequest, *AssignRoleToUserResponse) error
 	RemoveRoleFromUser(context.Context, *RemoveRoleFromUserRequest, *empty.Empty) error
 }
 
 func RegisterRoleServiceHandler(s server.Server, hdlr RoleServiceHandler, opts ...server.HandlerOption) error {
 	type roleService interface {
-		ListRoleAssignments(ctx context.Context, in *ListRoleAssignmentsRequest, out *UserRoleAssignments) error
-		AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, out *empty.Empty) error
+		ListRoles(ctx context.Context, in *ListSettingsBundlesRequest, out *ListSettingsBundlesResponse) error
+		ListRoleAssignments(ctx context.Context, in *ListRoleAssignmentsRequest, out *ListRoleAssignmentsResponse) error
+		AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, out *AssignRoleToUserResponse) error
 		RemoveRoleFromUser(ctx context.Context, in *RemoveRoleFromUserRequest, out *empty.Empty) error
 	}
 	type RoleService struct {
@@ -467,22 +487,29 @@ func RegisterRoleServiceHandler(s server.Server, hdlr RoleServiceHandler, opts .
 	}
 	h := &roleServiceHandler{hdlr}
 	opts = append(opts, api.WithEndpoint(&api.Endpoint{
-		Name:    "RoleService.ListRoleAssignments",
+		Name:    "RoleService.ListRoles",
 		Path:    []string{"/api/v0/settings/roles-list"},
 		Method:  []string{"POST"},
 		Body:    "*",
 		Handler: "rpc",
 	}))
 	opts = append(opts, api.WithEndpoint(&api.Endpoint{
+		Name:    "RoleService.ListRoleAssignments",
+		Path:    []string{"/api/v0/settings/assignments-list"},
+		Method:  []string{"POST"},
+		Body:    "*",
+		Handler: "rpc",
+	}))
+	opts = append(opts, api.WithEndpoint(&api.Endpoint{
 		Name:    "RoleService.AssignRoleToUser",
-		Path:    []string{"/api/v0/settings/roles-assign"},
+		Path:    []string{"/api/v0/settings/assignments-add"},
 		Method:  []string{"POST"},
 		Body:    "*",
 		Handler: "rpc",
 	}))
 	opts = append(opts, api.WithEndpoint(&api.Endpoint{
 		Name:    "RoleService.RemoveRoleFromUser",
-		Path:    []string{"/api/v0/settings/roles-remove"},
+		Path:    []string{"/api/v0/settings/assignments-remove"},
 		Method:  []string{"POST"},
 		Body:    "*",
 		Handler: "rpc",
@@ -494,11 +521,15 @@ type roleServiceHandler struct {
 	RoleServiceHandler
 }
 
-func (h *roleServiceHandler) ListRoleAssignments(ctx context.Context, in *ListRoleAssignmentsRequest, out *UserRoleAssignments) error {
+func (h *roleServiceHandler) ListRoles(ctx context.Context, in *ListSettingsBundlesRequest, out *ListSettingsBundlesResponse) error {
+	return h.RoleServiceHandler.ListRoles(ctx, in, out)
+}
+
+func (h *roleServiceHandler) ListRoleAssignments(ctx context.Context, in *ListRoleAssignmentsRequest, out *ListRoleAssignmentsResponse) error {
 	return h.RoleServiceHandler.ListRoleAssignments(ctx, in, out)
 }
 
-func (h *roleServiceHandler) AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, out *empty.Empty) error {
+func (h *roleServiceHandler) AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, out *AssignRoleToUserResponse) error {
 	return h.RoleServiceHandler.AssignRoleToUser(ctx, in, out)
 }
 

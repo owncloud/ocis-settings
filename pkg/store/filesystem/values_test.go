@@ -17,17 +17,18 @@ var valueScenarios = []struct {
 	out interface{}
 }{
 	{
-		name: "generic-test-without-resource",
+		name: "generic-test-with-system-resource",
 		in: struct {
 			record   *proto.SettingsValue
 			filePath string
 		}{
 			record: &proto.SettingsValue{
-				Identifier: &proto.Identifier{
-					Extension:   extension1,
-					Bundle:      bundle1,
-					Setting:     setting1,
-					AccountUuid: accountUUID1,
+				Id:          value1,
+				BundleId:    bundle1,
+				SettingId:   setting1,
+				AccountUuid: accountUUID1,
+				Resource: &proto.Resource{
+					Type: proto.Resource_SYSTEM,
 				},
 				Value: &proto.SettingsValue_StringValue{
 					StringValue: "lalala",
@@ -44,14 +45,12 @@ var valueScenarios = []struct {
 			filePath string
 		}{
 			record: &proto.SettingsValue{
-				Identifier: &proto.Identifier{
-					Extension:   extension1,
-					Bundle:      bundle1,
-					Setting:     setting1,
-					AccountUuid: accountUUID1,
-				},
+				Id:          value2,
+				BundleId:    bundle1,
+				SettingId:   setting2,
+				AccountUuid: accountUUID1,
 				Resource: &proto.Resource{
-					Type: proto.ResourceType_FILE,
+					Type: proto.Resource_FILE,
 					Id:   "adfba82d-919a-41c3-9cd1-5a3f83b2bf76",
 				},
 				Value: &proto.SettingsValue_StringValue{
@@ -78,7 +77,7 @@ func TestWriteSettingsValueToFile(t *testing.T) {
 		t.Run(valueScenarios[index].name, func(t *testing.T) {
 			t.Parallel()
 
-			filePath := s.buildFilePathForValue(valueScenarios[index].in.record.Identifier, valueScenarios[index].in.record.Resource, true)
+			filePath := s.buildFilePathForValue(valueScenarios[index].in.record.Id, true)
 			if err := s.writeRecordToFile(valueScenarios[index].in.record, filePath); err != nil {
 				t.Error(err)
 			}

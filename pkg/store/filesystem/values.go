@@ -2,109 +2,61 @@
 package store
 
 import (
-	"os"
-	"path/filepath"
-
+	"github.com/gofrs/uuid"
 	"github.com/owncloud/ocis-settings/pkg/proto/v0"
-	"google.golang.org/grpc/codes"
-	gstatus "google.golang.org/grpc/status"
+	"io/ioutil"
+	"path/filepath"
 )
 
-// ReadValue tries to find a value by the given identifier attributes within the dataPath
-// All identifier fields are required.
-func (s Store) ReadValue(identifier *proto.Identifier, resource *proto.Resource) (*proto.SettingsValue, error) {
-	filePath := s.buildFilePathForValue(identifier, resource, false)
-	values, err := s.readValuesMapFromFile(filePath)
+// ListValues reads all values that match the given bundleId and accountUUID
+func (s Store) ListValues(bundleId, accountUUID string) ([]*proto.SettingsValue, error) {
+	var records []*proto.SettingsValue
+	valuesFolder := s.buildFolderPathForValues(false)
+	valueFiles, err := ioutil.ReadDir(valuesFolder)
 	if err != nil {
+		return records, nil
+	}
+
+	for _, valueFile := range valueFiles {
+		record := proto.SettingsValue{}
+		err := s.parseRecordFromFile(&record, filepath.Join(valuesFolder, valueFile.Name()))
+		if err != nil {
+			s.Logger.Warn().Msgf("error reading %v", valueFile)
+			continue
+		}
+		if record.BundleId != bundleId {
+			continue
+		}
+		if record.AccountUuid != "" && record.AccountUuid != accountUUID {
+			continue
+		}
+		records = append(records, &record)
+	}
+
+	return records, nil
+}
+
+// ReadValue tries to find a value by the given valueId within the dataPath
+func (s Store) ReadValue(valueId string) (*proto.SettingsValue, error) {
+	filePath := s.buildFilePathForValue(valueId, false)
+	record := proto.SettingsValue{}
+	if err := s.parseRecordFromFile(&record, filePath); err != nil {
 		return nil, err
 	}
-	if value := values.Values[identifier.Setting]; value != nil {
-		return value, nil
-	}
-	// TODO: we want to return sensible defaults here, when the value was not found
-	return nil, gstatus.Error(codes.NotFound, "SettingsValue not set")
+
+	s.Logger.Debug().Msgf("read contents from file: %v", filePath)
+	return &record, nil
 }
 
 // WriteValue writes the given SettingsValue into a file within the dataPath
-// All identifier fields within the value are required.
 func (s Store) WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, error) {
 	s.Logger.Debug().Str("value", value.String()).Msg("writing value")
-	filePath := s.buildFilePathForValue(value.Identifier, value.Resource, true)
-	values, err := s.readValuesMapFromFile(filePath)
-	if err != nil {
-		return nil, err
+	if value.Id == "" {
+		value.Id = uuid.Must(uuid.NewV4()).String()
 	}
-	values.Values[value.Identifier.Setting] = value
-	if err := s.writeRecordToFile(values, filePath); err != nil {
+	filePath := s.buildFilePathForValue(value.Id, true)
+	if err := s.writeRecordToFile(value, filePath); err != nil {
 		return nil, err
 	}
 	return value, nil
-}
-
-// ListValues reads all values within the scope of the given identifier
-// AccountUuid is required.
-func (s Store) ListValues(identifier *proto.Identifier, resource *proto.Resource) ([]*proto.SettingsValue, error) {
-	accountFolderPath := s.buildFolderPathForValues(identifier, resource, false)
-	var values []*proto.SettingsValue
-	if _, err := os.Stat(accountFolderPath); err != nil {
-		return values, nil
-	}
-
-	// depending on the set values in the identifier arg, collect all SettingValues files for the account
-	var valueFilePaths []string
-	if len(identifier.Extension) < 1 {
-		if err := filepath.Walk(accountFolderPath, func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			valueFilePaths = append(valueFilePaths, path)
-			return nil
-		}); err != nil {
-			s.Logger.Err(err).Msgf("error reading %v", accountFolderPath)
-			return values, nil
-		}
-	} else if len(identifier.Bundle) < 1 {
-		extensionPath := filepath.Join(accountFolderPath, identifier.Extension)
-		if err := filepath.Walk(extensionPath, func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			valueFilePaths = append(valueFilePaths, path)
-			return nil
-		}); err != nil {
-			s.Logger.Err(err).Msgf("error reading %v", extensionPath)
-			return values, nil
-		}
-	} else {
-		bundlePath := filepath.Join(accountFolderPath, identifier.Extension, identifier.Bundle+".json")
-		valueFilePaths = append(valueFilePaths, bundlePath)
-	}
-
-	// parse the SettingValues from the collected files
-	for _, filePath := range valueFilePaths {
-		bundleValues, err := s.readValuesMapFromFile(filePath)
-		if err != nil {
-			s.Logger.Err(err).Msgf("error reading %v", filePath)
-		} else {
-			for _, value := range bundleValues.Values {
-				values = append(values, value)
-			}
-		}
-	}
-	return values, nil
-}
-
-// readValuesMapFromFile reads SettingsValues as map from the given file or returns an
-// empty map if the file doesn't exist.
-func (s Store) readValuesMapFromFile(filePath string) (*proto.SettingsValues, error) {
-	values := &proto.SettingsValues{}
-	err := s.parseRecordFromFile(values, filePath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			values.Values = map[string]*proto.SettingsValue{}
-		} else {
-			return nil, err
-		}
-	}
-	return values, nil
 }

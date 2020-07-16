@@ -29,11 +29,11 @@ func NewService(cfg *config.Config, logger log.Logger) Service {
 	}
 	for _, role := range GenerateSettingsBundlesDefaultRoles() {
 		_, err := service.manager.WriteBundle(role)
-		bundleID := role.Identifier.Extension + "." + role.Identifier.Bundle
+		bundleId := role.Extension + "." + role.Id
 		if err != nil {
-			logger.Error().Err(err).Msgf("Failed to register settings bundle %v", bundleID)
+			logger.Error().Err(err).Msgf("Failed to register settings bundle %v", bundleId)
 		}
-		logger.Debug().Msgf("Successfully registered settings bundle %v", bundleID)
+		logger.Debug().Msgf("Successfully registered settings bundle %v", bundleId)
 	}
 	return service
 }
@@ -42,7 +42,7 @@ func NewService(cfg *config.Config, logger log.Logger) Service {
 
 // SaveSettingsBundle implements the BundleServiceHandler interface
 func (g Service) SaveSettingsBundle(c context.Context, req *proto.SaveSettingsBundleRequest, res *proto.SaveSettingsBundleResponse) error {
-	req.SettingsBundle.Identifier = getFailsafeIdentifier(c, req.SettingsBundle.Identifier)
+	cleanUpResource(c, req.SettingsBundle.Resource)
 	if validationError := validateSaveSettingsBundle(req); validationError != nil {
 		return validationError
 	}
@@ -56,11 +56,10 @@ func (g Service) SaveSettingsBundle(c context.Context, req *proto.SaveSettingsBu
 
 // GetSettingsBundle implements the BundleServiceHandler interface
 func (g Service) GetSettingsBundle(c context.Context, req *proto.GetSettingsBundleRequest, res *proto.GetSettingsBundleResponse) error {
-	req.Identifier = getFailsafeIdentifier(c, req.Identifier)
 	if validationError := validateGetSettingsBundle(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ReadBundle(req.Identifier, req.Resource)
+	r, err := g.manager.ReadBundle(req.BundleId)
 	if err != nil {
 		return err
 	}
@@ -70,11 +69,11 @@ func (g Service) GetSettingsBundle(c context.Context, req *proto.GetSettingsBund
 
 // ListSettingsBundles implements the BundleServiceHandler interface
 func (g Service) ListSettingsBundles(c context.Context, req *proto.ListSettingsBundlesRequest, res *proto.ListSettingsBundlesResponse) error {
-	req.Identifier = getFailsafeIdentifier(c, req.Identifier)
+	req.AccountUuid = getValidatedAccountUUID(c, req.AccountUuid)
 	if validationError := validateListSettingsBundles(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ListBundles(req.Identifier, req.Resource)
+	r, err := g.manager.ListBundles(req.AccountUuid, proto.SettingsBundle_DEFAULT)
 	if err != nil {
 		return err
 	}
@@ -83,18 +82,31 @@ func (g Service) ListSettingsBundles(c context.Context, req *proto.ListSettingsB
 }
 
 // AddSettingToSettingsBundle implements the BundleServiceHandler interface
-func (g Service) AddSettingToSettingsBundle(ctx context.Context, req *proto.AddSettingToSettingsBundleRequest, _ *empty.Empty) error {
-	panic("not implemented")
+func (g Service) AddSettingToSettingsBundle(c context.Context, req *proto.AddSettingToSettingsBundleRequest, res *proto.AddSettingToSettingsBundleResponse) error {
+	cleanUpResource(c, req.Setting.Resource)
+	if validationError := validateAddSettingToSettingsBundle(req); validationError != nil {
+		return validationError
+	}
+	r, err := g.manager.AddSettingToBundle(req.BundleId, req.Setting)
+	if err != nil {
+		return err
+	}
+	res.Setting = r
+	return nil
 }
 
 // RemoveSettingFromSettingsBundle implements the BundleServiceHandler interface
-func (g Service) RemoveSettingFromSettingsBundle(ctx context.Context, req *proto.RemoveSettingFromSettingsBundleRequest, _ *empty.Empty) error {
-	panic("not implemented")
+func (g Service) RemoveSettingFromSettingsBundle(c context.Context, req *proto.RemoveSettingFromSettingsBundleRequest, _ *empty.Empty) error {
+	if validationError := validateRemoveSettingFromSettingsBundle(req); validationError != nil {
+		return validationError
+	}
+	return g.manager.RemoveSettingFromBundle(req.BundleId, req.SettingId)
 }
 
 // SaveSettingsValue implements the ValueServiceHandler interface
 func (g Service) SaveSettingsValue(c context.Context, req *proto.SaveSettingsValueRequest, res *proto.SaveSettingsValueResponse) error {
-	req.SettingsValue.Identifier = getFailsafeIdentifier(c, req.SettingsValue.Identifier)
+	cleanUpResource(c, req.SettingsValue.Resource)
+	// TODO: we need to check, if the authenticated user has permission to write the value for the specified resource (e.g. global, file with id xy, ...)
 	if validationError := validateSaveSettingsValue(req); validationError != nil {
 		return validationError
 	}
@@ -108,11 +120,10 @@ func (g Service) SaveSettingsValue(c context.Context, req *proto.SaveSettingsVal
 
 // GetSettingsValue implements the ValueServiceHandler interface
 func (g Service) GetSettingsValue(c context.Context, req *proto.GetSettingsValueRequest, res *proto.GetSettingsValueResponse) error {
-	req.Identifier = getFailsafeIdentifier(c, req.Identifier)
 	if validationError := validateGetSettingsValue(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ReadValue(req.Identifier, req.Resource)
+	r, err := g.manager.ReadValue(req.Id, )
 	if err != nil {
 		return err
 	}
@@ -122,11 +133,11 @@ func (g Service) GetSettingsValue(c context.Context, req *proto.GetSettingsValue
 
 // ListSettingsValues implements the ValueServiceHandler interface
 func (g Service) ListSettingsValues(c context.Context, req *proto.ListSettingsValuesRequest, res *proto.ListSettingsValuesResponse) error {
-	req.Identifier = getFailsafeIdentifier(c, req.Identifier)
+	req.AccountUuid = getValidatedAccountUUID(c, req.AccountUuid)
 	if validationError := validateListSettingsValues(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ListValues(req.Identifier, req.Resource)
+	r, err := g.manager.ListValues(req.BundleId, req.AccountUuid)
 	if err != nil {
 		return err
 	}
@@ -134,57 +145,61 @@ func (g Service) ListSettingsValues(c context.Context, req *proto.ListSettingsVa
 	return nil
 }
 
-// ListRoleAssignments implements the RoleServiceHandler interface
-func (g Service) ListRoleAssignments(c context.Context, req *proto.ListRoleAssignmentsRequest, res *proto.UserRoleAssignments) error {
-	req.Assignment = getFailsafeRoleAssignment(c, req.Assignment)
-	// TODO: if a resource is present in the request, we need to check if the given type is valid and maybe also validate resource IDs.
-	if validationError := validateListRoleAssignments(req); validationError != nil {
+// ListRoles implements the RoleServiceHandler interface
+func (g Service) ListRoles(c context.Context, req *proto.ListSettingsBundlesRequest, res *proto.ListSettingsBundlesResponse) error {
+	req.AccountUuid = getValidatedAccountUUID(c, req.AccountUuid)
+	if validationError := validateListRoles(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ListRoleAssignments(req.Assignment)
+	r, err := g.manager.ListBundles(req.AccountUuid, proto.SettingsBundle_ROLE)
 	if err != nil {
 		return err
 	}
-	res.Assignments = r.Assignments
+	res.SettingsBundles = r
+	return nil
+}
+
+// ListRoleAssignments implements the RoleServiceHandler interface
+func (g Service) ListRoleAssignments(c context.Context, req *proto.ListRoleAssignmentsRequest, res *proto.ListRoleAssignmentsResponse) error {
+	req.AccountUuid = getValidatedAccountUUID(c, req.AccountUuid)
+	if validationError := validateListRoleAssignments(req); validationError != nil {
+		return validationError
+	}
+	r, err := g.manager.ListRoleAssignments(req.AccountUuid)
+	if err != nil {
+		return err
+	}
+	res.Assignments = r
 	return nil
 }
 
 // AssignRoleToUser implements the RoleServiceHandler interface
-func (g Service) AssignRoleToUser(c context.Context, req *proto.AssignRoleToUserRequest, _ *empty.Empty) error {
-	req.Assignment = getFailsafeRoleAssignment(c, req.Assignment)
-	// TODO: if a resource is present in the request, we need to check if the given type is valid and maybe also validate resource IDs.
+func (g Service) AssignRoleToUser(c context.Context, req *proto.AssignRoleToUserRequest, res *proto.AssignRoleToUserResponse) error {
+	req.Assignment.AccountUuid = getValidatedAccountUUID(c, req.Assignment.AccountUuid)
 	if validationError := validateAssignRoleToUser(req); validationError != nil {
 		return validationError
 	}
-	return g.manager.WriteRoleAssignment(req.Assignment)
+	r, err := g.manager.WriteRoleAssignment(req.Assignment)
+	if err != nil {
+		return err
+	}
+	res.Assignment = r
+	return nil
 }
 
 // RemoveRoleFromUser implements the RoleServiceHandler interface
 func (g Service) RemoveRoleFromUser(c context.Context, req *proto.RemoveRoleFromUserRequest, _ *empty.Empty) error {
-	req.Assignment = getFailsafeRoleAssignment(c, req.Assignment)
-	// TODO: if a resource is present in the request, we need to check if the given type is valid and maybe also validate resource IDs.
 	if validationError := validateRemoveRoleFromUser(req); validationError != nil {
 		return validationError
 	}
-	return g.manager.DeleteRoleAssignment(req.Assignment)
+	return g.manager.RemoveRoleAssignment(req.Id)
 }
 
-// getFailsafeIdentifier makes sure that there is an identifier, and that the account uuid is injected if needed.
-func getFailsafeIdentifier(c context.Context, identifier *proto.Identifier) *proto.Identifier {
-	if identifier == nil {
-		identifier = &proto.Identifier{}
+// cleanUpResource makes sure that the account uuid of the authenticated user is injected if needed.
+func cleanUpResource(c context.Context, resource *proto.Resource) {
+	if resource != nil && resource.Type == proto.Resource_USER {
+		resource.Id = getValidatedAccountUUID(c, resource.Id)
 	}
-	identifier.AccountUuid = getValidatedAccountUUID(c, identifier.AccountUuid)
-	return identifier
-}
-
-// getFailsafeRoleAssignment makes sure that there is an assignment identifier, and that the account uuid is injected if needed.
-func getFailsafeRoleAssignment(c context.Context, assignment *proto.RoleAssignmentIdentifier) *proto.RoleAssignmentIdentifier {
-	if assignment == nil {
-		assignment = &proto.RoleAssignmentIdentifier{}
-	}
-	assignment.AccountUuid = getValidatedAccountUUID(c, assignment.AccountUuid)
-	return assignment
 }
 
 // getValidatedAccountUUID converts `me` into an actual account uuid from the context, if possible.

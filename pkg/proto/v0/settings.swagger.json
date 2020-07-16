@@ -24,6 +24,102 @@
     "application/json"
   ],
   "paths": {
+    "/api/v0/settings/assignments-add": {
+      "post": {
+        "operationId": "RoleService_AssignRoleToUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoAssignRoleToUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/protoAssignRoleToUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "RoleService"
+        ]
+      }
+    },
+    "/api/v0/settings/assignments-list": {
+      "post": {
+        "operationId": "RoleService_ListRoleAssignments",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoListRoleAssignmentsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/protoListRoleAssignmentsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "RoleService"
+        ]
+      }
+    },
+    "/api/v0/settings/assignments-remove": {
+      "post": {
+        "operationId": "RoleService_RemoveRoleFromUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/protoRemoveRoleFromUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "RoleService"
+        ]
+      }
+    },
     "/api/v0/settings/bundle-get": {
       "post": {
         "operationId": "BundleService_GetSettingsBundle",
@@ -95,7 +191,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "properties": {}
+              "$ref": "#/definitions/protoAddSettingToSettingsBundleResponse"
             }
           },
           "default": {
@@ -184,46 +280,14 @@
         ]
       }
     },
-    "/api/v0/settings/roles-assign": {
-      "post": {
-        "operationId": "RoleService_AssignRoleToUser",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "properties": {}
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/protoAssignRoleToUserRequest"
-            }
-          }
-        ],
-        "tags": [
-          "RoleService"
-        ]
-      }
-    },
     "/api/v0/settings/roles-list": {
       "post": {
-        "operationId": "RoleService_ListRoleAssignments",
+        "operationId": "RoleService_ListRoles",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/protoUserRoleAssignments"
+              "$ref": "#/definitions/protoListSettingsBundlesResponse"
             }
           },
           "default": {
@@ -239,39 +303,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/protoListRoleAssignmentsRequest"
-            }
-          }
-        ],
-        "tags": [
-          "RoleService"
-        ]
-      }
-    },
-    "/api/v0/settings/roles-remove": {
-      "post": {
-        "operationId": "RoleService_RemoveRoleFromUser",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "properties": {}
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/protoRemoveRoleFromUserRequest"
+              "$ref": "#/definitions/protoListSettingsBundlesRequest"
             }
           }
         ],
@@ -381,12 +413,17 @@
     "protoAddSettingToSettingsBundleRequest": {
       "type": "object",
       "properties": {
-        "identifier": {
-          "$ref": "#/definitions/protoIdentifier"
+        "bundle_id": {
+          "type": "string"
         },
-        "resource": {
-          "$ref": "#/definitions/protoResource"
-        },
+        "setting": {
+          "$ref": "#/definitions/protoSetting"
+        }
+      }
+    },
+    "protoAddSettingToSettingsBundleResponse": {
+      "type": "object",
+      "properties": {
         "setting": {
           "$ref": "#/definitions/protoSetting"
         }
@@ -396,7 +433,15 @@
       "type": "object",
       "properties": {
         "assignment": {
-          "$ref": "#/definitions/protoRoleAssignmentIdentifier"
+          "$ref": "#/definitions/protoUserRoleAssignment"
+        }
+      }
+    },
+    "protoAssignRoleToUserResponse": {
+      "type": "object",
+      "properties": {
+        "assignment": {
+          "$ref": "#/definitions/protoUserRoleAssignment"
         }
       }
     },
@@ -438,11 +483,8 @@
     "protoGetSettingsBundleRequest": {
       "type": "object",
       "properties": {
-        "identifier": {
-          "$ref": "#/definitions/protoIdentifier"
-        },
-        "resource": {
-          "$ref": "#/definitions/protoResource"
+        "bundle_id": {
+          "type": "string"
         }
       }
     },
@@ -457,11 +499,8 @@
     "protoGetSettingsValueRequest": {
       "type": "object",
       "properties": {
-        "identifier": {
-          "$ref": "#/definitions/protoIdentifier"
-        },
-        "resource": {
-          "$ref": "#/definitions/protoResource"
+        "id": {
+          "type": "string"
         }
       }
     },
@@ -472,24 +511,6 @@
           "$ref": "#/definitions/protoSettingsValue"
         }
       }
-    },
-    "protoIdentifier": {
-      "type": "object",
-      "properties": {
-        "extension": {
-          "type": "string"
-        },
-        "bundle": {
-          "type": "string"
-        },
-        "setting": {
-          "type": "string"
-        },
-        "account_uuid": {
-          "type": "string"
-        }
-      },
-      "title": "generic payloads"
     },
     "protoIntSetting": {
       "type": "object",
@@ -545,20 +566,27 @@
     "protoListRoleAssignmentsRequest": {
       "type": "object",
       "properties": {
-        "assignment": {
-          "$ref": "#/definitions/protoRoleAssignmentIdentifier"
+        "account_uuid": {
+          "type": "string"
         }
-      },
-      "title": "requests and responses for role assignments"
+      }
+    },
+    "protoListRoleAssignmentsResponse": {
+      "type": "object",
+      "properties": {
+        "assignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protoUserRoleAssignment"
+          }
+        }
+      }
     },
     "protoListSettingsBundlesRequest": {
       "type": "object",
       "properties": {
-        "identifier": {
-          "$ref": "#/definitions/protoIdentifier"
-        },
-        "resource": {
-          "$ref": "#/definitions/protoResource"
+        "account_uuid": {
+          "type": "string"
         }
       }
     },
@@ -576,11 +604,11 @@
     "protoListSettingsValuesRequest": {
       "type": "object",
       "properties": {
-        "identifier": {
-          "$ref": "#/definitions/protoIdentifier"
+        "bundle_id": {
+          "type": "string"
         },
-        "resource": {
-          "$ref": "#/definitions/protoResource"
+        "account_uuid": {
+          "type": "string"
         }
       }
     },
@@ -626,8 +654,7 @@
         "constraint": {
           "$ref": "#/definitions/protoConstraint"
         }
-      },
-      "description": "a permission can be constructed by ADMIN users, by setting a resource, an operation and a constraint. need a new ui element for that."
+      }
     },
     "protoPermissionSettingOperation": {
       "type": "string",
@@ -643,19 +670,19 @@
     "protoRemoveRoleFromUserRequest": {
       "type": "object",
       "properties": {
-        "assignment": {
-          "$ref": "#/definitions/protoRoleAssignmentIdentifier"
+        "id": {
+          "type": "string"
         }
       }
     },
     "protoRemoveSettingFromSettingsBundleRequest": {
       "type": "object",
       "properties": {
-        "identifier": {
-          "$ref": "#/definitions/protoIdentifier"
+        "bundle_id": {
+          "type": "string"
         },
-        "resource": {
-          "$ref": "#/definitions/protoResource"
+        "setting_id": {
+          "type": "string"
         }
       }
     },
@@ -674,27 +701,15 @@
       "type": "string",
       "enum": [
         "UNKNOWN",
+        "SYSTEM",
         "FILE",
         "SHARE",
         "SETTING",
+        "BUNDLE",
         "USER",
         "GROUP"
       ],
       "default": "UNKNOWN"
-    },
-    "protoRoleAssignmentIdentifier": {
-      "type": "object",
-      "properties": {
-        "account_uuid": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        },
-        "resource": {
-          "$ref": "#/definitions/protoResource"
-        }
-      }
     },
     "protoSaveSettingsBundleRequest": {
       "type": "object",
@@ -702,8 +717,7 @@
         "settings_bundle": {
           "$ref": "#/definitions/protoSettingsBundle"
         }
-      },
-      "title": "requests and responses for settings bundles"
+      }
     },
     "protoSaveSettingsBundleResponse": {
       "type": "object",
@@ -719,8 +733,7 @@
         "settings_value": {
           "$ref": "#/definitions/protoSettingsValue"
         }
-      },
-      "title": "requests and responses for settings values"
+      }
     },
     "protoSaveSettingsValueResponse": {
       "type": "object",
@@ -733,7 +746,7 @@
     "protoSetting": {
       "type": "object",
       "properties": {
-        "name": {
+        "id": {
           "type": "string"
         },
         "display_name": {
@@ -769,8 +782,14 @@
     "protoSettingsBundle": {
       "type": "object",
       "properties": {
-        "identifier": {
-          "$ref": "#/definitions/protoIdentifier"
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/protoSettingsBundleType"
+        },
+        "extension": {
+          "type": "string"
         },
         "display_name": {
           "type": "string"
@@ -785,18 +804,36 @@
           "$ref": "#/definitions/protoResource",
           "title": "if resource is nil, then the settings bundle is system wide"
         }
-      },
-      "title": "payloads for settings bundles"
+      }
+    },
+    "protoSettingsBundleType": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "DEFAULT",
+        "ROLE"
+      ],
+      "default": "UNKNOWN"
     },
     "protoSettingsValue": {
       "type": "object",
       "properties": {
-        "identifier": {
-          "$ref": "#/definitions/protoIdentifier"
+        "id": {
+          "type": "string",
+          "description": "id is the id of the SettingsValue. It is generated on saving it."
+        },
+        "bundle_id": {
+          "type": "string"
+        },
+        "setting_id": {
+          "type": "string",
+          "description": "setting_id is the id of the setting from within its bundle."
+        },
+        "account_uuid": {
+          "type": "string"
         },
         "resource": {
-          "$ref": "#/definitions/protoResource",
-          "title": "if resource is nil, then the value is system wide"
+          "$ref": "#/definitions/protoResource"
         },
         "bool_value": {
           "type": "boolean",
@@ -812,8 +849,7 @@
         "list_value": {
           "$ref": "#/definitions/protoListValue"
         }
-      },
-      "title": "payloads for settings values"
+      }
     },
     "protoSingleChoiceListSetting": {
       "type": "object",
@@ -849,14 +885,19 @@
         }
       }
     },
-    "protoUserRoleAssignments": {
+    "protoUserRoleAssignment": {
       "type": "object",
       "properties": {
-        "assignments": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protoRoleAssignmentIdentifier"
-          }
+        "id": {
+          "type": "string",
+          "title": "id is generated upon saving the assignment"
+        },
+        "account_uuid": {
+          "type": "string"
+        },
+        "role_id": {
+          "type": "string",
+          "title": "the role_id is a bundle_id internally"
         }
       }
     },

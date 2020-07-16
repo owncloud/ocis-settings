@@ -22,21 +22,23 @@ type Manager interface {
 
 // BundleManager is a bundle service interface for abstraction of storage implementations
 type BundleManager interface {
-	ReadBundle(identifier *proto.Identifier, resource *proto.Resource) (*proto.SettingsBundle, error)
+	ListBundles(accountUUID string, bundleType proto.SettingsBundle_Type) ([]*proto.SettingsBundle, error)
+	ReadBundle(bundleId string) (*proto.SettingsBundle, error)
 	WriteBundle(bundle *proto.SettingsBundle) (*proto.SettingsBundle, error)
-	ListBundles(identifier *proto.Identifier, resource *proto.Resource) ([]*proto.SettingsBundle, error)
+	AddSettingToBundle(bundleId string, setting *proto.Setting) (*proto.Setting, error)
+	RemoveSettingFromBundle(bundleId, settingId string) error
 }
 
 // ValueManager is a value service interface for abstraction of storage implementations
 type ValueManager interface {
-	ReadValue(identifier *proto.Identifier, resource *proto.Resource) (*proto.SettingsValue, error)
+	ListValues(bundleId, accountUUID string) ([]*proto.SettingsValue, error)
+	ReadValue(valueId string) (*proto.SettingsValue, error)
 	WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, error)
-	ListValues(identifier *proto.Identifier, resource *proto.Resource) ([]*proto.SettingsValue, error)
 }
 
 // RoleAssignmentManager is a role assignment service interface for abstraction of storage implementations
 type RoleAssignmentManager interface {
-	ListRoleAssignments(assignment *proto.RoleAssignmentIdentifier) (*proto.UserRoleAssignments, error)
-	WriteRoleAssignment(assignment *proto.RoleAssignmentIdentifier) error
-	DeleteRoleAssignment(assignment *proto.RoleAssignmentIdentifier) error
+	ListRoleAssignments(accountUUID string) ([]*proto.UserRoleAssignment, error)
+	WriteRoleAssignment(assignment *proto.UserRoleAssignment) (*proto.UserRoleAssignment, error)
+	RemoveRoleAssignment(assignmentId string) error
 }

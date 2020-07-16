@@ -6,62 +6,55 @@ import (
 	"path/filepath"
 	"sync"
 
+	"github.com/gofrs/uuid"
 	"github.com/owncloud/ocis-settings/pkg/proto/v0"
 )
 
-var m *sync.RWMutex = &sync.RWMutex{}
+var m = &sync.RWMutex{}
 
 // ListBundles returns all bundles in the dataPath folder belonging to the given extension
-func (s Store) ListBundles(identifier *proto.Identifier, resource *proto.Resource) ([]*proto.SettingsBundle, error) {
+func (s Store) ListBundles(accountUUID string, bundleType proto.SettingsBundle_Type) ([]*proto.SettingsBundle, error) {
+	// FIXME: list requests should be ran against a cache, not FS
 	m.RLock()
+	defer m.RUnlock()
+
+	// TODO: bundles should be filtered by account uuid in the future
+	// (based on permissions, not based on bundle properties)
 	var records []*proto.SettingsBundle
-	bundlesFolder := s.buildFolderPathForBundles(resource, false)
-	extensionFolders, err := ioutil.ReadDir(bundlesFolder)
+	bundlesFolder := s.buildFolderPathForBundles(false)
+	bundleFiles, err := ioutil.ReadDir(bundlesFolder)
 	if err != nil {
 		return records, nil
 	}
 
-	if len(identifier.Extension) < 1 {
-		s.Logger.Info().Msg("listing all bundles")
-	} else {
-		s.Logger.Info().Msgf("listing bundles by extension %v", identifier.Extension)
-	}
-	for _, extensionFolder := range extensionFolders {
-		extensionPath := filepath.Join(bundlesFolder, extensionFolder.Name())
-		bundleFiles, err := ioutil.ReadDir(extensionPath)
-		if err == nil {
-			for _, bundleFile := range bundleFiles {
-				record := proto.SettingsBundle{}
-				bundlePath := filepath.Join(extensionPath, bundleFile.Name())
-				err = s.parseRecordFromFile(&record, bundlePath)
-				if err != nil {
-					s.Logger.Warn().Msgf("error reading %v", bundlePath)
-					continue
-				}
-				if len(identifier.Extension) == 0 || identifier.Extension == record.Identifier.Extension {
-					records = append(records, &record)
-				}
-			}
-		} else {
-			s.Logger.Err(err).Msgf("error reading %v", extensionPath)
+	for _, bundleFile := range bundleFiles {
+		record := proto.SettingsBundle{}
+		err = s.parseRecordFromFile(&record, filepath.Join(bundlesFolder, bundleFile.Name()))
+		if err != nil {
+			s.Logger.Warn().Msgf("error reading %v", bundleFile)
+			continue
 		}
+		if record.Type != bundleType {
+			continue
+		}
+		records = append(records, &record)
 	}
-
-	m.RUnlock()
 
 	return records, nil
 }
 
 // ReadBundle tries to find a bundle by the given identifier within the dataPath.
 // Extension and BundleKey within the identifier are required.
-func (s Store) ReadBundle(identifier *proto.Identifier, resource *proto.Resource) (*proto.SettingsBundle, error) {
+func (s Store) ReadBundle(bundleId string) (*proto.SettingsBundle, error) {
+	// FIXME: locking should happen on the file here, not globally.
 	m.RLock()
-	filePath := s.buildFilePathForBundle(identifier, resource, false)
+	defer m.RUnlock()
+
+	filePath := s.buildFilePathForBundle(bundleId, false)
 	record := proto.SettingsBundle{}
 	if err := s.parseRecordFromFile(&record, filePath); err != nil {
 		return nil, err
 	}
-	m.RUnlock()
 
 	s.Logger.Debug().Msgf("read contents from file: %v", filePath)
 	return &record, nil
@@ -70,14 +63,81 @@ func (s Store) ReadBundle(identifier *proto.Identifier, resource *proto.Resource
 // WriteBundle writes the given record into a file within the dataPath
 // Extension and BundleKey within the record identifier are required.
 func (s Store) WriteBundle(record *proto.SettingsBundle) (*proto.SettingsBundle, error) {
+	// FIXME: locking should happen on the file here, not globally.
 	m.Lock()
-	filePath := s.buildFilePathForBundle(record.Identifier, record.Resource, true)
+	defer m.Unlock()
+	if record.Id == "" {
+		record.Id = uuid.Must(uuid.NewV4()).String()
+	}
+	filePath := s.buildFilePathForBundle(record.Id, true)
 	if err := s.writeRecordToFile(record, filePath); err != nil {
 		return nil, err
 	}
 
-	m.Unlock()
-
 	s.Logger.Debug().Msgf("request contents written to file: %v", filePath)
 	return record, nil
+}
+
+// AddSettingToBundle adds the given setting to the settings bundle which was identified by the given identifier and resource
+func (s Store) AddSettingToBundle(bundleId string, setting *proto.Setting) (*proto.Setting, error) {
+	bundle, err := s.ReadBundle(bundleId)
+	if err != nil {
+		return nil, err
+	}
+	if setting.Id == "" {
+		setting.Id = uuid.Must(uuid.NewV4()).String()
+	}
+	setSetting(bundle, setting)
+	_, err = s.WriteBundle(bundle)
+	if err != nil {
+		return nil, err
+	}
+	return setting, nil
+}
+
+// RemoveSettingFromBundle removes the setting that was identified by the given identifier and resource
+func (s Store) RemoveSettingFromBundle(bundleId string, settingId string) error {
+	bundle, err := s.ReadBundle(bundleId)
+	if err != nil {
+		return nil
+	}
+	removeSetting(bundle, settingId)
+	_, err = s.WriteBundle(bundle)
+	return err
+}
+
+// indexOfSetting finds the index of the given setting within the given bundle.
+// returns -1 if the setting was not found.
+func indexOfSetting(bundle *proto.SettingsBundle, settingId string) int {
+	for index := range bundle.Settings {
+		s := bundle.Settings[index]
+		if s.Id == settingId {
+			return index
+		}
+	}
+	return -1
+}
+
+// setSetting will append or overwrite the given setting within the given bundle
+func setSetting(bundle *proto.SettingsBundle, setting *proto.Setting) {
+	m.Lock()
+	defer m.Unlock()
+	index := indexOfSetting(bundle, setting.Id)
+	if index == -1 {
+		bundle.Settings = append(bundle.Settings, setting)
+	} else {
+		bundle.Settings[index] = setting
+	}
+}
+
+// removeSetting will remove the given setting from the given bundle
+func removeSetting(bundle *proto.SettingsBundle, settingId string) bool {
+	m.Lock()
+	defer m.Unlock()
+	index := indexOfSetting(bundle, settingId)
+	if index == -1 {
+		return false
+	}
+	bundle.Settings = append(bundle.Settings[:index], bundle.Settings[index+1:]...)
+	return true
 }

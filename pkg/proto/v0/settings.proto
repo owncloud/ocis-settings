@@ -37,20 +37,20 @@ service BundleService {
       post: "/api/v0/settings/bundle-save",
       body: "*"
     };
-  };
+  }
   rpc GetSettingsBundle(GetSettingsBundleRequest) returns (GetSettingsBundleResponse) {
     option (google.api.http) = {
       post: "/api/v0/settings/bundle-get",
       body: "*"
     };
-  };
+  }
   rpc ListSettingsBundles(ListSettingsBundlesRequest) returns (ListSettingsBundlesResponse) {
     option (google.api.http) = {
       post: "/api/v0/settings/bundles-list",
       body: "*"
     };
-  };
-  rpc AddSettingToSettingsBundle(AddSettingToSettingsBundleRequest) returns (google.protobuf.Empty) {
+  }
+  rpc AddSettingToSettingsBundle(AddSettingToSettingsBundleRequest) returns (AddSettingToSettingsBundleResponse) {
     option (google.api.http) = {
       post: "/api/v0/settings/bundles-add-setting",
       body: "*"
@@ -70,43 +70,52 @@ service ValueService {
       post: "/api/v0/settings/value-save",
       body: "*"
     };
-  };
+  }
   rpc GetSettingsValue(GetSettingsValueRequest) returns (GetSettingsValueResponse) {
     option (google.api.http) = {
       post: "/api/v0/settings/value-get",
       body: "*"
     };
-  };
+  }
   rpc ListSettingsValues(ListSettingsValuesRequest) returns (ListSettingsValuesResponse) {
     option (google.api.http) = {
       post: "/api/v0/settings/values-list",
       body: "*"
     };
-  };
+  }
 }
 
 service RoleService {
-  rpc ListRoleAssignments(ListRoleAssignmentsRequest) returns (UserRoleAssignments) {
+  rpc ListRoles(ListSettingsBundlesRequest) returns (ListSettingsBundlesResponse) {
     option (google.api.http) = {
       post: "/api/v0/settings/roles-list",
       body: "*"
     };
   }
-  rpc AssignRoleToUser(AssignRoleToUserRequest) returns (google.protobuf.Empty) {
+  rpc ListRoleAssignments(ListRoleAssignmentsRequest) returns (ListRoleAssignmentsResponse) {
     option (google.api.http) = {
-      post: "/api/v0/settings/roles-assign",
+      post: "/api/v0/settings/assignments-list",
+      body: "*"
+    };
+  }
+  rpc AssignRoleToUser(AssignRoleToUserRequest) returns (AssignRoleToUserResponse) {
+    option (google.api.http) = {
+      post: "/api/v0/settings/assignments-add",
       body: "*"
     };
   }
   rpc RemoveRoleFromUser(RemoveRoleFromUserRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/api/v0/settings/roles-remove",
+      post: "/api/v0/settings/assignments-remove",
       body: "*"
     };
   }
 }
 
+// ---
 // requests and responses for settings bundles
+// ---
+
 message SaveSettingsBundleRequest {
   SettingsBundle settings_bundle = 1;
 }
@@ -116,8 +125,7 @@ message SaveSettingsBundleResponse {
 }
 
 message GetSettingsBundleRequest {
-  Identifier identifier = 1;
-  Resource resource = 2;// if resource is nil, then the system wide settings bundle is to be fetched
+  string bundle_id = 1;
 }
 
 message GetSettingsBundleResponse {
@@ -125,8 +133,7 @@ message GetSettingsBundleResponse {
 }
 
 message ListSettingsBundlesRequest {
-  Identifier identifier = 1;
-  Resource resource = 2;// if resource is nil, then the system wide settings bundle is to be fetched
+  string account_uuid = 1;
 }
 
 message ListSettingsBundlesResponse {
@@ -134,17 +141,23 @@ message ListSettingsBundlesResponse {
 }
 
 message AddSettingToSettingsBundleRequest {
-  Identifier identifier = 1;
-  Resource resource = 2;
-  Setting setting = 3;
+  string bundle_id = 1;
+  Setting setting = 2;
+}
+
+message AddSettingToSettingsBundleResponse {
+  Setting setting = 1;
 }
 
 message RemoveSettingFromSettingsBundleRequest {
-  Identifier identifier = 1;
-  Resource resource = 2;
+  string bundle_id = 1;
+  string setting_id = 2;
 }
 
+// ---
 // requests and responses for settings values
+// ---
+
 message SaveSettingsValueRequest {
   SettingsValue settings_value = 1;
 }
@@ -154,8 +167,7 @@ message SaveSettingsValueResponse {
 }
 
 message GetSettingsValueRequest {
-  Identifier identifier = 1;
-  Resource resource = 2;// if resource is nil, then the default settings value is to be fetched (either user-specific or system wide)
+  string id = 1;
 }
 
 message GetSettingsValueResponse {
@@ -163,66 +175,86 @@ message GetSettingsValueResponse {
 }
 
 message ListSettingsValuesRequest {
-  Identifier identifier = 1;
-  Resource resource = 2;// if resource is nil, then the default settings values are to be fetched (either user-specific or system wide)
+  string bundle_id = 1;
+  string account_uuid = 2;
 }
 
 message ListSettingsValuesResponse {
   repeated SettingsValue settings_values = 1;
 }
 
+// ---
 // requests and responses for role assignments
+// ---
+
 message ListRoleAssignmentsRequest {
-  RoleAssignmentIdentifier assignment = 1;
+  string account_uuid = 1;
+}
+
+message ListRoleAssignmentsResponse {
+  repeated UserRoleAssignment assignments = 1;
 }
 
 message AssignRoleToUserRequest {
-  RoleAssignmentIdentifier assignment = 1;
+  UserRoleAssignment assignment = 1;
+}
+
+message AssignRoleToUserResponse {
+  UserRoleAssignment assignment = 1;
 }
 
 message RemoveRoleFromUserRequest {
-  RoleAssignmentIdentifier assignment = 1;
+  string id = 1;
 }
 
-message RoleAssignmentIdentifier {
-  string account_uuid = 1;
-  string role = 2;
-  Resource resource = 3;// if resource is nil, then the system side role assignment is to be fetched
+message UserRoleAssignment {
+  // id is generated upon saving the assignment
+  string id = 1;
+  string account_uuid = 2;
+  // the role_id is a bundle_id internally
+  string role_id = 3;
 }
 
-// generic payloads
-message Identifier {
-  string extension = 1;
-  string bundle = 2;
-  string setting = 3;
-  string account_uuid = 4;
-}
-
-enum ResourceType {
-  UNKNOWN = 0;
-  FILE = 1;
-  SHARE = 2;
-  SETTING = 3;
-  USER = 4;
-  GROUP = 5;
-}
+// ---
+// resource payloads
+// ---
 
 message Resource {
-  ResourceType type = 1;
-  string id = 2;// think about virtual ids like "me"
+  enum Type {
+    UNKNOWN = 0;
+    SYSTEM = 1;
+    FILE = 2;
+    SHARE = 3;
+    SETTING = 4;
+    BUNDLE = 5;
+    USER = 6;
+    GROUP = 7;
+  }
+  Type type = 1;
+  string id = 2;
 }
 
+// ---
 // payloads for settings bundles
+// ---
+
 message SettingsBundle {
-  Identifier identifier = 1;
-  string display_name = 2;
-  repeated Setting settings = 3;
+  enum Type {
+    UNKNOWN = 0;
+    DEFAULT = 1;
+    ROLE = 2;
+  }
+  string id = 1;
+  Type type = 2;
+  string extension = 3;
+  string display_name = 4;
+  repeated Setting settings = 5;
   // if resource is nil, then the settings bundle is system wide
-  Resource resource = 4;
+  Resource resource = 6;
 }
 
 message Setting {
-  string name = 1;
+  string id = 1;
   string display_name = 2;
   string description = 3;
   oneof value {
@@ -272,7 +304,6 @@ message ListOption {
   string display_value = 3;
 }
 
-// a permission can be constructed by ADMIN users, by setting a resource, an operation and a constraint. need a new ui element for that.
 message PermissionSetting {
   enum Operation {
     UNKNOWN = 0;
@@ -295,16 +326,23 @@ message Constraint {
   repeated string values = 2;
 }
 
+// ---
 // payloads for settings values
+// ---
+
 message SettingsValue {
-  Identifier identifier = 1;
-  // if resource is nil, then the value is system wide
-  Resource resource = 2;
+  // id is the id of the SettingsValue. It is generated on saving it.
+  string id = 1;
+  string bundle_id = 2;
+  // setting_id is the id of the setting from within its bundle.
+  string setting_id = 3;
+  string account_uuid = 4;
+  Resource resource = 5;
   oneof value {
-    bool bool_value = 3;
-    int64 int_value = 4;
-    string string_value = 5;
-    ListValue list_value = 6;
+    bool bool_value = 6;
+    int64 int_value = 7;
+    string string_value = 8;
+    ListValue list_value = 9;
   }
 }
 
@@ -319,10 +357,10 @@ message ListOptionValue {
   }
 }
 
+// ---
 // only meant for serialization
-message SettingsValues {
-  map<string, SettingsValue> values = 1;
-}
+// ---
+
 message UserRoleAssignments {
-  repeated RoleAssignmentIdentifier assignments = 1;
+  map<string, UserRoleAssignment> assignments = 1;
 }
