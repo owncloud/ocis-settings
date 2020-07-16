@@ -28,8 +28,15 @@ func NewService(cfg *config.Config, logger log.Logger) Service {
 		manager: store.New(cfg),
 	}
 	for _, role := range GenerateSettingsBundlesDefaultRoles() {
-		_, err := service.manager.WriteBundle(role)
 		bundleId := role.Extension + "." + role.Id
+		// check if the role already exists
+		bundle, _ := service.manager.ReadBundle(role.Id)
+		if bundle != nil {
+			logger.Debug().Msgf("Settings bundle %v already exists. Skipping.", bundleId)
+			continue
+		}
+		// create the role
+		_, err := service.manager.WriteBundle(role)
 		if err != nil {
 			logger.Error().Err(err).Msgf("Failed to register settings bundle %v", bundleId)
 		}
