@@ -27,6 +27,7 @@ func NewService(cfg *config.Config, logger log.Logger) Service {
 		logger:  logger,
 		manager: store.New(cfg),
 	}
+	// FIXME: we're writing default roles per service start (i.e. twice at the moment, for http and grpc server).
 	for _, role := range GenerateSettingsBundlesDefaultRoles() {
 		bundleId := role.Extension + "." + role.Id
 		// check if the role already exists
