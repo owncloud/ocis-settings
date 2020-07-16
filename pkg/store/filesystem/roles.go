@@ -39,6 +39,8 @@ func (s Store) WriteRoleAssignment(assignment *proto.UserRoleAssignment) (*proto
 	if assignment.Id == "" {
 		assignment.Id = uuid.Must(uuid.NewV4()).String()
 	}
+	// TODO: we need to search for existing role assignments by roleId and accountUuid to avoid duplicate assignments.
+	// wait with implementation until we have a proper index for search queries.
 	filePath := s.buildFilePathForRoleAssignment(assignment.Id, true)
 	if err := s.writeRecordToFile(assignment, filePath); err != nil {
 		return nil, err

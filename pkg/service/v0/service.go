@@ -77,15 +77,43 @@ func (g Service) GetSettingsBundle(c context.Context, req *proto.GetSettingsBund
 
 // ListSettingsBundles implements the BundleServiceHandler interface
 func (g Service) ListSettingsBundles(c context.Context, req *proto.ListSettingsBundlesRequest, res *proto.ListSettingsBundlesResponse) error {
+	// fetch all bundles
 	req.AccountUuid = getValidatedAccountUUID(c, req.AccountUuid)
 	if validationError := validateListSettingsBundles(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ListBundles(req.AccountUuid, proto.SettingsBundle_DEFAULT)
+	bundles, err := g.manager.ListBundles(req.AccountUuid, proto.SettingsBundle_DEFAULT)
 	if err != nil {
 		return err
 	}
-	res.SettingsBundles = r
+
+	// fetch roles of the user
+	rolesResponse := &proto.ListRoleAssignmentsResponse{}
+	err = g.ListRoleAssignments(c, &proto.ListRoleAssignmentsRequest{AccountUuid: req.AccountUuid}, rolesResponse)
+	if err != nil {
+		return err
+	}
+
+	// filter settings in bundles that are allowed according to roles
+	var filteredBundles []*proto.SettingsBundle
+	for _, bundle := range bundles {
+		var filteredSettings []*proto.Setting
+		for _, setting := range bundle.Settings {
+			settingResource := &proto.Resource{
+				Type: proto.Resource_SETTING,
+				Id:   setting.Id,
+			}
+			if g.hasPermission(rolesResponse.Assignments, settingResource, proto.PermissionSetting_UPDATE) {
+				filteredSettings = append(filteredSettings, setting)
+			}
+		}
+		bundle.Settings = filteredSettings
+		if len(filteredSettings) > 0 {
+			filteredBundles = append(filteredBundles, bundle)
+		}
+	}
+
+	res.SettingsBundles = filteredBundles
 	return nil
 }
 
@@ -131,7 +159,7 @@ func (g Service) GetSettingsValue(c context.Context, req *proto.GetSettingsValue
 	if validationError := validateGetSettingsValue(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ReadValue(req.Id, )
+	r, err := g.manager.ReadValue(req.Id)
 	if err != nil {
 		return err
 	}
