@@ -415,8 +415,8 @@
       "enum": [
         "CONSTRAINT_UNKNOWN",
         "CONSTRAINT_OWN",
-        "CONSTRAINT_ALL",
-        "CONSTRAINT_SHARED"
+        "CONSTRAINT_SHARED",
+        "CONSTRAINT_ALL"
       ],
       "default": "CONSTRAINT_UNKNOWN"
     },
@@ -736,6 +736,9 @@
         "id": {
           "type": "string"
         },
+        "name": {
+          "type": "string"
+        },
         "display_name": {
           "type": "string"
         },
@@ -761,8 +764,7 @@
           "$ref": "#/definitions/protoPermissionSetting"
         },
         "resource": {
-          "$ref": "#/definitions/protoResource",
-          "title": "if resource is nil, then the setting is system wide"
+          "$ref": "#/definitions/protoResource"
         }
       }
     },
@@ -770,6 +772,9 @@
       "type": "object",
       "properties": {
         "id": {
+          "type": "string"
+        },
+        "name": {
           "type": "string"
         },
         "type": {
@@ -788,8 +793,7 @@
           }
         },
         "resource": {
-          "$ref": "#/definitions/protoResource",
-          "title": "if resource is nil, then the settings bundle is system wide"
+          "$ref": "#/definitions/protoResource"
         }
       }
     },

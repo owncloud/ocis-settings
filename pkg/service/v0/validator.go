@@ -20,6 +20,7 @@ func validateSaveSettingsBundle(req *proto.SaveSettingsBundleRequest) error {
 	if err := validation.ValidateStruct(
 		req.SettingsBundle,
 		validation.Field(&req.SettingsBundle.Id, validation.When(req.SettingsBundle.Id != "", is.UUID)),
+		validation.Field(&req.SettingsBundle.Name, requireAlphanumeric...),
 		validation.Field(&req.SettingsBundle.Type, validation.NotIn(proto.SettingsBundle_TYPE_UNKNOWN)),
 		validation.Field(&req.SettingsBundle.Extension, requireAlphanumeric...),
 		validation.Field(&req.SettingsBundle.DisplayName, validation.Required),
@@ -128,6 +129,7 @@ func validateSetting(setting *proto.Setting) error {
 	if err := validation.ValidateStruct(
 		setting,
 		validation.Field(&setting.Id, validation.When(setting.Id != "", is.UUID)),
+		validation.Field(&setting.Name, requireAlphanumeric...),
 	); err != nil {
 		return err
 	}

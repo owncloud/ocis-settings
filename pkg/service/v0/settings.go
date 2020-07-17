@@ -20,8 +20,9 @@ func generateSettingsBundlesDefaultRoles() []*settings.SettingsBundle {
 func generateSettingsBundleAdminRole() *settings.SettingsBundle {
 	return &settings.SettingsBundle{
 		Id:          BundleUuidRoleAdmin,
+		Name:        "admin",
 		Type:        settings.SettingsBundle_TYPE_ROLE,
-		Extension:   "ocis-settings",
+		Extension:   "ocis-roles",
 		DisplayName: "Admin role",
 		Resource: &settings.Resource{
 			Type: settings.Resource_TYPE_SYSTEM,
@@ -33,8 +34,9 @@ func generateSettingsBundleAdminRole() *settings.SettingsBundle {
 func generateSettingsBundleUserRole() *settings.SettingsBundle {
 	return &settings.SettingsBundle{
 		Id:          BundleUuidRoleUser,
+		Name:        "user",
 		Type:        settings.SettingsBundle_TYPE_ROLE,
-		Extension:   "ocis-settings",
+		Extension:   "ocis-roles",
 		DisplayName: "User role",
 		Resource: &settings.Resource{
 			Type: settings.Resource_TYPE_SYSTEM,
@@ -46,8 +48,9 @@ func generateSettingsBundleUserRole() *settings.SettingsBundle {
 func generateSettingsBundleGuestRole() *settings.SettingsBundle {
 	return &settings.SettingsBundle{
 		Id:          BundleUuidRoleGuest,
+		Name:        "guest",
 		Type:        settings.SettingsBundle_TYPE_ROLE,
-		Extension:   "ocis-settings",
+		Extension:   "ocis-roles",
 		DisplayName: "Guest role",
 		Resource: &settings.Resource{
 			Type: settings.Resource_TYPE_SYSTEM,

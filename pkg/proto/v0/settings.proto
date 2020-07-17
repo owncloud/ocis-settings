@@ -245,28 +245,28 @@ message SettingsBundle {
     TYPE_ROLE = 2;
   }
   string id = 1;
-  Type type = 2;
-  string extension = 3;
-  string display_name = 4;
-  repeated Setting settings = 5;
-  // if resource is nil, then the settings bundle is system wide
-  Resource resource = 6;
+  string name = 2;
+  Type type = 3;
+  string extension = 4;
+  string display_name = 5;
+  repeated Setting settings = 6;
+  Resource resource = 7;
 }
 
 message Setting {
   string id = 1;
-  string display_name = 2;
-  string description = 3;
+  string name = 2;
+  string display_name = 3;
+  string description = 4;
   oneof value {
-    IntSetting int_value = 4;
-    StringSetting string_value = 5;
-    BoolSetting bool_value = 6;
-    SingleChoiceListSetting single_choice_value = 7;
-    MultiChoiceListSetting multi_choice_value = 8;
-    PermissionSetting permission_value = 9;
+    IntSetting int_value = 5;
+    StringSetting string_value = 6;
+    BoolSetting bool_value = 7;
+    SingleChoiceListSetting single_choice_value = 8;
+    MultiChoiceListSetting multi_choice_value = 9;
+    PermissionSetting permission_value = 10;
   }
-  // if resource is nil, then the setting is system wide
-  Resource resource = 10;
+  Resource resource = 11;
 }
 
 message IntSetting {
