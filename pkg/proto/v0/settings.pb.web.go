@@ -1480,42 +1480,6 @@ func (m *PermissionSetting) UnmarshalJSON(b []byte) error {
 
 var _ json.Unmarshaler = (*PermissionSetting)(nil)
 
-// ConstraintJSONMarshaler describes the default jsonpb.Marshaler used by all
-// instances of Constraint. This struct is safe to replace or modify but
-// should not be done so concurrently.
-var ConstraintJSONMarshaler = new(jsonpb.Marshaler)
-
-// MarshalJSON satisfies the encoding/json Marshaler interface. This method
-// uses the more correct jsonpb package to correctly marshal the message.
-func (m *Constraint) MarshalJSON() ([]byte, error) {
-	if m == nil {
-		return json.Marshal(nil)
-	}
-
-	buf := &bytes.Buffer{}
-
-	if err := ConstraintJSONMarshaler.Marshal(buf, m); err != nil {
-		return nil, err
-	}
-
-	return buf.Bytes(), nil
-}
-
-var _ json.Marshaler = (*Constraint)(nil)
-
-// ConstraintJSONUnmarshaler describes the default jsonpb.Unmarshaler used by all
-// instances of Constraint. This struct is safe to replace or modify but
-// should not be done so concurrently.
-var ConstraintJSONUnmarshaler = new(jsonpb.Unmarshaler)
-
-// UnmarshalJSON satisfies the encoding/json Unmarshaler interface. This method
-// uses the more correct jsonpb package to correctly unmarshal the message.
-func (m *Constraint) UnmarshalJSON(b []byte) error {
-	return ConstraintJSONUnmarshaler.Unmarshal(bytes.NewReader(b), m)
-}
-
-var _ json.Unmarshaler = (*Constraint)(nil)
-
 // SettingsValueJSONMarshaler describes the default jsonpb.Marshaler used by all
 // instances of SettingsValue. This struct is safe to replace or modify but
 // should not be done so concurrently.
@@ -1623,39 +1587,3 @@ func (m *ListOptionValue) UnmarshalJSON(b []byte) error {
 }
 
 var _ json.Unmarshaler = (*ListOptionValue)(nil)
-
-// UserRoleAssignmentsJSONMarshaler describes the default jsonpb.Marshaler used by all
-// instances of UserRoleAssignments. This struct is safe to replace or modify but
-// should not be done so concurrently.
-var UserRoleAssignmentsJSONMarshaler = new(jsonpb.Marshaler)
-
-// MarshalJSON satisfies the encoding/json Marshaler interface. This method
-// uses the more correct jsonpb package to correctly marshal the message.
-func (m *UserRoleAssignments) MarshalJSON() ([]byte, error) {
-	if m == nil {
-		return json.Marshal(nil)
-	}
-
-	buf := &bytes.Buffer{}
-
-	if err := UserRoleAssignmentsJSONMarshaler.Marshal(buf, m); err != nil {
-		return nil, err
-	}
-
-	return buf.Bytes(), nil
-}
-
-var _ json.Marshaler = (*UserRoleAssignments)(nil)
-
-// UserRoleAssignmentsJSONUnmarshaler describes the default jsonpb.Unmarshaler used by all
-// instances of UserRoleAssignments. This struct is safe to replace or modify but
-// should not be done so concurrently.
-var UserRoleAssignmentsJSONUnmarshaler = new(jsonpb.Unmarshaler)
-
-// UnmarshalJSON satisfies the encoding/json Unmarshaler interface. This method
-// uses the more correct jsonpb package to correctly unmarshal the message.
-func (m *UserRoleAssignments) UnmarshalJSON(b []byte) error {
-	return UserRoleAssignmentsJSONUnmarshaler.Unmarshal(bytes.NewReader(b), m)
-}
-
-var _ json.Unmarshaler = (*UserRoleAssignments)(nil)

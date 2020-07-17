@@ -410,6 +410,16 @@
     }
   },
   "definitions": {
+    "PermissionSettingConstraint": {
+      "type": "string",
+      "enum": [
+        "CONSTRAINT_UNKNOWN",
+        "CONSTRAINT_OWN",
+        "CONSTRAINT_ALL",
+        "CONSTRAINT_SHARED"
+      ],
+      "default": "CONSTRAINT_UNKNOWN"
+    },
     "protoAddSettingToSettingsBundleRequest": {
       "type": "object",
       "properties": {
@@ -456,29 +466,6 @@
           "type": "string"
         }
       }
-    },
-    "protoConstraint": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "$ref": "#/definitions/protoConstraintType"
-        },
-        "values": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "protoConstraintType": {
-      "type": "string",
-      "enum": [
-        "UNKNOWN",
-        "USER",
-        "GROUP"
-      ],
-      "default": "UNKNOWN"
     },
     "protoGetSettingsBundleRequest": {
       "type": "object",
@@ -652,20 +639,20 @@
           "$ref": "#/definitions/protoPermissionSettingOperation"
         },
         "constraint": {
-          "$ref": "#/definitions/protoConstraint"
+          "$ref": "#/definitions/PermissionSettingConstraint"
         }
       }
     },
     "protoPermissionSettingOperation": {
       "type": "string",
       "enum": [
-        "UNKNOWN",
-        "CREATE",
-        "READ",
-        "UPDATE",
-        "DELETE"
+        "OPERATION_UNKNOWN",
+        "OPERATION_CREATE",
+        "OPERATION_READ",
+        "OPERATION_UPDATE",
+        "OPERATION_DELETE"
       ],
-      "default": "UNKNOWN"
+      "default": "OPERATION_UNKNOWN"
     },
     "protoRemoveRoleFromUserRequest": {
       "type": "object",
@@ -700,16 +687,16 @@
     "protoResourceType": {
       "type": "string",
       "enum": [
-        "UNKNOWN",
-        "SYSTEM",
-        "FILE",
-        "SHARE",
-        "SETTING",
-        "BUNDLE",
-        "USER",
-        "GROUP"
+        "TYPE_UNKNOWN",
+        "TYPE_SYSTEM",
+        "TYPE_FILE",
+        "TYPE_SHARE",
+        "TYPE_SETTING",
+        "TYPE_BUNDLE",
+        "TYPE_USER",
+        "TYPE_GROUP"
       ],
-      "default": "UNKNOWN"
+      "default": "TYPE_UNKNOWN"
     },
     "protoSaveSettingsBundleRequest": {
       "type": "object",
@@ -809,11 +796,11 @@
     "protoSettingsBundleType": {
       "type": "string",
       "enum": [
-        "UNKNOWN",
-        "DEFAULT",
-        "ROLE"
+        "TYPE_UNKNOWN",
+        "TYPE_DEFAULT",
+        "TYPE_ROLE"
       ],
-      "default": "UNKNOWN"
+      "default": "TYPE_UNKNOWN"
     },
     "protoSettingsValue": {
       "type": "object",

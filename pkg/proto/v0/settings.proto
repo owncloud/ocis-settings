@@ -221,14 +221,14 @@ message UserRoleAssignment {
 
 message Resource {
   enum Type {
-    UNKNOWN = 0;
-    SYSTEM = 1;
-    FILE = 2;
-    SHARE = 3;
-    SETTING = 4;
-    BUNDLE = 5;
-    USER = 6;
-    GROUP = 7;
+    TYPE_UNKNOWN = 0;
+    TYPE_SYSTEM = 1;
+    TYPE_FILE = 2;
+    TYPE_SHARE = 3;
+    TYPE_SETTING = 4;
+    TYPE_BUNDLE = 5;
+    TYPE_USER = 6;
+    TYPE_GROUP = 7;
   }
   Type type = 1;
   string id = 2;
@@ -240,9 +240,9 @@ message Resource {
 
 message SettingsBundle {
   enum Type {
-    UNKNOWN = 0;
-    DEFAULT = 1;
-    ROLE = 2;
+    TYPE_UNKNOWN = 0;
+    TYPE_DEFAULT = 1;
+    TYPE_ROLE = 2;
   }
   string id = 1;
   Type type = 2;
@@ -306,24 +306,20 @@ message ListOption {
 
 message PermissionSetting {
   enum Operation {
-    UNKNOWN = 0;
-    CREATE = 1;
-    READ = 2;
-    UPDATE = 3;
-    DELETE = 4;
+    OPERATION_UNKNOWN = 0;
+    OPERATION_CREATE = 1;
+    OPERATION_READ = 2;
+    OPERATION_UPDATE = 3;
+    OPERATION_DELETE = 4;
   }
   Operation operation = 1;
-  Constraint constraint = 2;
-}
-
-message Constraint {
-  enum Type {
-    UNKNOWN = 0;
-    USER = 1;
-    GROUP = 2;
+  enum Constraint {
+    CONSTRAINT_UNKNOWN = 0;
+    CONSTRAINT_OWN = 1;
+    CONSTRAINT_SHARED = 2;
+    CONSTRAINT_ALL = 3;
   }
-  Type type = 1;
-  repeated string values = 2;
+  Constraint constraint = 2;
 }
 
 // ---
@@ -355,12 +351,4 @@ message ListOptionValue {
     string string_value = 1;
     int64 int_value = 2;
   }
-}
-
-// ---
-// only meant for serialization
-// ---
-
-message UserRoleAssignments {
-  map<string, UserRoleAssignment> assignments = 1;
 }

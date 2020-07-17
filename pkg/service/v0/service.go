@@ -28,7 +28,7 @@ func NewService(cfg *config.Config, logger log.Logger) Service {
 		manager: store.New(cfg),
 	}
 	// FIXME: we're writing default roles per service start (i.e. twice at the moment, for http and grpc server).
-	for _, role := range GenerateSettingsBundlesDefaultRoles() {
+	for _, role := range generateSettingsBundlesDefaultRoles() {
 		bundleId := role.Extension + "." + role.Id
 		// check if the role already exists
 		bundle, _ := service.manager.ReadBundle(role.Id)
@@ -82,7 +82,7 @@ func (g Service) ListSettingsBundles(c context.Context, req *proto.ListSettingsB
 	if validationError := validateListSettingsBundles(req); validationError != nil {
 		return validationError
 	}
-	bundles, err := g.manager.ListBundles(req.AccountUuid, proto.SettingsBundle_DEFAULT)
+	bundles, err := g.manager.ListBundles(req.AccountUuid, proto.SettingsBundle_TYPE_DEFAULT)
 	if err != nil {
 		return err
 	}
@@ -100,10 +100,15 @@ func (g Service) ListSettingsBundles(c context.Context, req *proto.ListSettingsB
 		var filteredSettings []*proto.Setting
 		for _, setting := range bundle.Settings {
 			settingResource := &proto.Resource{
-				Type: proto.Resource_SETTING,
+				Type: proto.Resource_TYPE_SETTING,
 				Id:   setting.Id,
 			}
-			if g.hasPermission(rolesResponse.Assignments, settingResource, proto.PermissionSetting_UPDATE) {
+			if g.hasPermission(
+				rolesResponse.Assignments,
+				settingResource,
+				proto.PermissionSetting_OPERATION_UPDATE,
+				proto.PermissionSetting_CONSTRAINT_OWN,
+			) {
 				filteredSettings = append(filteredSettings, setting)
 			}
 		}
@@ -187,7 +192,7 @@ func (g Service) ListRoles(c context.Context, req *proto.ListSettingsBundlesRequ
 	if validationError := validateListRoles(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ListBundles(req.AccountUuid, proto.SettingsBundle_ROLE)
+	r, err := g.manager.ListBundles(req.AccountUuid, proto.SettingsBundle_TYPE_ROLE)
 	if err != nil {
 		return err
 	}
@@ -233,7 +238,7 @@ func (g Service) RemoveRoleFromUser(c context.Context, req *proto.RemoveRoleFrom
 
 // cleanUpResource makes sure that the account uuid of the authenticated user is injected if needed.
 func cleanUpResource(c context.Context, resource *proto.Resource) {
-	if resource != nil && resource.Type == proto.Resource_USER {
+	if resource != nil && resource.Type == proto.Resource_TYPE_USER {
 		resource.Id = getValidatedAccountUUID(c, resource.Id)
 	}
 }

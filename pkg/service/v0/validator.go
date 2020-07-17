@@ -20,7 +20,7 @@ func validateSaveSettingsBundle(req *proto.SaveSettingsBundleRequest) error {
 	if err := validation.ValidateStruct(
 		req.SettingsBundle,
 		validation.Field(&req.SettingsBundle.Id, validation.When(req.SettingsBundle.Id != "", is.UUID)),
-		validation.Field(&req.SettingsBundle.Type, validation.NotIn(proto.SettingsBundle_UNKNOWN)),
+		validation.Field(&req.SettingsBundle.Type, validation.NotIn(proto.SettingsBundle_TYPE_UNKNOWN)),
 		validation.Field(&req.SettingsBundle.Extension, requireAlphanumeric...),
 		validation.Field(&req.SettingsBundle.DisplayName, validation.Required),
 		validation.Field(&req.SettingsBundle.Settings, validation.Required),
@@ -119,11 +119,7 @@ func validateResource(resource *proto.Resource) error {
 	if err := validation.Validate(&resource, validation.Required); err != nil {
 		return err
 	}
-	return validation.ValidateStruct(
-		resource,
-		validation.Field(&resource.Type, validation.NotIn(proto.Resource_UNKNOWN)),
-		validation.Field(&resource.Id, validation.When(resource.Type != proto.Resource_SYSTEM, validation.Required)),
-	)
+	return validation.Validate(&resource, validation.NotIn(proto.Resource_TYPE_UNKNOWN))
 }
 
 // validateSetting is an internal helper for validating the content of a setting.
