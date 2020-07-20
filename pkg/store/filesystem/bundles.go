@@ -13,13 +13,11 @@ import (
 var m = &sync.RWMutex{}
 
 // ListBundles returns all bundles in the dataPath folder belonging to the given extension
-func (s Store) ListBundles(accountUUID string, bundleType proto.SettingsBundle_Type) ([]*proto.SettingsBundle, error) {
+func (s Store) ListBundles(bundleType proto.SettingsBundle_Type) ([]*proto.SettingsBundle, error) {
 	// FIXME: list requests should be ran against a cache, not FS
 	m.RLock()
 	defer m.RUnlock()
 
-	// TODO: bundles should be filtered by account uuid in the future
-	// (based on permissions, not based on bundle properties)
 	var records []*proto.SettingsBundle
 	bundlesFolder := s.buildFolderPathForBundles(false)
 	bundleFiles, err := ioutil.ReadDir(bundlesFolder)

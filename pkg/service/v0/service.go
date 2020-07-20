@@ -82,7 +82,7 @@ func (g Service) ListSettingsBundles(c context.Context, req *proto.ListSettingsB
 	if validationError := validateListSettingsBundles(req); validationError != nil {
 		return validationError
 	}
-	bundles, err := g.manager.ListBundles(req.AccountUuid, proto.SettingsBundle_TYPE_DEFAULT)
+	bundles, err := g.manager.ListBundles(proto.SettingsBundle_TYPE_DEFAULT)
 	if err != nil {
 		return err
 	}
@@ -192,7 +192,7 @@ func (g Service) ListRoles(c context.Context, req *proto.ListSettingsBundlesRequ
 	if validationError := validateListRoles(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ListBundles(req.AccountUuid, proto.SettingsBundle_TYPE_ROLE)
+	r, err := g.manager.ListBundles(proto.SettingsBundle_TYPE_ROLE)
 	if err != nil {
 		return err
 	}

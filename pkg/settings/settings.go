@@ -22,7 +22,7 @@ type Manager interface {
 
 // BundleManager is a bundle service interface for abstraction of storage implementations
 type BundleManager interface {
-	ListBundles(accountUUID string, bundleType proto.SettingsBundle_Type) ([]*proto.SettingsBundle, error)
+	ListBundles(bundleType proto.SettingsBundle_Type) ([]*proto.SettingsBundle, error)
 	ReadBundle(bundleId string) (*proto.SettingsBundle, error)
 	WriteBundle(bundle *proto.SettingsBundle) (*proto.SettingsBundle, error)
 	AddSettingToBundle(bundleId string, setting *proto.Setting) (*proto.Setting, error)
