@@ -16,6 +16,7 @@ func (s Store) ListRoleAssignments(accountUUID string) ([]*proto.UserRoleAssignm
 	assignmentsFolder := s.buildFolderPathForRoleAssignments(false)
 	assignmentFiles, err := ioutil.ReadDir(assignmentsFolder)
 	if err != nil {
+		s.Logger.Error().Err(err).Str("assignmentFiles", assignmentsFolder).Msg("error reading assignment file")
 		return records, nil
 	}
 
