@@ -29,19 +29,19 @@ func NewService(cfg *config.Config, logger log.Logger) Service {
 	}
 	// FIXME: we're writing default roles per service start (i.e. twice at the moment, for http and grpc server).
 	for _, role := range generateSettingsBundlesDefaultRoles() {
-		bundleId := role.Extension + "." + role.Id
+		bundleID := role.Extension + "." + role.Id
 		// check if the role already exists
 		bundle, _ := service.manager.ReadBundle(role.Id)
 		if bundle != nil {
-			logger.Debug().Msgf("Settings bundle %v already exists. Skipping.", bundleId)
+			logger.Debug().Msgf("Settings bundle %v already exists. Skipping.", bundleID)
 			continue
 		}
 		// create the role
 		_, err := service.manager.WriteBundle(role)
 		if err != nil {
-			logger.Error().Err(err).Msgf("Failed to register settings bundle %v", bundleId)
+			logger.Error().Err(err).Msgf("Failed to register settings bundle %v", bundleID)
 		}
-		logger.Debug().Msgf("Successfully registered settings bundle %v", bundleId)
+		logger.Debug().Msgf("Successfully registered settings bundle %v", bundleID)
 	}
 	return service
 }

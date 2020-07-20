@@ -28,7 +28,7 @@ var valueScenarios = []struct {
 				SettingId:   setting1,
 				AccountUuid: accountUUID1,
 				Resource: &proto.Resource{
-					Type: proto.Resource_SYSTEM,
+					Type: proto.Resource_TYPE_SYSTEM,
 				},
 				Value: &proto.SettingsValue_StringValue{
 					StringValue: "lalala",
@@ -50,7 +50,7 @@ var valueScenarios = []struct {
 				SettingId:   setting2,
 				AccountUuid: accountUUID1,
 				Resource: &proto.Resource{
-					Type: proto.Resource_FILE,
+					Type: proto.Resource_TYPE_FILE,
 					Id:   "adfba82d-919a-41c3-9cd1-5a3f83b2bf76",
 				},
 				Value: &proto.SettingsValue_StringValue{

@@ -51,7 +51,7 @@ func (s Store) WriteRoleAssignment(assignment *proto.UserRoleAssignment) (*proto
 }
 
 // DeleteRoleAssignment deletes the given role assignment from the existing assignments of the respective account.
-func (s Store) RemoveRoleAssignment(assignmentId string) error {
-	filePath := s.buildFilePathForRoleAssignment(assignmentId, false)
+func (s Store) RemoveRoleAssignment(assignmentID string) error {
+	filePath := s.buildFilePathForRoleAssignment(assignmentID, false)
 	return os.Remove(filePath)
 }

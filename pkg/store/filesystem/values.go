@@ -2,14 +2,15 @@
 package store
 
 import (
-	"github.com/gofrs/uuid"
-	"github.com/owncloud/ocis-settings/pkg/proto/v0"
 	"io/ioutil"
 	"path/filepath"
+
+	"github.com/gofrs/uuid"
+	"github.com/owncloud/ocis-settings/pkg/proto/v0"
 )
 
 // ListValues reads all values that match the given bundleId and accountUUID
-func (s Store) ListValues(bundleId, accountUUID string) ([]*proto.SettingsValue, error) {
+func (s Store) ListValues(bundleID, accountUUID string) ([]*proto.SettingsValue, error) {
 	var records []*proto.SettingsValue
 	valuesFolder := s.buildFolderPathForValues(false)
 	valueFiles, err := ioutil.ReadDir(valuesFolder)
@@ -24,7 +25,7 @@ func (s Store) ListValues(bundleId, accountUUID string) ([]*proto.SettingsValue,
 			s.Logger.Warn().Msgf("error reading %v", valueFile)
 			continue
 		}
-		if record.BundleId != bundleId {
+		if record.BundleId != bundleID {
 			continue
 		}
 		if record.AccountUuid != "" && record.AccountUuid != accountUUID {
@@ -37,8 +38,8 @@ func (s Store) ListValues(bundleId, accountUUID string) ([]*proto.SettingsValue,
 }
 
 // ReadValue tries to find a value by the given valueId within the dataPath
-func (s Store) ReadValue(valueId string) (*proto.SettingsValue, error) {
-	filePath := s.buildFilePathForValue(valueId, false)
+func (s Store) ReadValue(valueID string) (*proto.SettingsValue, error) {
+	filePath := s.buildFilePathForValue(valueID, false)
 	record := proto.SettingsValue{}
 	if err := s.parseRecordFromFile(&record, filePath); err != nil {
 		return nil, err

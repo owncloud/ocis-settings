@@ -27,7 +27,7 @@ var bundleScenarios = []struct {
 				Extension:   extension1,
 				DisplayName: "test1",
 				Resource: &proto.Resource{
-					Type: proto.Resource_FILE,
+					Type: proto.Resource_TYPE_FILE,
 					Id:   "beep",
 				},
 				Settings: []*proto.Setting{
@@ -36,7 +36,7 @@ var bundleScenarios = []struct {
 						Description: "test-desc-1",
 						DisplayName: "test-displayname-1",
 						Resource: &proto.Resource{
-							Type: proto.Resource_FILE,
+							Type: proto.Resource_TYPE_FILE,
 							Id:   "bleep",
 						},
 						Value: &proto.Setting_IntValue{
@@ -63,7 +63,7 @@ var bundleScenarios = []struct {
 				Extension:   extension2,
 				DisplayName: "test1",
 				Resource: &proto.Resource{
-					Type: proto.Resource_SYSTEM,
+					Type: proto.Resource_TYPE_SYSTEM,
 				},
 				Settings: []*proto.Setting{
 					{
@@ -71,7 +71,7 @@ var bundleScenarios = []struct {
 						Description: "test-desc-2",
 						DisplayName: "test-displayname-2",
 						Resource: &proto.Resource{
-							Type: proto.Resource_SYSTEM,
+							Type: proto.Resource_TYPE_SYSTEM,
 						},
 						Value: &proto.Setting_IntValue{
 							IntValue: &proto.IntSetting{

@@ -43,12 +43,12 @@ func (s Store) ListBundles(bundleType proto.SettingsBundle_Type) ([]*proto.Setti
 
 // ReadBundle tries to find a bundle by the given identifier within the dataPath.
 // Extension and BundleKey within the identifier are required.
-func (s Store) ReadBundle(bundleId string) (*proto.SettingsBundle, error) {
+func (s Store) ReadBundle(bundleID string) (*proto.SettingsBundle, error) {
 	// FIXME: locking should happen on the file here, not globally.
 	m.RLock()
 	defer m.RUnlock()
 
-	filePath := s.buildFilePathForBundle(bundleId, false)
+	filePath := s.buildFilePathForBundle(bundleID, false)
 	record := proto.SettingsBundle{}
 	if err := s.parseRecordFromFile(&record, filePath); err != nil {
 		return nil, err
@@ -77,8 +77,8 @@ func (s Store) WriteBundle(record *proto.SettingsBundle) (*proto.SettingsBundle,
 }
 
 // AddSettingToBundle adds the given setting to the settings bundle which was identified by the given identifier and resource
-func (s Store) AddSettingToBundle(bundleId string, setting *proto.Setting) (*proto.Setting, error) {
-	bundle, err := s.ReadBundle(bundleId)
+func (s Store) AddSettingToBundle(bundleID string, setting *proto.Setting) (*proto.Setting, error) {
+	bundle, err := s.ReadBundle(bundleID)
 	if err != nil {
 		return nil, err
 	}
@@ -94,22 +94,22 @@ func (s Store) AddSettingToBundle(bundleId string, setting *proto.Setting) (*pro
 }
 
 // RemoveSettingFromBundle removes the setting that was identified by the given identifier and resource
-func (s Store) RemoveSettingFromBundle(bundleId string, settingId string) error {
-	bundle, err := s.ReadBundle(bundleId)
+func (s Store) RemoveSettingFromBundle(bundleID string, settingID string) error {
+	bundle, err := s.ReadBundle(bundleID)
 	if err != nil {
 		return nil
 	}
-	removeSetting(bundle, settingId)
+	removeSetting(bundle, settingID)
 	_, err = s.WriteBundle(bundle)
 	return err
 }
 
 // indexOfSetting finds the index of the given setting within the given bundle.
 // returns -1 if the setting was not found.
-func indexOfSetting(bundle *proto.SettingsBundle, settingId string) int {
+func indexOfSetting(bundle *proto.SettingsBundle, settingID string) int {
 	for index := range bundle.Settings {
 		s := bundle.Settings[index]
-		if s.Id == settingId {
+		if s.Id == settingID {
 			return index
 		}
 	}
@@ -129,10 +129,10 @@ func setSetting(bundle *proto.SettingsBundle, setting *proto.Setting) {
 }
 
 // removeSetting will remove the given setting from the given bundle
-func removeSetting(bundle *proto.SettingsBundle, settingId string) bool {
+func removeSetting(bundle *proto.SettingsBundle, settingID string) bool {
 	m.Lock()
 	defer m.Unlock()
-	index := indexOfSetting(bundle, settingId)
+	index := indexOfSetting(bundle, settingID)
 	if index == -1 {
 		return false
 	}

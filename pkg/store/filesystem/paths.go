@@ -19,9 +19,9 @@ func (s Store) buildFolderPathForBundles(mkdir bool) string {
 }
 
 // buildFilePathForBundle builds a unique file name from the given params. If mkdir is true, folders in the path will be created if necessary.
-func (s Store) buildFilePathForBundle(bundleId string, mkdir bool) string {
+func (s Store) buildFilePathForBundle(bundleID string, mkdir bool) string {
 	extensionFolder := s.buildFolderPathForBundles(mkdir)
-	return filepath.Join(extensionFolder, bundleId+".json")
+	return filepath.Join(extensionFolder, bundleID+".json")
 }
 
 // buildFolderPathForValues builds the folder path for storing settings values. If mkdir is true, folders in the path will be created if necessary.
@@ -34,9 +34,9 @@ func (s Store) buildFolderPathForValues(mkdir bool) string {
 }
 
 // buildFilePathForValue builds a unique file name from the given params. If mkdir is true, folders in the path will be created if necessary.
-func (s Store) buildFilePathForValue(valueId string, mkdir bool) string {
+func (s Store) buildFilePathForValue(valueID string, mkdir bool) string {
 	extensionFolder := s.buildFolderPathForValues(mkdir)
-	return filepath.Join(extensionFolder, valueId+".json")
+	return filepath.Join(extensionFolder, valueID+".json")
 }
 
 // buildFolderPathForRoleAssignments builds the folder path for storing role assignments. If mkdir is true, folders in the path will be created if necessary.
@@ -49,9 +49,9 @@ func (s Store) buildFolderPathForRoleAssignments(mkdir bool) string {
 }
 
 // buildFilePathForRoleAssignment builds a unique file name from the given params. If mkdir is true, folders in the path will be created if necessary.
-func (s Store) buildFilePathForRoleAssignment(assignmentId string, mkdir bool) string {
+func (s Store) buildFilePathForRoleAssignment(assignmentID string, mkdir bool) string {
 	roleAssignmentsFolder := s.buildFolderPathForRoleAssignments(mkdir)
-	return filepath.Join(roleAssignmentsFolder, assignmentId+".json")
+	return filepath.Join(roleAssignmentsFolder, assignmentID+".json")
 }
 
 // ensureFolderExists checks if the given path is an existing folder and creates one if not existing
