@@ -111,34 +111,6 @@ func TestSettingsBundleProperties(t *testing.T) {
 			"123e4567-e89b-12d3-a456-426652340000",
 			CustomError{},
 		},
-		// {
-		// 	"bundle key with ../ in the name",
-		// 	"../file-a-level-higher-up",
-		// 	"simple-key",
-		// 	"simple-display-name",
-		// 	"simple-extension-name",
-		// 	"123e4567-e89b-12d3-a456-426652340000",
-		// 	CustomError{
-		// 		ID:     "go.micro.client",
-		// 		Code:   500,
-		// 		Detail: "bundle: must be in a valid format.",
-		// 		Status: "Internal Server Error",
-		// 	},
-		// },
-		// {
-		// 	"bundle key in the root directory",
-		// 	"/tmp/file",
-		// 	"simple-key",
-		// 	"simple-display-name",
-		// 	"simple-extension-name",
-		// 	"123e4567-e89b-12d3-a456-426652340000",
-		// 	CustomError{
-		// 		ID:     "go.micro.client",
-		// 		Code:   500,
-		// 		Detail: "bundle: must be in a valid format.",
-		// 		Status: "Internal Server Error",
-		// 	},
-		// },
 		{
 			"extension name with ../ in the name",
 			"simple-bundle-key",
@@ -165,20 +137,6 @@ func TestSettingsBundleProperties(t *testing.T) {
 				Status: "Internal Server Error",
 			},
 		},
-		// {
-		// 	"bundle key with \\ as the name",
-		// 	"\\",
-		// 	"simple-key",
-		// 	"simple-display-name",
-		// 	"simple-extension-name",
-		// 	"123e4567-e89b-12d3-a456-426652340000",
-		// 	CustomError{
-		// 		ID:     "go.micro.client",
-		// 		Code:   500,
-		// 		Detail: "bundle: must be in a valid format.",
-		// 		Status: "Internal Server Error",
-		// 	},
-		// },
 		{
 			"spaces are disallowed in keys",
 			"simple bundle key",
@@ -200,20 +158,6 @@ func TestSettingsBundleProperties(t *testing.T) {
 			"123e4567-e89b-12d3-a456-426652340000",
 			CustomError{},
 		},
-		// {
-		// 	"bundle key missing",
-		// 	"",
-		// 	"simple-bundle-key",
-		// 	"simple-display-name",
-		// 	"simple-extension-name",
-		// 	"123e4567-e89b-12d3-a456-426652340000",
-		// 	CustomError{
-		// 		ID:     "go.micro.client",
-		// 		Code:   500,
-		// 		Detail: "bundle: cannot be blank.",
-		// 		Status: "Internal Server Error",
-		// 	},
-		// },
 		{
 			"extension missing",
 			"simple-bundle-key",
@@ -248,6 +192,62 @@ func TestSettingsBundleProperties(t *testing.T) {
 			"",
 			CustomError{},
 		},
+		// {
+		// 	"bundle key missing",
+		// 	"",
+		// 	"simple-bundle-key",
+		// 	"simple-display-name",
+		// 	"simple-extension-name",
+		// 	"123e4567-e89b-12d3-a456-426652340000",
+		// 	CustomError{
+		// 		ID:     "go.micro.client",
+		// 		Code:   500,
+		// 		Detail: "bundle: cannot be blank.",
+		// 		Status: "Internal Server Error",
+		// 	},
+		// },
+		// {
+		// 	"bundle key with \\ as the name",
+		// 	"\\",
+		// 	"simple-key",
+		// 	"simple-display-name",
+		// 	"simple-extension-name",
+		// 	"123e4567-e89b-12d3-a456-426652340000",
+		// 	CustomError{
+		// 		ID:     "go.micro.client",
+		// 		Code:   500,
+		// 		Detail: "bundle: must be in a valid format.",
+		// 		Status: "Internal Server Error",
+		// 	},
+		// },
+		// {
+		// 	"bundle key with ../ in the name",
+		// 	"../file-a-level-higher-up",
+		// 	"simple-key",
+		// 	"simple-display-name",
+		// 	"simple-extension-name",
+		// 	"123e4567-e89b-12d3-a456-426652340000",
+		// 	CustomError{
+		// 		ID:     "go.micro.client",
+		// 		Code:   500,
+		// 		Detail: "bundle: must be in a valid format.",
+		// 		Status: "Internal Server Error",
+		// 	},
+		// },
+		// {
+		// 	"bundle key in the root directory",
+		// 	"/tmp/file",
+		// 	"simple-key",
+		// 	"simple-display-name",
+		// 	"simple-extension-name",
+		// 	"123e4567-e89b-12d3-a456-426652340000",
+		// 	CustomError{
+		// 		ID:     "go.micro.client",
+		// 		Code:   500,
+		// 		Detail: "bundle: must be in a valid format.",
+		// 		Status: "Internal Server Error",
+		// 	},
+		// },
 	}
 	for _, testCase := range tests {
 		testCase := testCase
@@ -266,7 +266,7 @@ func TestSettingsBundleProperties(t *testing.T) {
 				},
 			}
 			createRequest := proto.SaveSettingsBundleRequest{
-				SettingsBundle: &bundle,
+				Bundle: &bundle,
 			}
 
 			cresponse, err := cl.SaveSettingsBundle(context.Background(), &createRequest)
@@ -282,16 +282,16 @@ func TestSettingsBundleProperties(t *testing.T) {
 				assert.Equal(t, testCase.expectedError.Detail, errorData.Detail)
 				assert.Equal(t, testCase.expectedError.Status, errorData.Status)
 			} else {
-				assert.Equal(t, testCase.Extension, cresponse.SettingsBundle.Extension)
-				assert.Equal(t, testCase.DisplayName, cresponse.SettingsBundle.DisplayName)
+				assert.Equal(t, testCase.Extension, cresponse.Bundle.Extension)
+				assert.Equal(t, testCase.DisplayName, cresponse.Bundle.DisplayName)
 
-				getRequest := proto.GetSettingsBundleRequest{BundleId: cresponse.SettingsBundle.Id}
+				getRequest := proto.GetSettingsBundleRequest{BundleId: cresponse.Bundle.Id}
 
 				getResponse, err := cl.GetSettingsBundle(context.Background(), &getRequest)
 				assert.NoError(t, err)
 				// assert.Equal(t, testCase.Extension, getResponse.SettingsBundle.Extension)
 				// assert.Equal(t, testCase.UUID, getResponse.SettingsBundle.AccountUuid)
-				assert.Equal(t, testCase.DisplayName, getResponse.SettingsBundle.DisplayName)
+				assert.Equal(t, testCase.DisplayName, getResponse.Bundle.DisplayName)
 			}
 			os.RemoveAll(dataStore)
 		})
