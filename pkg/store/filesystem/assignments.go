@@ -34,9 +34,11 @@ func (s Store) ListRoleAssignments(accountUUID string) ([]*proto.UserRoleAssignm
 }
 
 // WriteRoleAssignment appends the given role assignment to the existing assignments of the respective account.
-func (s Store) WriteRoleAssignment(assignment *proto.UserRoleAssignment) (*proto.UserRoleAssignment, error) {
-	if assignment.Id == "" {
-		assignment.Id = uuid.Must(uuid.NewV4()).String()
+func (s Store) WriteRoleAssignment(accountUUID, roleID string) (*proto.UserRoleAssignment, error) {
+	assignment := &proto.UserRoleAssignment{
+		Id:          uuid.Must(uuid.NewV4()).String(),
+		AccountUuid: accountUUID,
+		RoleId:      roleID,
 	}
 	// TODO: we need to search for existing role assignments by roleId and accountUuid to avoid duplicate assignments.
 	// wait with implementation until we have a proper index for search queries.
@@ -49,7 +51,7 @@ func (s Store) WriteRoleAssignment(assignment *proto.UserRoleAssignment) (*proto
 	return assignment, nil
 }
 
-// DeleteRoleAssignment deletes the given role assignment from the existing assignments of the respective account.
+// RemoveRoleAssignment deletes the given role assignment from the existing assignments of the respective account.
 func (s Store) RemoveRoleAssignment(assignmentID string) error {
 	filePath := s.buildFilePathForRoleAssignment(assignmentID, false)
 	return os.Remove(filePath)

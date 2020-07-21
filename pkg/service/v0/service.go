@@ -214,8 +214,8 @@ func (g Service) getValueWithIdentifier(value *proto.SettingsValue) (*proto.Sett
 	return &proto.SettingsValueWithIdentifier{
 		Identifier: &proto.Identifier{
 			Extension: bundle.Extension,
-			Bundle: bundle.Name,
-			Setting: setting.Name,
+			Bundle:    bundle.Name,
+			Setting:   setting.Name,
 		},
 		Value: value,
 	}, nil
@@ -251,11 +251,11 @@ func (g Service) ListRoleAssignments(c context.Context, req *proto.ListRoleAssig
 
 // AssignRoleToUser implements the RoleServiceHandler interface
 func (g Service) AssignRoleToUser(c context.Context, req *proto.AssignRoleToUserRequest, res *proto.AssignRoleToUserResponse) error {
-	req.Assignment.AccountUuid = getValidatedAccountUUID(c, req.Assignment.AccountUuid)
+	req.AccountUuid = getValidatedAccountUUID(c, req.AccountUuid)
 	if validationError := validateAssignRoleToUser(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.WriteRoleAssignment(req.Assignment)
+	r, err := g.manager.WriteRoleAssignment(req.AccountUuid, req.RoleId)
 	if err != nil {
 		return err
 	}

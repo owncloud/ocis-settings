@@ -75,7 +75,6 @@ func TestWriteSettingsValueToFile(t *testing.T) {
 	for i := range valueScenarios {
 		index := i
 		t.Run(valueScenarios[index].name, func(t *testing.T) {
-			t.Parallel()
 
 			filePath := s.buildFilePathForValue(valueScenarios[index].in.record.Id, true)
 			if err := s.writeRecordToFile(valueScenarios[index].in.record, filePath); err != nil {
@@ -84,4 +83,6 @@ func TestWriteSettingsValueToFile(t *testing.T) {
 			assert.FileExists(t, filePath)
 		})
 	}
+
+	burnRoot(s.dataPath)
 }

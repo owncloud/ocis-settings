@@ -442,8 +442,12 @@
     "protoAssignRoleToUserRequest": {
       "type": "object",
       "properties": {
-        "assignment": {
-          "$ref": "#/definitions/protoUserRoleAssignment"
+        "account_uuid": {
+          "type": "string"
+        },
+        "role_id": {
+          "type": "string",
+          "title": "the role_id is a bundle_id internally"
         }
       }
     },

@@ -207,7 +207,9 @@ message ListRoleAssignmentsResponse {
 }
 
 message AssignRoleToUserRequest {
-  UserRoleAssignment assignment = 1;
+  string account_uuid = 1;
+  // the role_id is a bundle_id internally
+  string role_id = 2;
 }
 
 message AssignRoleToUserResponse {

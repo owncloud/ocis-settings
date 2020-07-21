@@ -1,323 +1,285 @@
 package proto_test
 
-// import (
-// 	"context"
-// 	"encoding/json"
-// 	"log"
-// 	"os"
-// 	"testing"
+import (
+	"context"
+	"encoding/json"
+	"log"
+	"os"
+	"testing"
 
-// 	ocislog "github.com/owncloud/ocis-pkg/v2/log"
-// 	"github.com/owncloud/ocis-pkg/v2/service/grpc"
-// 	"github.com/owncloud/ocis-settings/pkg/config"
-// 	"github.com/owncloud/ocis-settings/pkg/proto/v0"
-// 	svc "github.com/owncloud/ocis-settings/pkg/service/v0"
-// 	"github.com/stretchr/testify/assert"
-// )
+	ocislog "github.com/owncloud/ocis-pkg/v2/log"
+	"github.com/owncloud/ocis-pkg/v2/service/grpc"
+	"github.com/owncloud/ocis-settings/pkg/config"
+	"github.com/owncloud/ocis-settings/pkg/proto/v0"
+	svc "github.com/owncloud/ocis-settings/pkg/service/v0"
+	"github.com/stretchr/testify/assert"
+)
 
-// var service = grpc.Service{}
+var service = grpc.Service{}
 
-// var (
-// 	dummySettings = []*proto.Setting{
-// 		{
-// 			DisplayName: "dummy setting",
-// 			Name:        "dummy-setting",
-// 			Value: &proto.Setting_IntValue{
-// 				IntValue: &proto.IntSetting{
-// 					Default: 42,
-// 				},
-// 			},
-// 			Description: "dummy setting",
-// 		},
-// 	}
-// )
+var (
+	dummySettings = []*proto.Setting{
+		{
+			DisplayName: "dummy setting",
+			Name:        "dummy-setting",
+			Resource: &proto.Resource{
+				Type: proto.Resource_TYPE_BUNDLE,
+			},
+			Value: &proto.Setting_IntValue{
+				IntValue: &proto.IntSetting{
+					Default: 42,
+				},
+			},
+			Description: "dummy setting",
+		},
+	}
+)
 
-// const dataStore = "/var/tmp/ocis-settings"
+const dataStore = "/var/tmp/ocis-settings"
 
-// func init() {
-// 	service = grpc.NewService(
-// 		grpc.Namespace("com.owncloud.api"),
-// 		grpc.Name("settings"),
-// 		grpc.Address("localhost:9992"),
-// 	)
+func init() {
+	service = grpc.NewService(
+		grpc.Namespace("com.owncloud.api"),
+		grpc.Name("settings"),
+		grpc.Address("localhost:9992"),
+	)
 
-// 	cfg := config.New()
-// 	cfg.Storage.DataPath = dataStore
-// 	err := proto.RegisterBundleServiceHandler(service.Server(), svc.NewService(cfg, ocislog.NewLogger(ocislog.Color(true), ocislog.Pretty(true))))
-// 	if err != nil {
-// 		log.Fatalf("could not register BundleServiceHandler: %v", err)
-// 	}
-// 	err = proto.RegisterValueServiceHandler(service.Server(), svc.NewService(cfg, ocislog.NewLogger(ocislog.Color(true), ocislog.Pretty(true))))
-// 	if err != nil {
-// 		log.Fatalf("could not register ValueServiceHandler: %v", err)
-// 	}
-// 	_ = service.Server().Start()
-// }
+	cfg := config.New()
+	cfg.Storage.DataPath = dataStore
+	err := proto.RegisterBundleServiceHandler(service.Server(), svc.NewService(cfg, ocislog.NewLogger(ocislog.Color(true), ocislog.Pretty(true))))
+	if err != nil {
+		log.Fatalf("could not register BundleServiceHandler: %v", err)
+	}
+	err = proto.RegisterValueServiceHandler(service.Server(), svc.NewService(cfg, ocislog.NewLogger(ocislog.Color(true), ocislog.Pretty(true))))
+	if err != nil {
+		log.Fatalf("could not register ValueServiceHandler: %v", err)
+	}
+	_ = service.Server().Start()
+}
 
-// type CustomError struct {
-// 	ID     string
-// 	Code   int
-// 	Detail string
-// 	Status string
-// }
+type CustomError struct {
+	ID     string
+	Code   int
+	Detail string
+	Status string
+}
 
 /**
 testing that saving a settings bundle and retrieving it again works correctly
 using various setting bundle properties
 */
-// func TestSettingsBundleProperties(t *testing.T) {
-// 	type TestStruct struct {
-// 		testDataName  string
-// 		BundleKey     string
-// 		SettingKey    string
-// 		DisplayName   string
-// 		Extension     string
-// 		UUID          string
-// 		expectedError CustomError
-// 	}
+func TestSettingsBundleProperties(t *testing.T) {
+	client := service.Client()
+	cl := proto.NewBundleService("com.owncloud.api.settings", client)
 
-// 	client := service.Client()
-// 	cl := proto.NewBundleService("com.owncloud.api.settings", client)
+	var scenarios = []struct {
+		testDataName  string
+		DisplayName   string
+		Extension     string
+		UUID          string
+		expectedError CustomError
+	}{
+		{
+			"ASCII",
+			"simple-bundle-key",
+			"simple-extension-name",
+			"123e4567-e89b-12d3-a456-426652340000",
+			CustomError{},
+		},
+		{
+			"UTF disallowed on keys",
+			"सिम्प्ले-display-name",
+			"सिम्प्ले-extension-name",
+			"सिम्प्ले",
+			CustomError{
+				ID:     "go.micro.client",
+				Code:   500,
+				Detail: "extension: must be in a valid format.",
+				Status: "Internal Server Error",
+			},
+		},
+		{
+			"UTF allowed on display name",
+			"सिम्प्ले-display-name",
+			"simple-extension-name",
+			"123e4567-e89b-12d3-a456-426652340000",
+			CustomError{},
+		},
+		{
+			"extension name with ../ in the name",
+			"simple-display-name",
+			"../folder-a-level-higher-up",
+			"123e4567-e89b-12d3-a456-426652340000",
+			CustomError{
+				ID:     "go.micro.client",
+				Code:   500,
+				Detail: "extension: must be in a valid format.",
+				Status: "Internal Server Error",
+			},
+		},
+		{
+			"extension name with \\ in the name",
+			"simple-display-name",
+			"\\",
+			"123e4567-e89b-12d3-a456-426652340000",
+			CustomError{
+				ID:     "go.micro.client",
+				Code:   500,
+				Detail: "extension: must be in a valid format.",
+				Status: "Internal Server Error",
+			},
+		},
+		{
+			"spaces are disallowed in keys",
+			"simple display name",
+			"simple extension name",
+			"123e4567-e89b-12d3-a456-426652340000",
+			CustomError{
+				ID:     "go.micro.client",
+				Code:   500,
+				Detail: "extension: must be in a valid format.",
+				Status: "Internal Server Error",
+			},
+		},
+		{
+			"spaces are allowed in display names",
+			"simple display name",
+			"simple-extension-name",
+			"123e4567-e89b-12d3-a456-426652340000",
+			CustomError{},
+		},
+		{
+			"extension missing",
+			"simple-display-name",
+			"",
+			"123e4567-e89b-12d3-a456-426652340000",
+			CustomError{
+				ID:     "go.micro.client",
+				Code:   500,
+				Detail: "extension: cannot be blank.",
+				Status: "Internal Server Error",
+			},
+		},
+		{
+			"display name missing",
+			"",
+			"simple-extension-name",
+			"123e4567-e89b-12d3-a456-426652340000",
+			CustomError{
+				ID:     "go.micro.client",
+				Code:   500,
+				Detail: "display_name: cannot be blank.",
+				Status: "Internal Server Error",
+			},
+		},
+		{
+			"UUID missing (omitted on bundles)",
+			"simple-display-name",
+			"simple-extension-name",
+			"",
+			CustomError{},
+		},
+		// {
+		// 	"bundle key missing",
+		// 	"",
+		// 	"simple-bundle-key",
+		// 	"simple-display-name",
+		// 	"simple-extension-name",
+		// 	"123e4567-e89b-12d3-a456-426652340000",
+		// 	CustomError{
+		// 		ID:     "go.micro.client",
+		// 		Code:   500,
+		// 		Detail: "bundle: cannot be blank.",
+		// 		Status: "Internal Server Error",
+		// 	},
+		// },
+		// {
+		// 	"bundle key with \\ as the name",
+		// 	"\\",
+		// 	"simple-key",
+		// 	"simple-display-name",
+		// 	"simple-extension-name",
+		// 	"123e4567-e89b-12d3-a456-426652340000",
+		// 	CustomError{
+		// 		ID:     "go.micro.client",
+		// 		Code:   500,
+		// 		Detail: "bundle: must be in a valid format.",
+		// 		Status: "Internal Server Error",
+		// 	},
+		// },
+		// {
+		// 	"bundle key with ../ in the name",
+		// 	"../file-a-level-higher-up",
+		// 	"simple-key",
+		// 	"simple-display-name",
+		// 	"simple-extension-name",
+		// 	"123e4567-e89b-12d3-a456-426652340000",
+		// 	CustomError{
+		// 		ID:     "go.micro.client",
+		// 		Code:   500,
+		// 		Detail: "bundle: must be in a valid format.",
+		// 		Status: "Internal Server Error",
+		// 	},
+		// },
+		// {
+		// 	"bundle key in the root directory",
+		// 	"/tmp/file",
+		// 	"simple-key",
+		// 	"simple-display-name",
+		// 	"simple-extension-name",
+		// 	"123e4567-e89b-12d3-a456-426652340000",
+		// 	CustomError{
+		// 		ID:     "go.micro.client",
+		// 		Code:   500,
+		// 		Detail: "bundle: must be in a valid format.",
+		// 		Status: "Internal Server Error",
+		// 	},
+		// },
+	}
+	for _, scenario := range scenarios {
+		testCase := scenario
+		t.Run(testCase.testDataName, func(t *testing.T) {
+			// the manager is not yet thread safe. Ideally it MUST be thread safe when dealing with
+			// files. Leave parallel flag commented and work on this in the future (hardening).
+			// t.Parallel()
+			bundle := proto.SettingsBundle{
+				Name:        "testName",
+				Extension:   testCase.Extension,
+				DisplayName: testCase.DisplayName,
+				Settings:    dummySettings,
+				Type:        proto.SettingsBundle_TYPE_DEFAULT,
+				Resource: &proto.Resource{
+					Type: proto.Resource_TYPE_BUNDLE,
+				},
+			}
+			createRequest := proto.SaveSettingsBundleRequest{
+				Bundle: &bundle,
+			}
 
-// 	var tests = []TestStruct{
-// 		{
-// 			"ASCII",
-// 			"simple-bundle-key",
-// 			"simple-key",
-// 			"simple-display-name",
-// 			"simple-extension-name",
-// 			"123e4567-e89b-12d3-a456-426652340000",
-// 			CustomError{},
-// 		},
-// 		{
-// 			"UTF disallowed on keys",
-// 			"सिम्प्ले-bundle-key",
-// 			"सिम्प्ले-key",
-// 			"सिम्प्ले-display-name",
-// 			"सिम्प्ले-extension-name",
-// 			"सिम्प्ले",
-// 			CustomError{
-// 				ID:     "go.micro.client",
-// 				Code:   500,
-// 				Detail: "bundle: must be in a valid format; extension: must be in a valid format.",
-// 				Status: "Internal Server Error",
-// 			},
-// 		},
-// 		{
-// 			"UTF allowed on display name",
-// 			"simple-bundle-key",
-// 			"simple-key",
-// 			"सिम्प्ले-display-name",
-// 			"simple-extension-name",
-// 			"123e4567-e89b-12d3-a456-426652340000",
-// 			CustomError{},
-// 		},
-// 		{
-// 			"bundle key with ../ in the name",
-// 			"../file-a-level-higher-up",
-// 			"simple-key",
-// 			"simple-display-name",
-// 			"simple-extension-name",
-// 			"123e4567-e89b-12d3-a456-426652340000",
-// 			CustomError{
-// 				ID:     "go.micro.client",
-// 				Code:   500,
-// 				Detail: "bundle: must be in a valid format.",
-// 				Status: "Internal Server Error",
-// 			},
-// 		},
-// 		{
-// 			"bundle key in the root directory",
-// 			"/tmp/file",
-// 			"simple-key",
-// 			"simple-display-name",
-// 			"simple-extension-name",
-// 			"123e4567-e89b-12d3-a456-426652340000",
-// 			CustomError{
-// 				ID:     "go.micro.client",
-// 				Code:   500,
-// 				Detail: "bundle: must be in a valid format.",
-// 				Status: "Internal Server Error",
-// 			},
-// 		},
-// 		{
-// 			"extension name with ../ in the name",
-// 			"simple-bundle-key",
-// 			"simple-key",
-// 			"simple-display-name",
-// 			"../folder-a-level-higher-up",
-// 			"123e4567-e89b-12d3-a456-426652340000",
-// 			CustomError{
-// 				ID:     "go.micro.client",
-// 				Code:   500,
-// 				Detail: "extension: must be in a valid format.",
-// 				Status: "Internal Server Error",
-// 			},
-// 		},
-// 		{
-// 			"extension name with \\ in the name",
-// 			"simple-bundle-key",
-// 			"simple-key",
-// 			"simple-display-name",
-// 			"\\",
-// 			"123e4567-e89b-12d3-a456-426652340000",
-// 			CustomError{
-// 				ID:     "go.micro.client",
-// 				Code:   500,
-// 				Detail: "extension: must be in a valid format.",
-// 				Status: "Internal Server Error",
-// 			},
-// 		},
-// 		{
-// 			"bundle key with \\ as the name",
-// 			"\\",
-// 			"simple-key",
-// 			"simple-display-name",
-// 			"simple-extension-name",
-// 			"123e4567-e89b-12d3-a456-426652340000",
-// 			CustomError{
-// 				ID:     "go.micro.client",
-// 				Code:   500,
-// 				Detail: "bundle: must be in a valid format.",
-// 				Status: "Internal Server Error",
-// 			},
-// 		},
-// 		{
-// 			"spaces are disallowed in keys",
-// 			"simple bundle key",
-// 			"simple key",
-// 			"simple display name",
-// 			"simple extension name",
-// 			"123e4567-e89b-12d3-a456-426652340000",
-// 			CustomError{
-// 				ID:     "go.micro.client",
-// 				Code:   500,
-// 				Detail: "bundle: must be in a valid format; extension: must be in a valid format.",
-// 				Status: "Internal Server Error",
-// 			},
-// 		},
-// 		{
-// 			"spaces are allowed in display names",
-// 			"simple-bundle-key",
-// 			"simple-key",
-// 			"simple display name",
-// 			"simple-extension-name",
-// 			"123e4567-e89b-12d3-a456-426652340000",
-// 			CustomError{},
-// 		},
-// 		{
-// 			"bundle key missing",
-// 			"",
-// 			"simple-bundle-key",
-// 			"simple-display-name",
-// 			"simple-extension-name",
-// 			"123e4567-e89b-12d3-a456-426652340000",
-// 			CustomError{
-// 				ID:     "go.micro.client",
-// 				Code:   500,
-// 				Detail: "bundle: cannot be blank.",
-// 				Status: "Internal Server Error",
-// 			},
-// 		},
-// 		{
-// 			"extension missing",
-// 			"simple-bundle-key",
-// 			"simple-key",
-// 			"simple-display-name",
-// 			"",
-// 			"123e4567-e89b-12d3-a456-426652340000",
-// 			CustomError{
-// 				ID:     "go.micro.client",
-// 				Code:   500,
-// 				Detail: "extension: cannot be blank.",
-// 				Status: "Internal Server Error",
-// 			},
-// 		},
-// 		{
-// 			"setting key missing (omitted on bundles)",
-// 			"simple-bundle-key",
-// 			"",
-// 			"simple-display-name",
-// 			"simple-extension-name",
-// 			"123e4567-e89b-12d3-a456-426652340000",
-// 			CustomError{},
-// 		},
-// 		{
-// 			"display name missing",
-// 			"simple-bundle-key",
-// 			"simple-key",
-// 			"",
-// 			"simple-extension-name",
-// 			"123e4567-e89b-12d3-a456-426652340000",
-// 			CustomError{
-// 				ID:     "go.micro.client",
-// 				Code:   500,
-// 				Detail: "display_name: cannot be blank.",
-// 				Status: "Internal Server Error",
-// 			},
-// 		},
-// 		{
-// 			"UUID missing (omitted on bundles)",
-// 			"simple-bundle-key",
-// 			"simple-key",
-// 			"simple-display-name",
-// 			"simple-extension-name",
-// 			"",
-// 			CustomError{},
-// 		},
-// 	}
-// 	for _, testCase := range tests {
-// 		testCase := testCase
-// 		t.Run(testCase.testDataName, func(t *testing.T) {
-// 			t.Parallel()
-// 			identifier := proto.Identifier{
-// 				Extension:   testCase.Extension,
-// 				Bundle:      testCase.BundleKey,
-// 				Setting:     testCase.SettingKey,
-// 				AccountUuid: testCase.UUID,
-// 			}
-// 			bundle := proto.SettingsBundle{
-// 				Identifier:  &identifier,
-// 				DisplayName: testCase.DisplayName,
-// 				Settings:    dummySettings,
-// 			}
-// 			createRequest := proto.SaveSettingsBundleRequest{
-// 				SettingsBundle: &bundle,
-// 			}
-
-// 			cresponse, err := cl.SaveSettingsBundle(context.Background(), &createRequest)
-// 			if err != nil || (CustomError{} != testCase.expectedError) {
-// 				assert.Error(t, err)
-// 				var errorData CustomError
-// 				err = json.Unmarshal([]byte(err.Error()), &errorData)
-// 				if err != nil {
-// 					t.Log(err)
-// 				}
-// 				assert.Equal(t, testCase.expectedError.ID, errorData.ID)
-// 				assert.Equal(t, testCase.expectedError.Code, errorData.Code)
-// 				assert.Equal(t, testCase.expectedError.Detail, errorData.Detail)
-// 				assert.Equal(t, testCase.expectedError.Status, errorData.Status)
-// 			} else {
-// 				assert.Equal(t, testCase.Extension, cresponse.SettingsBundle.Identifier.Extension)
-// 				assert.Equal(t, testCase.BundleKey, cresponse.SettingsBundle.Identifier.Bundle)
-// 				assert.Equal(t, testCase.SettingKey, cresponse.SettingsBundle.Identifier.Setting)
-// 				assert.Equal(t, testCase.UUID, cresponse.SettingsBundle.Identifier.AccountUuid)
-// 				assert.Equal(t, testCase.DisplayName, cresponse.SettingsBundle.DisplayName)
-
-// 				getRequest := proto.GetSettingsBundleRequest{Identifier: &identifier}
-
-// 				getResponse, err := cl.GetSettingsBundle(context.Background(), &getRequest)
-// 				assert.NoError(t, err)
-// 				assert.Equal(t, testCase.Extension, getResponse.SettingsBundle.Identifier.Extension)
-// 				assert.Equal(t, testCase.BundleKey, getResponse.SettingsBundle.Identifier.Bundle)
-// 				assert.Equal(t, testCase.SettingKey, getResponse.SettingsBundle.Identifier.Setting)
-// 				assert.Equal(t, testCase.UUID, getResponse.SettingsBundle.Identifier.AccountUuid)
-// 				assert.Equal(t, testCase.DisplayName, getResponse.SettingsBundle.DisplayName)
-// 			}
-// 			os.RemoveAll(dataStore)
-// 		})
-// 	}
-// }
+			cresponse, err := cl.SaveSettingsBundle(context.Background(), &createRequest)
+			if err != nil || (CustomError{} != testCase.expectedError) {
+				assert.Error(t, err)
+				var errorData CustomError
+				err = json.Unmarshal([]byte(err.Error()), &errorData)
+				if err != nil {
+					t.Log(err)
+				}
+				assert.Equal(t, testCase.expectedError.ID, errorData.ID)
+				assert.Equal(t, testCase.expectedError.Code, errorData.Code)
+				assert.Equal(t, testCase.expectedError.Detail, errorData.Detail)
+				assert.Equal(t, testCase.expectedError.Status, errorData.Status)
+			} else {
+				assert.Equal(t, testCase.Extension, cresponse.Bundle.Extension)
+				assert.Equal(t, testCase.DisplayName, cresponse.Bundle.DisplayName)
+				getRequest := proto.GetSettingsBundleRequest{BundleId: cresponse.Bundle.Id}
+				getResponse, err := cl.GetSettingsBundle(context.Background(), &getRequest)
+				assert.NoError(t, err)
+				assert.Equal(t, testCase.DisplayName, getResponse.Bundle.DisplayName)
+			}
+			os.RemoveAll(dataStore)
+		})
+	}
+}
 
 // func TestSettingsBundleWithoutSettings(t *testing.T) {
 // 	client := service.Client()
@@ -344,9 +306,9 @@ using various setting bundle properties
 // 	os.RemoveAll(dataStore)
 // }
 
-/**
-testing that setting getting and listing a settings bundle works correctly with a set of setting definitions
-*/
+// /**
+// testing that setting getting and listing a settings bundle works correctly with a set of setting definitions
+// */
 // func TestSaveGetListSettingsBundle(t *testing.T) {
 // 	identifier := proto.Identifier{
 // 		Extension:   "my-extension",
@@ -483,7 +445,7 @@ testing that setting getting and listing a settings bundle works correctly with 
 // 	os.RemoveAll(dataStore)
 // }
 
-// https://github.com/owncloud/ocis-settings/issues/18
+// // https://github.com/owncloud/ocis-settings/issues/18
 // func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 // 	var tests = []proto.Setting{
 // 		{
@@ -651,7 +613,7 @@ testing that setting getting and listing a settings bundle works correctly with 
 // 	}
 // }
 
-//https://github.com/owncloud/ocis-settings/issues/19
+// // https://github.com/owncloud/ocis-settings/issues/19
 // func TestGetSettingsBundleCreatesFolder(t *testing.T) {
 // 	identifier := proto.Identifier{
 // 		Extension: "not-existing-extension",
@@ -705,10 +667,9 @@ testing that setting getting and listing a settings bundle works correctly with 
 // 	os.RemoveAll(dataStore)
 // }
 
-/**
-  test read settings bundles with identifiers that should be invalid, e.g. try to read other bundles
-*/
-// FIXME
+// /**
+//   test read settings bundles with identifiers that should be invalid, e.g. try to read other bundles
+// */
 // func TestGetSettingsBundleWithInvalidIdentifier(t *testing.T) {
 // 	type TestStruct struct {
 // 		testDataName  string
@@ -861,7 +822,6 @@ testing that setting getting and listing a settings bundle works correctly with 
 // 	os.RemoveAll(dataStore)
 // }
 
-// FIXME
 // func TestListAllSettingsBundlesOfSameExtension(t *testing.T) {
 // 	client := service.Client()
 // 	cl := proto.NewBundleService("com.owncloud.api.settings", client)
@@ -873,59 +833,59 @@ testing that setting getting and listing a settings bundle works correctly with 
 // 	fmt.Printf("\n\n%+v\n\n", response.SettingsBundles)
 // 	assert.Equal(t, 3, initialBundles)
 
-// 	// createRequest := proto.SaveSettingsBundleRequest{
-// 	// 	SettingsBundle: &proto.SettingsBundle{
-// 	// 		Identifier: &proto.Identifier{
-// 	// 			Extension: "great-extension",
-// 	// 			Bundle:    "alices-bundle",
-// 	// 		},
-// 	// 		DisplayName: "Alice's Bundle",
-// 	// 		Settings:    dummySettings,
-// 	// 	},
-// 	// }
-// 	// _, err = cl.SaveSettingsBundle(context.Background(), &createRequest)
-// 	// assert.NoError(t, err)
+// 	createRequest := proto.SaveSettingsBundleRequest{
+// 		SettingsBundle: &proto.SettingsBundle{
+// 			Identifier: &proto.Identifier{
+// 				Extension: "great-extension",
+// 				Bundle:    "alices-bundle",
+// 			},
+// 			DisplayName: "Alice's Bundle",
+// 			Settings:    dummySettings,
+// 		},
+// 	}
+// 	_, err = cl.SaveSettingsBundle(context.Background(), &createRequest)
+// 	assert.NoError(t, err)
 
-// 	// createRequest = proto.SaveSettingsBundleRequest{
-// 	// 	SettingsBundle: &proto.SettingsBundle{
-// 	// 		Identifier: &proto.Identifier{
-// 	// 			Extension: "great-extension",
-// 	// 			Bundle:    "bobs-bundle",
-// 	// 		},
-// 	// 		DisplayName: "Bob's Bundle",
-// 	// 		Settings:    dummySettings,
-// 	// 	},
-// 	// }
-// 	// _, err = cl.SaveSettingsBundle(context.Background(), &createRequest)
-// 	// assert.NoError(t, err)
+// 	createRequest = proto.SaveSettingsBundleRequest{
+// 		SettingsBundle: &proto.SettingsBundle{
+// 			Identifier: &proto.Identifier{
+// 				Extension: "great-extension",
+// 				Bundle:    "bobs-bundle",
+// 			},
+// 			DisplayName: "Bob's Bundle",
+// 			Settings:    dummySettings,
+// 		},
+// 	}
+// 	_, err = cl.SaveSettingsBundle(context.Background(), &createRequest)
+// 	assert.NoError(t, err)
 
-// 	// createRequest = proto.SaveSettingsBundleRequest{
-// 	// 	SettingsBundle: &proto.SettingsBundle{
-// 	// 		Identifier: &proto.Identifier{
-// 	// 			Extension: "an-other-extension",
-// 	// 			Bundle:    "bobs-bundle",
-// 	// 		},
-// 	// 		DisplayName: "Bob's Bundle",
-// 	// 		Settings:    dummySettings,
-// 	// 	},
-// 	// }
-// 	// _, err = cl.SaveSettingsBundle(context.Background(), &createRequest)
-// 	// assert.NoError(t, err)
+// 	createRequest = proto.SaveSettingsBundleRequest{
+// 		SettingsBundle: &proto.SettingsBundle{
+// 			Identifier: &proto.Identifier{
+// 				Extension: "an-other-extension",
+// 				Bundle:    "bobs-bundle",
+// 			},
+// 			DisplayName: "Bob's Bundle",
+// 			Settings:    dummySettings,
+// 		},
+// 	}
+// 	_, err = cl.SaveSettingsBundle(context.Background(), &createRequest)
+// 	assert.NoError(t, err)
 
-// 	// listRequest = proto.ListSettingsBundlesRequest{Identifier: &proto.Identifier{Extension: ""}}
+// 	listRequest = proto.ListSettingsBundlesRequest{Identifier: &proto.Identifier{Extension: ""}}
 
-// 	// response, err = cl.ListSettingsBundles(context.Background(), &listRequest)
-// 	// assert.NoError(t, err)
-// 	// assert.Equal(t, response.SettingsBundles[0].Identifier.Extension, "an-other-extension")
-// 	// assert.Equal(t, response.SettingsBundles[0].Identifier.Bundle, "bobs-bundle")
+// 	response, err = cl.ListSettingsBundles(context.Background(), &listRequest)
+// 	assert.NoError(t, err)
+// 	assert.Equal(t, response.SettingsBundles[0].Identifier.Extension, "an-other-extension")
+// 	assert.Equal(t, response.SettingsBundles[0].Identifier.Bundle, "bobs-bundle")
 
-// 	// assert.Equal(t, response.SettingsBundles[1].Identifier.Extension, "great-extension")
-// 	// assert.Equal(t, response.SettingsBundles[1].Identifier.Bundle, "alices-bundle")
+// 	assert.Equal(t, response.SettingsBundles[1].Identifier.Extension, "great-extension")
+// 	assert.Equal(t, response.SettingsBundles[1].Identifier.Bundle, "alices-bundle")
 
-// 	// assert.Equal(t, response.SettingsBundles[2].Identifier.Extension, "great-extension")
-// 	// assert.Equal(t, response.SettingsBundles[2].Identifier.Bundle, "bobs-bundle")
-// 	// t.Logf("\n%v\n", response.SettingsBundles)
-// 	// assert.Equal(t, 3, len(response.SettingsBundles)-initialBundles)
+// 	assert.Equal(t, response.SettingsBundles[2].Identifier.Extension, "great-extension")
+// 	assert.Equal(t, response.SettingsBundles[2].Identifier.Bundle, "bobs-bundle")
+// 	t.Logf("\n%v\n", response.SettingsBundles)
+// 	assert.Equal(t, 3, len(response.SettingsBundles)-initialBundles)
 // 	os.RemoveAll(dataStore)
 // }
 
@@ -997,7 +957,6 @@ testing that setting getting and listing a settings bundle works correctly with 
 // 	os.RemoveAll(dataStore)
 // }
 
-// FIXME
 // func TestSaveGetListSettingsValues(t *testing.T) {
 // 	type TestStruct struct {
 // 		testDataName  string

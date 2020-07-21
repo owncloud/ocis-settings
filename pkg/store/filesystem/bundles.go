@@ -2,6 +2,7 @@
 package store
 
 import (
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"sync"
@@ -75,7 +76,7 @@ func (s Store) ReadSetting(settingID string) (*proto.Setting, error) {
 			}
 		}
 	}
-	return nil, merrors.NotFound(settingID, "could not read setting: %v")
+	return nil, merrors.NotFound(settingID, fmt.Sprintf("could not read setting: %v", settingID))
 }
 
 // WriteBundle writes the given record into a file within the dataPath
