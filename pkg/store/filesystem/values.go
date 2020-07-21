@@ -25,10 +25,15 @@ func (s Store) ListValues(bundleID, accountUUID string) ([]*proto.SettingsValue,
 			s.Logger.Warn().Msgf("error reading %v", valueFile)
 			continue
 		}
-		if record.BundleId != bundleID {
+		if bundleID != "" && record.BundleId != bundleID {
 			continue
 		}
-		if record.AccountUuid != "" && record.AccountUuid != accountUUID {
+		// if requested accountUUID empty -> fetch all system level values
+		if accountUUID == "" && record.AccountUuid != "" {
+			continue
+		}
+		// if requested accountUUID empty -> fetch all individual + all system level values
+		if accountUUID != "" && record.AccountUuid != "" && record.AccountUuid != accountUUID {
 			continue
 		}
 		records = append(records, &record)

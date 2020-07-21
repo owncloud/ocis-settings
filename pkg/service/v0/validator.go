@@ -69,9 +69,14 @@ func validateSaveSettingsValue(req *proto.SaveSettingsValueRequest) error {
 	if err := validation.ValidateStruct(
 		req.Value,
 		validation.Field(&req.Value.Id, validation.When(req.Value.Id != "", is.UUID)),
-		validation.Field(&req.Value.SettingId, validation.When(req.Value.SettingId != "", is.UUID)),
+		validation.Field(&req.Value.BundleId, is.UUID),
+		validation.Field(&req.Value.SettingId, is.UUID),
 		validation.Field(&req.Value.AccountUuid, is.UUID),
 	); err != nil {
+		return err
+	}
+
+	if err := validateResource(req.Value.Resource); err != nil {
 		return err
 	}
 

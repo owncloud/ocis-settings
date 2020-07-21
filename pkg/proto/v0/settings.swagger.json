@@ -312,7 +312,7 @@
         ]
       }
     },
-    "/api/v0/settings/value-get": {
+    "/api/v0/settings/values-get": {
       "post": {
         "operationId": "ValueService_GetSettingsValue",
         "responses": {
@@ -336,38 +336,6 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/protoGetSettingsValueRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ValueService"
-        ]
-      }
-    },
-    "/api/v0/settings/value-save": {
-      "post": {
-        "operationId": "ValueService_SaveSettingsValue",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/protoSaveSettingsValueResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/protoSaveSettingsValueRequest"
             }
           }
         ],
@@ -400,6 +368,38 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/protoListSettingsValuesRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ValueService"
+        ]
+      }
+    },
+    "/api/v0/settings/values-save": {
+      "post": {
+        "operationId": "ValueService_SaveSettingsValue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoSaveSettingsValueResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/protoSaveSettingsValueRequest"
             }
           }
         ],
@@ -740,7 +740,7 @@
       "type": "object",
       "properties": {
         "value": {
-          "$ref": "#/definitions/protoSettingsValue"
+          "$ref": "#/definitions/protoSettingsValueWithIdentifier"
         }
       }
     },

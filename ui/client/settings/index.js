@@ -452,7 +452,7 @@ export const RoleService_ListRolesURL = function(parameters = {}) {
 export const ValueService_GetSettingsValue = function(parameters = {}) {
   const domain = parameters.$domain ? parameters.$domain : getDomain()
   const config = parameters.$config
-  let path = '/api/v0/settings/value-get'
+  let path = '/api/v0/settings/values-get'
   let body
   let queryParameters = {}
   let form = {}
@@ -470,7 +470,7 @@ export const ValueService_GetSettingsValue = function(parameters = {}) {
   return request('post', domain + path, body, queryParameters, form, config)
 }
 export const ValueService_GetSettingsValue_RAW_URL = function() {
-  return '/api/v0/settings/value-get'
+  return '/api/v0/settings/values-get'
 }
 export const ValueService_GetSettingsValue_TYPE = function() {
   return 'post'
@@ -478,53 +478,7 @@ export const ValueService_GetSettingsValue_TYPE = function() {
 export const ValueService_GetSettingsValueURL = function(parameters = {}) {
   let queryParameters = {}
   const domain = parameters.$domain ? parameters.$domain : getDomain()
-  let path = '/api/v0/settings/value-get'
-  if (parameters.$queryParameters) {
-    Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
-      queryParameters[parameterName] = parameters.$queryParameters[parameterName]
-    })
-  }
-  let keys = Object.keys(queryParameters)
-  return domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '')
-}
-/**
- * 
- * request: ValueService_SaveSettingsValue
- * url: ValueService_SaveSettingsValueURL
- * method: ValueService_SaveSettingsValue_TYPE
- * raw_url: ValueService_SaveSettingsValue_RAW_URL
- * @param body - 
- */
-export const ValueService_SaveSettingsValue = function(parameters = {}) {
-  const domain = parameters.$domain ? parameters.$domain : getDomain()
-  const config = parameters.$config
-  let path = '/api/v0/settings/value-save'
-  let body
-  let queryParameters = {}
-  let form = {}
-  if (parameters['body'] !== undefined) {
-    body = parameters['body']
-  }
-  if (parameters['body'] === undefined) {
-    return Promise.reject(new Error('Missing required  parameter: body'))
-  }
-  if (parameters.$queryParameters) {
-    Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
-      queryParameters[parameterName] = parameters.$queryParameters[parameterName]
-    });
-  }
-  return request('post', domain + path, body, queryParameters, form, config)
-}
-export const ValueService_SaveSettingsValue_RAW_URL = function() {
-  return '/api/v0/settings/value-save'
-}
-export const ValueService_SaveSettingsValue_TYPE = function() {
-  return 'post'
-}
-export const ValueService_SaveSettingsValueURL = function(parameters = {}) {
-  let queryParameters = {}
-  const domain = parameters.$domain ? parameters.$domain : getDomain()
-  let path = '/api/v0/settings/value-save'
+  let path = '/api/v0/settings/values-get'
   if (parameters.$queryParameters) {
     Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
       queryParameters[parameterName] = parameters.$queryParameters[parameterName]
@@ -571,6 +525,52 @@ export const ValueService_ListSettingsValuesURL = function(parameters = {}) {
   let queryParameters = {}
   const domain = parameters.$domain ? parameters.$domain : getDomain()
   let path = '/api/v0/settings/values-list'
+  if (parameters.$queryParameters) {
+    Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+      queryParameters[parameterName] = parameters.$queryParameters[parameterName]
+    })
+  }
+  let keys = Object.keys(queryParameters)
+  return domain + path + (keys.length > 0 ? '?' + (keys.map(key => key + '=' + encodeURIComponent(queryParameters[key])).join('&')) : '')
+}
+/**
+ * 
+ * request: ValueService_SaveSettingsValue
+ * url: ValueService_SaveSettingsValueURL
+ * method: ValueService_SaveSettingsValue_TYPE
+ * raw_url: ValueService_SaveSettingsValue_RAW_URL
+ * @param body - 
+ */
+export const ValueService_SaveSettingsValue = function(parameters = {}) {
+  const domain = parameters.$domain ? parameters.$domain : getDomain()
+  const config = parameters.$config
+  let path = '/api/v0/settings/values-save'
+  let body
+  let queryParameters = {}
+  let form = {}
+  if (parameters['body'] !== undefined) {
+    body = parameters['body']
+  }
+  if (parameters['body'] === undefined) {
+    return Promise.reject(new Error('Missing required  parameter: body'))
+  }
+  if (parameters.$queryParameters) {
+    Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
+      queryParameters[parameterName] = parameters.$queryParameters[parameterName]
+    });
+  }
+  return request('post', domain + path, body, queryParameters, form, config)
+}
+export const ValueService_SaveSettingsValue_RAW_URL = function() {
+  return '/api/v0/settings/values-save'
+}
+export const ValueService_SaveSettingsValue_TYPE = function() {
+  return 'post'
+}
+export const ValueService_SaveSettingsValueURL = function(parameters = {}) {
+  let queryParameters = {}
+  const domain = parameters.$domain ? parameters.$domain : getDomain()
+  let path = '/api/v0/settings/values-save'
   if (parameters.$queryParameters) {
     Object.keys(parameters.$queryParameters).forEach(function(parameterName) {
       queryParameters[parameterName] = parameters.$queryParameters[parameterName]

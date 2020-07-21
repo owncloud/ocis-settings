@@ -146,6 +146,7 @@ func (g Service) RemoveSettingFromSettingsBundle(c context.Context, req *proto.R
 
 // SaveSettingsValue implements the ValueServiceHandler interface
 func (g Service) SaveSettingsValue(c context.Context, req *proto.SaveSettingsValueRequest, res *proto.SaveSettingsValueResponse) error {
+	req.Value.AccountUuid = getValidatedAccountUUID(c, req.Value.AccountUuid)
 	cleanUpResource(c, req.Value.Resource)
 	// TODO: we need to check, if the authenticated user has permission to write the value for the specified resource (e.g. global, file with id xy, ...)
 	if validationError := validateSaveSettingsValue(req); validationError != nil {
@@ -155,7 +156,11 @@ func (g Service) SaveSettingsValue(c context.Context, req *proto.SaveSettingsVal
 	if err != nil {
 		return err
 	}
-	res.Value = r
+	valueWithIdentifier, err := g.getValueWithIdentifier(r)
+	if err != nil {
+		return err
+	}
+	res.Value = valueWithIdentifier
 	return nil
 }
 

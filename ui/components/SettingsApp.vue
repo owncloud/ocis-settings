@@ -19,7 +19,7 @@
         <template v-if="settingsValuesLoaded">
           <settings-bundle
             v-for="bundle in selectedSettingsBundles"
-            :key="'bundle-' + bundle.identifier.bundle"
+            :key="'bundle-' + bundle.id"
             :bundle="bundle"
             class="uk-margin-top"
           />
@@ -53,7 +53,7 @@ export default {
     ...mapGetters('Settings', [
       'extensions',
       'initialized',
-      'getSettingsBundlesByExtension'
+      'getBundlesByExtension'
     ]),
     extensionRouteParam () {
       return this.$route.params.extension
@@ -63,7 +63,7 @@ export default {
     },
     selectedSettingsBundles () {
       if (this.selectedExtension) {
-        return this.getSettingsBundlesByExtension(this.selectedExtension)
+        return this.getBundlesByExtension(this.selectedExtension)
       }
       return []
     }
