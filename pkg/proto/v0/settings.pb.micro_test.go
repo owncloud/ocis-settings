@@ -69,19 +69,17 @@ testing that saving a settings bundle and retrieving it again works correctly
 using various setting bundle properties
 */
 func TestSettingsBundleProperties(t *testing.T) {
-	type TestStruct struct {
+	client := service.Client()
+	cl := proto.NewBundleService("com.owncloud.api.settings", client)
+
+	var tests = []struct {
 		testDataName  string
 		BundleKey     string
 		DisplayName   string
 		Extension     string
 		UUID          string
 		expectedError CustomError
-	}
-
-	client := service.Client()
-	cl := proto.NewBundleService("com.owncloud.api.settings", client)
-
-	var tests = []TestStruct{
+	}{
 		{
 			"ASCII",
 			"simple-bundle-key",
@@ -289,8 +287,6 @@ func TestSettingsBundleProperties(t *testing.T) {
 
 				getResponse, err := cl.GetSettingsBundle(context.Background(), &getRequest)
 				assert.NoError(t, err)
-				// assert.Equal(t, testCase.Extension, getResponse.SettingsBundle.Extension)
-				// assert.Equal(t, testCase.UUID, getResponse.SettingsBundle.AccountUuid)
 				assert.Equal(t, testCase.DisplayName, getResponse.Bundle.DisplayName)
 			}
 			os.RemoveAll(dataStore)
