@@ -72,9 +72,8 @@ func TestSettingsBundleProperties(t *testing.T) {
 	client := service.Client()
 	cl := proto.NewBundleService("com.owncloud.api.settings", client)
 
-	var tests = []struct {
+	var scenarios = []struct {
 		testDataName  string
-		BundleKey     string
 		DisplayName   string
 		Extension     string
 		UUID          string
@@ -83,14 +82,12 @@ func TestSettingsBundleProperties(t *testing.T) {
 		{
 			"ASCII",
 			"simple-bundle-key",
-			"simple-display-name",
 			"simple-extension-name",
 			"123e4567-e89b-12d3-a456-426652340000",
 			CustomError{},
 		},
 		{
 			"UTF disallowed on keys",
-			"सिम्प्ले-bundle-key",
 			"सिम्प्ले-display-name",
 			"सिम्प्ले-extension-name",
 			"सिम्प्ले",
@@ -103,7 +100,6 @@ func TestSettingsBundleProperties(t *testing.T) {
 		},
 		{
 			"UTF allowed on display name",
-			"simple-bundle-key",
 			"सिम्प्ले-display-name",
 			"simple-extension-name",
 			"123e4567-e89b-12d3-a456-426652340000",
@@ -111,7 +107,6 @@ func TestSettingsBundleProperties(t *testing.T) {
 		},
 		{
 			"extension name with ../ in the name",
-			"simple-bundle-key",
 			"simple-display-name",
 			"../folder-a-level-higher-up",
 			"123e4567-e89b-12d3-a456-426652340000",
@@ -124,7 +119,6 @@ func TestSettingsBundleProperties(t *testing.T) {
 		},
 		{
 			"extension name with \\ in the name",
-			"simple-bundle-key",
 			"simple-display-name",
 			"\\",
 			"123e4567-e89b-12d3-a456-426652340000",
@@ -137,7 +131,6 @@ func TestSettingsBundleProperties(t *testing.T) {
 		},
 		{
 			"spaces are disallowed in keys",
-			"simple bundle key",
 			"simple display name",
 			"simple extension name",
 			"123e4567-e89b-12d3-a456-426652340000",
@@ -150,7 +143,6 @@ func TestSettingsBundleProperties(t *testing.T) {
 		},
 		{
 			"spaces are allowed in display names",
-			"simple-bundle-key",
 			"simple display name",
 			"simple-extension-name",
 			"123e4567-e89b-12d3-a456-426652340000",
@@ -158,7 +150,6 @@ func TestSettingsBundleProperties(t *testing.T) {
 		},
 		{
 			"extension missing",
-			"simple-bundle-key",
 			"simple-display-name",
 			"",
 			"123e4567-e89b-12d3-a456-426652340000",
@@ -171,7 +162,6 @@ func TestSettingsBundleProperties(t *testing.T) {
 		},
 		{
 			"display name missing",
-			"simple-bundle-key",
 			"",
 			"simple-extension-name",
 			"123e4567-e89b-12d3-a456-426652340000",
@@ -184,7 +174,6 @@ func TestSettingsBundleProperties(t *testing.T) {
 		},
 		{
 			"UUID missing (omitted on bundles)",
-			"simple-bundle-key",
 			"simple-display-name",
 			"simple-extension-name",
 			"",
@@ -247,8 +236,8 @@ func TestSettingsBundleProperties(t *testing.T) {
 		// 	},
 		// },
 	}
-	for _, testCase := range tests {
-		testCase := testCase
+	for _, scenario := range scenarios {
+		testCase := scenario
 		t.Run(testCase.testDataName, func(t *testing.T) {
 			// the manager is not yet thread safe. Ideally it MUST be thread safe when dealing with
 			// files. Leave parallel flag commented and work on this in the future (hardening).
@@ -282,9 +271,7 @@ func TestSettingsBundleProperties(t *testing.T) {
 			} else {
 				assert.Equal(t, testCase.Extension, cresponse.Bundle.Extension)
 				assert.Equal(t, testCase.DisplayName, cresponse.Bundle.DisplayName)
-
 				getRequest := proto.GetSettingsBundleRequest{BundleId: cresponse.Bundle.Id}
-
 				getResponse, err := cl.GetSettingsBundle(context.Background(), &getRequest)
 				assert.NoError(t, err)
 				assert.Equal(t, testCase.DisplayName, getResponse.Bundle.DisplayName)
