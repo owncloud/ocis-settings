@@ -89,7 +89,7 @@ func (x Resource_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Resource_Type.Descriptor instead.
 func (Resource_Type) EnumDescriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{21, 0}
+	return file_settings_proto_rawDescGZIP(), []int{23, 0}
 }
 
 type SettingsBundle_Type int32
@@ -138,7 +138,7 @@ func (x SettingsBundle_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use SettingsBundle_Type.Descriptor instead.
 func (SettingsBundle_Type) EnumDescriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{22, 0}
+	return file_settings_proto_rawDescGZIP(), []int{24, 0}
 }
 
 type PermissionSetting_Operation int32
@@ -193,7 +193,7 @@ func (x PermissionSetting_Operation) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use PermissionSetting_Operation.Descriptor instead.
 func (PermissionSetting_Operation) EnumDescriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{30, 0}
+	return file_settings_proto_rawDescGZIP(), []int{32, 0}
 }
 
 type PermissionSetting_Constraint int32
@@ -245,7 +245,7 @@ func (x PermissionSetting_Constraint) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use PermissionSetting_Constraint.Descriptor instead.
 func (PermissionSetting_Constraint) EnumDescriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{30, 1}
+	return file_settings_proto_rawDescGZIP(), []int{32, 1}
 }
 
 type SaveSettingsBundleRequest struct {
@@ -253,7 +253,7 @@ type SaveSettingsBundleRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SettingsBundle *SettingsBundle `protobuf:"bytes,1,opt,name=settings_bundle,json=settingsBundle,proto3" json:"settings_bundle,omitempty"`
+	Bundle *SettingsBundle `protobuf:"bytes,1,opt,name=bundle,proto3" json:"bundle,omitempty"`
 }
 
 func (x *SaveSettingsBundleRequest) Reset() {
@@ -288,9 +288,9 @@ func (*SaveSettingsBundleRequest) Descriptor() ([]byte, []int) {
 	return file_settings_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *SaveSettingsBundleRequest) GetSettingsBundle() *SettingsBundle {
+func (x *SaveSettingsBundleRequest) GetBundle() *SettingsBundle {
 	if x != nil {
-		return x.SettingsBundle
+		return x.Bundle
 	}
 	return nil
 }
@@ -300,7 +300,7 @@ type SaveSettingsBundleResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SettingsBundle *SettingsBundle `protobuf:"bytes,1,opt,name=settings_bundle,json=settingsBundle,proto3" json:"settings_bundle,omitempty"`
+	Bundle *SettingsBundle `protobuf:"bytes,1,opt,name=bundle,proto3" json:"bundle,omitempty"`
 }
 
 func (x *SaveSettingsBundleResponse) Reset() {
@@ -335,9 +335,9 @@ func (*SaveSettingsBundleResponse) Descriptor() ([]byte, []int) {
 	return file_settings_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *SaveSettingsBundleResponse) GetSettingsBundle() *SettingsBundle {
+func (x *SaveSettingsBundleResponse) GetBundle() *SettingsBundle {
 	if x != nil {
-		return x.SettingsBundle
+		return x.Bundle
 	}
 	return nil
 }
@@ -394,7 +394,7 @@ type GetSettingsBundleResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SettingsBundle *SettingsBundle `protobuf:"bytes,1,opt,name=settings_bundle,json=settingsBundle,proto3" json:"settings_bundle,omitempty"`
+	Bundle *SettingsBundle `protobuf:"bytes,1,opt,name=bundle,proto3" json:"bundle,omitempty"`
 }
 
 func (x *GetSettingsBundleResponse) Reset() {
@@ -429,9 +429,9 @@ func (*GetSettingsBundleResponse) Descriptor() ([]byte, []int) {
 	return file_settings_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GetSettingsBundleResponse) GetSettingsBundle() *SettingsBundle {
+func (x *GetSettingsBundleResponse) GetBundle() *SettingsBundle {
 	if x != nil {
-		return x.SettingsBundle
+		return x.Bundle
 	}
 	return nil
 }
@@ -488,7 +488,7 @@ type ListSettingsBundlesResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SettingsBundles []*SettingsBundle `protobuf:"bytes,1,rep,name=settings_bundles,json=settingsBundles,proto3" json:"settings_bundles,omitempty"`
+	Bundles []*SettingsBundle `protobuf:"bytes,1,rep,name=bundles,proto3" json:"bundles,omitempty"`
 }
 
 func (x *ListSettingsBundlesResponse) Reset() {
@@ -523,9 +523,9 @@ func (*ListSettingsBundlesResponse) Descriptor() ([]byte, []int) {
 	return file_settings_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *ListSettingsBundlesResponse) GetSettingsBundles() []*SettingsBundle {
+func (x *ListSettingsBundlesResponse) GetBundles() []*SettingsBundle {
 	if x != nil {
-		return x.SettingsBundles
+		return x.Bundles
 	}
 	return nil
 }
@@ -692,7 +692,7 @@ type SaveSettingsValueRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SettingsValue *SettingsValue `protobuf:"bytes,1,opt,name=settings_value,json=settingsValue,proto3" json:"settings_value,omitempty"`
+	Value *SettingsValue `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (x *SaveSettingsValueRequest) Reset() {
@@ -727,9 +727,9 @@ func (*SaveSettingsValueRequest) Descriptor() ([]byte, []int) {
 	return file_settings_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *SaveSettingsValueRequest) GetSettingsValue() *SettingsValue {
+func (x *SaveSettingsValueRequest) GetValue() *SettingsValue {
 	if x != nil {
-		return x.SettingsValue
+		return x.Value
 	}
 	return nil
 }
@@ -739,7 +739,7 @@ type SaveSettingsValueResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SettingsValue *SettingsValue `protobuf:"bytes,1,opt,name=settings_value,json=settingsValue,proto3" json:"settings_value,omitempty"`
+	Value *SettingsValue `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (x *SaveSettingsValueResponse) Reset() {
@@ -774,9 +774,9 @@ func (*SaveSettingsValueResponse) Descriptor() ([]byte, []int) {
 	return file_settings_proto_rawDescGZIP(), []int{10}
 }
 
-func (x *SaveSettingsValueResponse) GetSettingsValue() *SettingsValue {
+func (x *SaveSettingsValueResponse) GetValue() *SettingsValue {
 	if x != nil {
-		return x.SettingsValue
+		return x.Value
 	}
 	return nil
 }
@@ -833,7 +833,7 @@ type GetSettingsValueResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SettingsValue *SettingsValue `protobuf:"bytes,1,opt,name=settings_value,json=settingsValue,proto3" json:"settings_value,omitempty"`
+	Value *SettingsValueWithIdentifier `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (x *GetSettingsValueResponse) Reset() {
@@ -868,9 +868,9 @@ func (*GetSettingsValueResponse) Descriptor() ([]byte, []int) {
 	return file_settings_proto_rawDescGZIP(), []int{12}
 }
 
-func (x *GetSettingsValueResponse) GetSettingsValue() *SettingsValue {
+func (x *GetSettingsValueResponse) GetValue() *SettingsValueWithIdentifier {
 	if x != nil {
-		return x.SettingsValue
+		return x.Value
 	}
 	return nil
 }
@@ -935,7 +935,7 @@ type ListSettingsValuesResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SettingsValues []*SettingsValue `protobuf:"bytes,1,rep,name=settings_values,json=settingsValues,proto3" json:"settings_values,omitempty"`
+	Values []*SettingsValueWithIdentifier `protobuf:"bytes,1,rep,name=values,proto3" json:"values,omitempty"`
 }
 
 func (x *ListSettingsValuesResponse) Reset() {
@@ -970,11 +970,129 @@ func (*ListSettingsValuesResponse) Descriptor() ([]byte, []int) {
 	return file_settings_proto_rawDescGZIP(), []int{14}
 }
 
-func (x *ListSettingsValuesResponse) GetSettingsValues() []*SettingsValue {
+func (x *ListSettingsValuesResponse) GetValues() []*SettingsValueWithIdentifier {
 	if x != nil {
-		return x.SettingsValues
+		return x.Values
 	}
 	return nil
+}
+
+type SettingsValueWithIdentifier struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Identifier *Identifier    `protobuf:"bytes,1,opt,name=identifier,proto3" json:"identifier,omitempty"`
+	Value      *SettingsValue `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (x *SettingsValueWithIdentifier) Reset() {
+	*x = SettingsValueWithIdentifier{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_settings_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SettingsValueWithIdentifier) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SettingsValueWithIdentifier) ProtoMessage() {}
+
+func (x *SettingsValueWithIdentifier) ProtoReflect() protoreflect.Message {
+	mi := &file_settings_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SettingsValueWithIdentifier.ProtoReflect.Descriptor instead.
+func (*SettingsValueWithIdentifier) Descriptor() ([]byte, []int) {
+	return file_settings_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *SettingsValueWithIdentifier) GetIdentifier() *Identifier {
+	if x != nil {
+		return x.Identifier
+	}
+	return nil
+}
+
+func (x *SettingsValueWithIdentifier) GetValue() *SettingsValue {
+	if x != nil {
+		return x.Value
+	}
+	return nil
+}
+
+type Identifier struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Extension string `protobuf:"bytes,1,opt,name=extension,proto3" json:"extension,omitempty"`
+	Bundle    string `protobuf:"bytes,2,opt,name=bundle,proto3" json:"bundle,omitempty"`
+	Setting   string `protobuf:"bytes,3,opt,name=setting,proto3" json:"setting,omitempty"`
+}
+
+func (x *Identifier) Reset() {
+	*x = Identifier{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_settings_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Identifier) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Identifier) ProtoMessage() {}
+
+func (x *Identifier) ProtoReflect() protoreflect.Message {
+	mi := &file_settings_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Identifier.ProtoReflect.Descriptor instead.
+func (*Identifier) Descriptor() ([]byte, []int) {
+	return file_settings_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *Identifier) GetExtension() string {
+	if x != nil {
+		return x.Extension
+	}
+	return ""
+}
+
+func (x *Identifier) GetBundle() string {
+	if x != nil {
+		return x.Bundle
+	}
+	return ""
+}
+
+func (x *Identifier) GetSetting() string {
+	if x != nil {
+		return x.Setting
+	}
+	return ""
 }
 
 type ListRoleAssignmentsRequest struct {
@@ -988,7 +1106,7 @@ type ListRoleAssignmentsRequest struct {
 func (x *ListRoleAssignmentsRequest) Reset() {
 	*x = ListRoleAssignmentsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[15]
+		mi := &file_settings_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1001,7 +1119,7 @@ func (x *ListRoleAssignmentsRequest) String() string {
 func (*ListRoleAssignmentsRequest) ProtoMessage() {}
 
 func (x *ListRoleAssignmentsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[15]
+	mi := &file_settings_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1014,7 +1132,7 @@ func (x *ListRoleAssignmentsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRoleAssignmentsRequest.ProtoReflect.Descriptor instead.
 func (*ListRoleAssignmentsRequest) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{15}
+	return file_settings_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *ListRoleAssignmentsRequest) GetAccountUuid() string {
@@ -1035,7 +1153,7 @@ type ListRoleAssignmentsResponse struct {
 func (x *ListRoleAssignmentsResponse) Reset() {
 	*x = ListRoleAssignmentsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[16]
+		mi := &file_settings_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1048,7 +1166,7 @@ func (x *ListRoleAssignmentsResponse) String() string {
 func (*ListRoleAssignmentsResponse) ProtoMessage() {}
 
 func (x *ListRoleAssignmentsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[16]
+	mi := &file_settings_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1061,7 +1179,7 @@ func (x *ListRoleAssignmentsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListRoleAssignmentsResponse.ProtoReflect.Descriptor instead.
 func (*ListRoleAssignmentsResponse) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{16}
+	return file_settings_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *ListRoleAssignmentsResponse) GetAssignments() []*UserRoleAssignment {
@@ -1082,7 +1200,7 @@ type AssignRoleToUserRequest struct {
 func (x *AssignRoleToUserRequest) Reset() {
 	*x = AssignRoleToUserRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[17]
+		mi := &file_settings_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1095,7 +1213,7 @@ func (x *AssignRoleToUserRequest) String() string {
 func (*AssignRoleToUserRequest) ProtoMessage() {}
 
 func (x *AssignRoleToUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[17]
+	mi := &file_settings_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1108,7 +1226,7 @@ func (x *AssignRoleToUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AssignRoleToUserRequest.ProtoReflect.Descriptor instead.
 func (*AssignRoleToUserRequest) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{17}
+	return file_settings_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *AssignRoleToUserRequest) GetAssignment() *UserRoleAssignment {
@@ -1129,7 +1247,7 @@ type AssignRoleToUserResponse struct {
 func (x *AssignRoleToUserResponse) Reset() {
 	*x = AssignRoleToUserResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[18]
+		mi := &file_settings_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1142,7 +1260,7 @@ func (x *AssignRoleToUserResponse) String() string {
 func (*AssignRoleToUserResponse) ProtoMessage() {}
 
 func (x *AssignRoleToUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[18]
+	mi := &file_settings_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1155,7 +1273,7 @@ func (x *AssignRoleToUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AssignRoleToUserResponse.ProtoReflect.Descriptor instead.
 func (*AssignRoleToUserResponse) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{18}
+	return file_settings_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *AssignRoleToUserResponse) GetAssignment() *UserRoleAssignment {
@@ -1176,7 +1294,7 @@ type RemoveRoleFromUserRequest struct {
 func (x *RemoveRoleFromUserRequest) Reset() {
 	*x = RemoveRoleFromUserRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[19]
+		mi := &file_settings_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1189,7 +1307,7 @@ func (x *RemoveRoleFromUserRequest) String() string {
 func (*RemoveRoleFromUserRequest) ProtoMessage() {}
 
 func (x *RemoveRoleFromUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[19]
+	mi := &file_settings_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1202,7 +1320,7 @@ func (x *RemoveRoleFromUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveRoleFromUserRequest.ProtoReflect.Descriptor instead.
 func (*RemoveRoleFromUserRequest) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{19}
+	return file_settings_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *RemoveRoleFromUserRequest) GetId() string {
@@ -1227,7 +1345,7 @@ type UserRoleAssignment struct {
 func (x *UserRoleAssignment) Reset() {
 	*x = UserRoleAssignment{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[20]
+		mi := &file_settings_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1240,7 +1358,7 @@ func (x *UserRoleAssignment) String() string {
 func (*UserRoleAssignment) ProtoMessage() {}
 
 func (x *UserRoleAssignment) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[20]
+	mi := &file_settings_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1253,7 +1371,7 @@ func (x *UserRoleAssignment) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserRoleAssignment.ProtoReflect.Descriptor instead.
 func (*UserRoleAssignment) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{20}
+	return file_settings_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *UserRoleAssignment) GetId() string {
@@ -1289,7 +1407,7 @@ type Resource struct {
 func (x *Resource) Reset() {
 	*x = Resource{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[21]
+		mi := &file_settings_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1302,7 +1420,7 @@ func (x *Resource) String() string {
 func (*Resource) ProtoMessage() {}
 
 func (x *Resource) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[21]
+	mi := &file_settings_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1315,7 +1433,7 @@ func (x *Resource) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Resource.ProtoReflect.Descriptor instead.
 func (*Resource) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{21}
+	return file_settings_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *Resource) GetType() Resource_Type {
@@ -1349,7 +1467,7 @@ type SettingsBundle struct {
 func (x *SettingsBundle) Reset() {
 	*x = SettingsBundle{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[22]
+		mi := &file_settings_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1362,7 +1480,7 @@ func (x *SettingsBundle) String() string {
 func (*SettingsBundle) ProtoMessage() {}
 
 func (x *SettingsBundle) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[22]
+	mi := &file_settings_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1375,7 +1493,7 @@ func (x *SettingsBundle) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SettingsBundle.ProtoReflect.Descriptor instead.
 func (*SettingsBundle) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{22}
+	return file_settings_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *SettingsBundle) GetId() string {
@@ -1450,7 +1568,7 @@ type Setting struct {
 func (x *Setting) Reset() {
 	*x = Setting{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[23]
+		mi := &file_settings_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1463,7 +1581,7 @@ func (x *Setting) String() string {
 func (*Setting) ProtoMessage() {}
 
 func (x *Setting) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[23]
+	mi := &file_settings_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1476,7 +1594,7 @@ func (x *Setting) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Setting.ProtoReflect.Descriptor instead.
 func (*Setting) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{23}
+	return file_settings_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *Setting) GetId() string {
@@ -1618,7 +1736,7 @@ type IntSetting struct {
 func (x *IntSetting) Reset() {
 	*x = IntSetting{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[24]
+		mi := &file_settings_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1631,7 +1749,7 @@ func (x *IntSetting) String() string {
 func (*IntSetting) ProtoMessage() {}
 
 func (x *IntSetting) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[24]
+	mi := &file_settings_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1644,7 +1762,7 @@ func (x *IntSetting) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IntSetting.ProtoReflect.Descriptor instead.
 func (*IntSetting) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{24}
+	return file_settings_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *IntSetting) GetDefault() int64 {
@@ -1697,7 +1815,7 @@ type StringSetting struct {
 func (x *StringSetting) Reset() {
 	*x = StringSetting{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[25]
+		mi := &file_settings_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1710,7 +1828,7 @@ func (x *StringSetting) String() string {
 func (*StringSetting) ProtoMessage() {}
 
 func (x *StringSetting) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[25]
+	mi := &file_settings_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1723,7 +1841,7 @@ func (x *StringSetting) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StringSetting.ProtoReflect.Descriptor instead.
 func (*StringSetting) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{25}
+	return file_settings_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *StringSetting) GetDefault() string {
@@ -1773,7 +1891,7 @@ type BoolSetting struct {
 func (x *BoolSetting) Reset() {
 	*x = BoolSetting{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[26]
+		mi := &file_settings_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1786,7 +1904,7 @@ func (x *BoolSetting) String() string {
 func (*BoolSetting) ProtoMessage() {}
 
 func (x *BoolSetting) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[26]
+	mi := &file_settings_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1799,7 +1917,7 @@ func (x *BoolSetting) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BoolSetting.ProtoReflect.Descriptor instead.
 func (*BoolSetting) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{26}
+	return file_settings_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *BoolSetting) GetDefault() bool {
@@ -1827,7 +1945,7 @@ type SingleChoiceListSetting struct {
 func (x *SingleChoiceListSetting) Reset() {
 	*x = SingleChoiceListSetting{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[27]
+		mi := &file_settings_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1840,7 +1958,7 @@ func (x *SingleChoiceListSetting) String() string {
 func (*SingleChoiceListSetting) ProtoMessage() {}
 
 func (x *SingleChoiceListSetting) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[27]
+	mi := &file_settings_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1853,7 +1971,7 @@ func (x *SingleChoiceListSetting) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SingleChoiceListSetting.ProtoReflect.Descriptor instead.
 func (*SingleChoiceListSetting) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{27}
+	return file_settings_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *SingleChoiceListSetting) GetOptions() []*ListOption {
@@ -1874,7 +1992,7 @@ type MultiChoiceListSetting struct {
 func (x *MultiChoiceListSetting) Reset() {
 	*x = MultiChoiceListSetting{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[28]
+		mi := &file_settings_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1887,7 +2005,7 @@ func (x *MultiChoiceListSetting) String() string {
 func (*MultiChoiceListSetting) ProtoMessage() {}
 
 func (x *MultiChoiceListSetting) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[28]
+	mi := &file_settings_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1900,7 +2018,7 @@ func (x *MultiChoiceListSetting) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MultiChoiceListSetting.ProtoReflect.Descriptor instead.
 func (*MultiChoiceListSetting) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{28}
+	return file_settings_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *MultiChoiceListSetting) GetOptions() []*ListOption {
@@ -1923,7 +2041,7 @@ type ListOption struct {
 func (x *ListOption) Reset() {
 	*x = ListOption{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[29]
+		mi := &file_settings_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1936,7 +2054,7 @@ func (x *ListOption) String() string {
 func (*ListOption) ProtoMessage() {}
 
 func (x *ListOption) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[29]
+	mi := &file_settings_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1949,7 +2067,7 @@ func (x *ListOption) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListOption.ProtoReflect.Descriptor instead.
 func (*ListOption) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{29}
+	return file_settings_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *ListOption) GetValue() *ListOptionValue {
@@ -1985,7 +2103,7 @@ type PermissionSetting struct {
 func (x *PermissionSetting) Reset() {
 	*x = PermissionSetting{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[30]
+		mi := &file_settings_proto_msgTypes[32]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1998,7 +2116,7 @@ func (x *PermissionSetting) String() string {
 func (*PermissionSetting) ProtoMessage() {}
 
 func (x *PermissionSetting) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[30]
+	mi := &file_settings_proto_msgTypes[32]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2011,7 +2129,7 @@ func (x *PermissionSetting) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PermissionSetting.ProtoReflect.Descriptor instead.
 func (*PermissionSetting) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{30}
+	return file_settings_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *PermissionSetting) GetOperation() PermissionSetting_Operation {
@@ -2051,7 +2169,7 @@ type SettingsValue struct {
 func (x *SettingsValue) Reset() {
 	*x = SettingsValue{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[31]
+		mi := &file_settings_proto_msgTypes[33]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2064,7 +2182,7 @@ func (x *SettingsValue) String() string {
 func (*SettingsValue) ProtoMessage() {}
 
 func (x *SettingsValue) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[31]
+	mi := &file_settings_proto_msgTypes[33]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2077,7 +2195,7 @@ func (x *SettingsValue) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SettingsValue.ProtoReflect.Descriptor instead.
 func (*SettingsValue) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{31}
+	return file_settings_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *SettingsValue) GetId() string {
@@ -2189,7 +2307,7 @@ type ListValue struct {
 func (x *ListValue) Reset() {
 	*x = ListValue{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[32]
+		mi := &file_settings_proto_msgTypes[34]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2202,7 +2320,7 @@ func (x *ListValue) String() string {
 func (*ListValue) ProtoMessage() {}
 
 func (x *ListValue) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[32]
+	mi := &file_settings_proto_msgTypes[34]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2215,7 +2333,7 @@ func (x *ListValue) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListValue.ProtoReflect.Descriptor instead.
 func (*ListValue) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{32}
+	return file_settings_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *ListValue) GetValues() []*ListOptionValue {
@@ -2239,7 +2357,7 @@ type ListOptionValue struct {
 func (x *ListOptionValue) Reset() {
 	*x = ListOptionValue{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_settings_proto_msgTypes[33]
+		mi := &file_settings_proto_msgTypes[35]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2252,7 +2370,7 @@ func (x *ListOptionValue) String() string {
 func (*ListOptionValue) ProtoMessage() {}
 
 func (x *ListOptionValue) ProtoReflect() protoreflect.Message {
-	mi := &file_settings_proto_msgTypes[33]
+	mi := &file_settings_proto_msgTypes[35]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2265,7 +2383,7 @@ func (x *ListOptionValue) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListOptionValue.ProtoReflect.Descriptor instead.
 func (*ListOptionValue) Descriptor() ([]byte, []int) {
-	return file_settings_proto_rawDescGZIP(), []int{33}
+	return file_settings_proto_rawDescGZIP(), []int{35}
 }
 
 func (m *ListOptionValue) GetOption() isListOptionValue_Option {
@@ -2316,87 +2434,94 @@ var file_settings_proto_rawDesc = []byte{
 	0x73, 0x2f, 0x61, 0x6e, 0x6e, 0x6f, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x1a, 0x1b, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x62, 0x75, 0x66, 0x2f, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x22, 0x5b, 0x0a, 0x19, 0x53, 0x61, 0x76, 0x65, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73,
-	0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x3e, 0x0a,
-	0x0f, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x5f, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53,
-	0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x0e, 0x73,
-	0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x22, 0x5c, 0x0a,
-	0x1a, 0x53, 0x61, 0x76, 0x65, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e,
-	0x64, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3e, 0x0a, 0x0f, 0x73,
-	0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x5f, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65, 0x74,
-	0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x0e, 0x73, 0x65, 0x74,
-	0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x22, 0x37, 0x0a, 0x18, 0x47,
-	0x65, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x62, 0x75, 0x6e, 0x64, 0x6c,
-	0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x62, 0x75, 0x6e, 0x64,
-	0x6c, 0x65, 0x49, 0x64, 0x22, 0x5b, 0x0a, 0x19, 0x47, 0x65, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69,
-	0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x3e, 0x0a, 0x0f, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x5f, 0x62, 0x75,
+	0x22, 0x4a, 0x0a, 0x19, 0x53, 0x61, 0x76, 0x65, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73,
+	0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x2d, 0x0a,
+	0x06, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75,
+	0x6e, 0x64, 0x6c, 0x65, 0x52, 0x06, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x22, 0x4b, 0x0a, 0x1a,
+	0x53, 0x61, 0x76, 0x65, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64,
+	0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2d, 0x0a, 0x06, 0x62, 0x75,
 	0x6e, 0x64, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c,
-	0x65, 0x52, 0x0e, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c,
-	0x65, 0x22, 0x3f, 0x0a, 0x1a, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67,
-	0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x21, 0x0a, 0x0c, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x75, 0x75, 0x69, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x75,
-	0x69, 0x64, 0x22, 0x5f, 0x0a, 0x1b, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e,
-	0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x40, 0x0a, 0x10, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x5f, 0x62, 0x75,
-	0x6e, 0x64, 0x6c, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64,
-	0x6c, 0x65, 0x52, 0x0f, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64,
-	0x6c, 0x65, 0x73, 0x22, 0x6a, 0x0a, 0x21, 0x41, 0x64, 0x64, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e,
-	0x67, 0x54, 0x6f, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c,
-	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x62, 0x75, 0x6e, 0x64,
-	0x6c, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x62, 0x75, 0x6e,
-	0x64, 0x6c, 0x65, 0x49, 0x64, 0x12, 0x28, 0x0a, 0x07, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53,
-	0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x22,
-	0x4e, 0x0a, 0x22, 0x41, 0x64, 0x64, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x54, 0x6f, 0x53,
-	0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x28, 0x0a, 0x07, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53,
-	0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x22,
-	0x64, 0x0a, 0x26, 0x52, 0x65, 0x6d, 0x6f, 0x76, 0x65, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67,
-	0x46, 0x72, 0x6f, 0x6d, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64,
-	0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x62, 0x75, 0x6e,
-	0x64, 0x6c, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x62, 0x75,
-	0x6e, 0x64, 0x6c, 0x65, 0x49, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e,
-	0x67, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x65, 0x74, 0x74,
-	0x69, 0x6e, 0x67, 0x49, 0x64, 0x22, 0x57, 0x0a, 0x18, 0x53, 0x61, 0x76, 0x65, 0x53, 0x65, 0x74,
-	0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x3b, 0x0a, 0x0e, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x5f, 0x76, 0x61,
-	0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52,
-	0x0d, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x58,
-	0x0a, 0x19, 0x53, 0x61, 0x76, 0x65, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61,
-	0x6c, 0x75, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3b, 0x0a, 0x0e, 0x73,
-	0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65, 0x74, 0x74,
-	0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x0d, 0x73, 0x65, 0x74, 0x74, 0x69,
-	0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x29, 0x0a, 0x17, 0x47, 0x65, 0x74, 0x53,
-	0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x02, 0x69, 0x64, 0x22, 0x57, 0x0a, 0x18, 0x47, 0x65, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e,
-	0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x3b, 0x0a, 0x0e, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x5f, 0x76, 0x61, 0x6c, 0x75,
-	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
-	0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x0d, 0x73,
-	0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x5b, 0x0a, 0x19,
-	0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75,
-	0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x62, 0x75, 0x6e,
-	0x64, 0x6c, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x62, 0x75,
-	0x6e, 0x64, 0x6c, 0x65, 0x49, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
-	0x74, 0x5f, 0x75, 0x75, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x61, 0x63,
-	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x75, 0x69, 0x64, 0x22, 0x5b, 0x0a, 0x1a, 0x4c, 0x69, 0x73,
-	0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3d, 0x0a, 0x0f, 0x73, 0x65, 0x74, 0x74, 0x69,
-	0x6e, 0x67, 0x73, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
-	0x32, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67,
-	0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x0e, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73,
-	0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x22, 0x3f, 0x0a, 0x1a, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x6f,
+	0x65, 0x52, 0x06, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x22, 0x37, 0x0a, 0x18, 0x47, 0x65, 0x74,
+	0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65,
+	0x49, 0x64, 0x22, 0x4a, 0x0a, 0x19, 0x47, 0x65, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67,
+	0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x2d, 0x0a, 0x06, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x15, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73,
+	0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x06, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x22, 0x3f,
+	0x0a, 0x1a, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75,
+	0x6e, 0x64, 0x6c, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x21, 0x0a, 0x0c,
+	0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x75, 0x75, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0b, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x75, 0x69, 0x64, 0x22,
+	0x4e, 0x0a, 0x1b, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42,
+	0x75, 0x6e, 0x64, 0x6c, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2f,
+	0x0a, 0x07, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x15, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73,
+	0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x07, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x73, 0x22,
+	0x6a, 0x0a, 0x21, 0x41, 0x64, 0x64, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x54, 0x6f, 0x53,
+	0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x5f, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x49,
+	0x64, 0x12, 0x28, 0x0a, 0x07, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69,
+	0x6e, 0x67, 0x52, 0x07, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x22, 0x4e, 0x0a, 0x22, 0x41,
+	0x64, 0x64, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x54, 0x6f, 0x53, 0x65, 0x74, 0x74, 0x69,
+	0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x28, 0x0a, 0x07, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69,
+	0x6e, 0x67, 0x52, 0x07, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x22, 0x64, 0x0a, 0x26, 0x52,
+	0x65, 0x6d, 0x6f, 0x76, 0x65, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x46, 0x72, 0x6f, 0x6d,
+	0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x42, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65,
+	0x49, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x69, 0x64,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x49,
+	0x64, 0x22, 0x46, 0x0a, 0x18, 0x53, 0x61, 0x76, 0x65, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67,
+	0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x2a, 0x0a,
+	0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c,
+	0x75, 0x65, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x47, 0x0a, 0x19, 0x53, 0x61, 0x76,
+	0x65, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2a, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65,
+	0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x22, 0x29, 0x0a, 0x17, 0x47, 0x65, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67,
+	0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a,
+	0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x54, 0x0a,
+	0x18, 0x47, 0x65, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75,
+	0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x38, 0x0a, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x57, 0x69,
+	0x74, 0x68, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x52, 0x05, 0x76, 0x61,
+	0x6c, 0x75, 0x65, 0x22, 0x5b, 0x0a, 0x19, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69,
+	0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x1b, 0x0a, 0x09, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x08, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x49, 0x64, 0x12, 0x21, 0x0a,
+	0x0c, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x75, 0x75, 0x69, 0x64, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0b, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x75, 0x69, 0x64,
+	0x22, 0x58, 0x0a, 0x1a, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73,
+	0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3a,
+	0x0a, 0x06, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x22,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56,
+	0x61, 0x6c, 0x75, 0x65, 0x57, 0x69, 0x74, 0x68, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69,
+	0x65, 0x72, 0x52, 0x06, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x22, 0x7c, 0x0a, 0x1b, 0x53, 0x65,
+	0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x57, 0x69, 0x74, 0x68, 0x49,
+	0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x12, 0x31, 0x0a, 0x0a, 0x69, 0x64, 0x65,
+	0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72,
+	0x52, 0x0a, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x12, 0x2a, 0x0a, 0x05,
+	0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2e, 0x53, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x73, 0x56, 0x61, 0x6c, 0x75,
+	0x65, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x5c, 0x0a, 0x0a, 0x49, 0x64, 0x65, 0x6e,
+	0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x12, 0x1c, 0x0a, 0x09, 0x65, 0x78, 0x74, 0x65, 0x6e, 0x73,
+	0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x65, 0x78, 0x74, 0x65, 0x6e,
+	0x73, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x62, 0x75, 0x6e, 0x64, 0x6c, 0x65, 0x12, 0x18, 0x0a, 0x07,
+	0x73, 0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73,
+	0x65, 0x74, 0x74, 0x69, 0x6e, 0x67, 0x22, 0x3f, 0x0a, 0x1a, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x6f,
 	0x6c, 0x65, 0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x73, 0x52, 0x65, 0x71,
 	0x75, 0x65, 0x73, 0x74, 0x12, 0x21, 0x0a, 0x0c, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x5f,
 	0x75, 0x75, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x61, 0x63, 0x63, 0x6f,
@@ -2729,7 +2854,7 @@ func file_settings_proto_rawDescGZIP() []byte {
 }
 
 var file_settings_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_settings_proto_msgTypes = make([]protoimpl.MessageInfo, 34)
+var file_settings_proto_msgTypes = make([]protoimpl.MessageInfo, 36)
 var file_settings_proto_goTypes = []interface{}{
 	(Resource_Type)(0),                             // 0: proto.Resource.Type
 	(SettingsBundle_Type)(0),                       // 1: proto.SettingsBundle.Type
@@ -2750,89 +2875,93 @@ var file_settings_proto_goTypes = []interface{}{
 	(*GetSettingsValueResponse)(nil),               // 16: proto.GetSettingsValueResponse
 	(*ListSettingsValuesRequest)(nil),              // 17: proto.ListSettingsValuesRequest
 	(*ListSettingsValuesResponse)(nil),             // 18: proto.ListSettingsValuesResponse
-	(*ListRoleAssignmentsRequest)(nil),             // 19: proto.ListRoleAssignmentsRequest
-	(*ListRoleAssignmentsResponse)(nil),            // 20: proto.ListRoleAssignmentsResponse
-	(*AssignRoleToUserRequest)(nil),                // 21: proto.AssignRoleToUserRequest
-	(*AssignRoleToUserResponse)(nil),               // 22: proto.AssignRoleToUserResponse
-	(*RemoveRoleFromUserRequest)(nil),              // 23: proto.RemoveRoleFromUserRequest
-	(*UserRoleAssignment)(nil),                     // 24: proto.UserRoleAssignment
-	(*Resource)(nil),                               // 25: proto.Resource
-	(*SettingsBundle)(nil),                         // 26: proto.SettingsBundle
-	(*Setting)(nil),                                // 27: proto.Setting
-	(*IntSetting)(nil),                             // 28: proto.IntSetting
-	(*StringSetting)(nil),                          // 29: proto.StringSetting
-	(*BoolSetting)(nil),                            // 30: proto.BoolSetting
-	(*SingleChoiceListSetting)(nil),                // 31: proto.SingleChoiceListSetting
-	(*MultiChoiceListSetting)(nil),                 // 32: proto.MultiChoiceListSetting
-	(*ListOption)(nil),                             // 33: proto.ListOption
-	(*PermissionSetting)(nil),                      // 34: proto.PermissionSetting
-	(*SettingsValue)(nil),                          // 35: proto.SettingsValue
-	(*ListValue)(nil),                              // 36: proto.ListValue
-	(*ListOptionValue)(nil),                        // 37: proto.ListOptionValue
-	(*empty.Empty)(nil),                            // 38: google.protobuf.Empty
+	(*SettingsValueWithIdentifier)(nil),            // 19: proto.SettingsValueWithIdentifier
+	(*Identifier)(nil),                             // 20: proto.Identifier
+	(*ListRoleAssignmentsRequest)(nil),             // 21: proto.ListRoleAssignmentsRequest
+	(*ListRoleAssignmentsResponse)(nil),            // 22: proto.ListRoleAssignmentsResponse
+	(*AssignRoleToUserRequest)(nil),                // 23: proto.AssignRoleToUserRequest
+	(*AssignRoleToUserResponse)(nil),               // 24: proto.AssignRoleToUserResponse
+	(*RemoveRoleFromUserRequest)(nil),              // 25: proto.RemoveRoleFromUserRequest
+	(*UserRoleAssignment)(nil),                     // 26: proto.UserRoleAssignment
+	(*Resource)(nil),                               // 27: proto.Resource
+	(*SettingsBundle)(nil),                         // 28: proto.SettingsBundle
+	(*Setting)(nil),                                // 29: proto.Setting
+	(*IntSetting)(nil),                             // 30: proto.IntSetting
+	(*StringSetting)(nil),                          // 31: proto.StringSetting
+	(*BoolSetting)(nil),                            // 32: proto.BoolSetting
+	(*SingleChoiceListSetting)(nil),                // 33: proto.SingleChoiceListSetting
+	(*MultiChoiceListSetting)(nil),                 // 34: proto.MultiChoiceListSetting
+	(*ListOption)(nil),                             // 35: proto.ListOption
+	(*PermissionSetting)(nil),                      // 36: proto.PermissionSetting
+	(*SettingsValue)(nil),                          // 37: proto.SettingsValue
+	(*ListValue)(nil),                              // 38: proto.ListValue
+	(*ListOptionValue)(nil),                        // 39: proto.ListOptionValue
+	(*empty.Empty)(nil),                            // 40: google.protobuf.Empty
 }
 var file_settings_proto_depIdxs = []int32{
-	26, // 0: proto.SaveSettingsBundleRequest.settings_bundle:type_name -> proto.SettingsBundle
-	26, // 1: proto.SaveSettingsBundleResponse.settings_bundle:type_name -> proto.SettingsBundle
-	26, // 2: proto.GetSettingsBundleResponse.settings_bundle:type_name -> proto.SettingsBundle
-	26, // 3: proto.ListSettingsBundlesResponse.settings_bundles:type_name -> proto.SettingsBundle
-	27, // 4: proto.AddSettingToSettingsBundleRequest.setting:type_name -> proto.Setting
-	27, // 5: proto.AddSettingToSettingsBundleResponse.setting:type_name -> proto.Setting
-	35, // 6: proto.SaveSettingsValueRequest.settings_value:type_name -> proto.SettingsValue
-	35, // 7: proto.SaveSettingsValueResponse.settings_value:type_name -> proto.SettingsValue
-	35, // 8: proto.GetSettingsValueResponse.settings_value:type_name -> proto.SettingsValue
-	35, // 9: proto.ListSettingsValuesResponse.settings_values:type_name -> proto.SettingsValue
-	24, // 10: proto.ListRoleAssignmentsResponse.assignments:type_name -> proto.UserRoleAssignment
-	24, // 11: proto.AssignRoleToUserRequest.assignment:type_name -> proto.UserRoleAssignment
-	24, // 12: proto.AssignRoleToUserResponse.assignment:type_name -> proto.UserRoleAssignment
-	0,  // 13: proto.Resource.type:type_name -> proto.Resource.Type
-	1,  // 14: proto.SettingsBundle.type:type_name -> proto.SettingsBundle.Type
-	27, // 15: proto.SettingsBundle.settings:type_name -> proto.Setting
-	25, // 16: proto.SettingsBundle.resource:type_name -> proto.Resource
-	28, // 17: proto.Setting.int_value:type_name -> proto.IntSetting
-	29, // 18: proto.Setting.string_value:type_name -> proto.StringSetting
-	30, // 19: proto.Setting.bool_value:type_name -> proto.BoolSetting
-	31, // 20: proto.Setting.single_choice_value:type_name -> proto.SingleChoiceListSetting
-	32, // 21: proto.Setting.multi_choice_value:type_name -> proto.MultiChoiceListSetting
-	34, // 22: proto.Setting.permission_value:type_name -> proto.PermissionSetting
-	25, // 23: proto.Setting.resource:type_name -> proto.Resource
-	33, // 24: proto.SingleChoiceListSetting.options:type_name -> proto.ListOption
-	33, // 25: proto.MultiChoiceListSetting.options:type_name -> proto.ListOption
-	37, // 26: proto.ListOption.value:type_name -> proto.ListOptionValue
-	2,  // 27: proto.PermissionSetting.operation:type_name -> proto.PermissionSetting.Operation
-	3,  // 28: proto.PermissionSetting.constraint:type_name -> proto.PermissionSetting.Constraint
-	25, // 29: proto.SettingsValue.resource:type_name -> proto.Resource
-	36, // 30: proto.SettingsValue.list_value:type_name -> proto.ListValue
-	37, // 31: proto.ListValue.values:type_name -> proto.ListOptionValue
-	4,  // 32: proto.BundleService.SaveSettingsBundle:input_type -> proto.SaveSettingsBundleRequest
-	6,  // 33: proto.BundleService.GetSettingsBundle:input_type -> proto.GetSettingsBundleRequest
-	8,  // 34: proto.BundleService.ListSettingsBundles:input_type -> proto.ListSettingsBundlesRequest
-	10, // 35: proto.BundleService.AddSettingToSettingsBundle:input_type -> proto.AddSettingToSettingsBundleRequest
-	12, // 36: proto.BundleService.RemoveSettingFromSettingsBundle:input_type -> proto.RemoveSettingFromSettingsBundleRequest
-	13, // 37: proto.ValueService.SaveSettingsValue:input_type -> proto.SaveSettingsValueRequest
-	15, // 38: proto.ValueService.GetSettingsValue:input_type -> proto.GetSettingsValueRequest
-	17, // 39: proto.ValueService.ListSettingsValues:input_type -> proto.ListSettingsValuesRequest
-	8,  // 40: proto.RoleService.ListRoles:input_type -> proto.ListSettingsBundlesRequest
-	19, // 41: proto.RoleService.ListRoleAssignments:input_type -> proto.ListRoleAssignmentsRequest
-	21, // 42: proto.RoleService.AssignRoleToUser:input_type -> proto.AssignRoleToUserRequest
-	23, // 43: proto.RoleService.RemoveRoleFromUser:input_type -> proto.RemoveRoleFromUserRequest
-	5,  // 44: proto.BundleService.SaveSettingsBundle:output_type -> proto.SaveSettingsBundleResponse
-	7,  // 45: proto.BundleService.GetSettingsBundle:output_type -> proto.GetSettingsBundleResponse
-	9,  // 46: proto.BundleService.ListSettingsBundles:output_type -> proto.ListSettingsBundlesResponse
-	11, // 47: proto.BundleService.AddSettingToSettingsBundle:output_type -> proto.AddSettingToSettingsBundleResponse
-	38, // 48: proto.BundleService.RemoveSettingFromSettingsBundle:output_type -> google.protobuf.Empty
-	14, // 49: proto.ValueService.SaveSettingsValue:output_type -> proto.SaveSettingsValueResponse
-	16, // 50: proto.ValueService.GetSettingsValue:output_type -> proto.GetSettingsValueResponse
-	18, // 51: proto.ValueService.ListSettingsValues:output_type -> proto.ListSettingsValuesResponse
-	9,  // 52: proto.RoleService.ListRoles:output_type -> proto.ListSettingsBundlesResponse
-	20, // 53: proto.RoleService.ListRoleAssignments:output_type -> proto.ListRoleAssignmentsResponse
-	22, // 54: proto.RoleService.AssignRoleToUser:output_type -> proto.AssignRoleToUserResponse
-	38, // 55: proto.RoleService.RemoveRoleFromUser:output_type -> google.protobuf.Empty
-	44, // [44:56] is the sub-list for method output_type
-	32, // [32:44] is the sub-list for method input_type
-	32, // [32:32] is the sub-list for extension type_name
-	32, // [32:32] is the sub-list for extension extendee
-	0,  // [0:32] is the sub-list for field type_name
+	28, // 0: proto.SaveSettingsBundleRequest.bundle:type_name -> proto.SettingsBundle
+	28, // 1: proto.SaveSettingsBundleResponse.bundle:type_name -> proto.SettingsBundle
+	28, // 2: proto.GetSettingsBundleResponse.bundle:type_name -> proto.SettingsBundle
+	28, // 3: proto.ListSettingsBundlesResponse.bundles:type_name -> proto.SettingsBundle
+	29, // 4: proto.AddSettingToSettingsBundleRequest.setting:type_name -> proto.Setting
+	29, // 5: proto.AddSettingToSettingsBundleResponse.setting:type_name -> proto.Setting
+	37, // 6: proto.SaveSettingsValueRequest.value:type_name -> proto.SettingsValue
+	37, // 7: proto.SaveSettingsValueResponse.value:type_name -> proto.SettingsValue
+	19, // 8: proto.GetSettingsValueResponse.value:type_name -> proto.SettingsValueWithIdentifier
+	19, // 9: proto.ListSettingsValuesResponse.values:type_name -> proto.SettingsValueWithIdentifier
+	20, // 10: proto.SettingsValueWithIdentifier.identifier:type_name -> proto.Identifier
+	37, // 11: proto.SettingsValueWithIdentifier.value:type_name -> proto.SettingsValue
+	26, // 12: proto.ListRoleAssignmentsResponse.assignments:type_name -> proto.UserRoleAssignment
+	26, // 13: proto.AssignRoleToUserRequest.assignment:type_name -> proto.UserRoleAssignment
+	26, // 14: proto.AssignRoleToUserResponse.assignment:type_name -> proto.UserRoleAssignment
+	0,  // 15: proto.Resource.type:type_name -> proto.Resource.Type
+	1,  // 16: proto.SettingsBundle.type:type_name -> proto.SettingsBundle.Type
+	29, // 17: proto.SettingsBundle.settings:type_name -> proto.Setting
+	27, // 18: proto.SettingsBundle.resource:type_name -> proto.Resource
+	30, // 19: proto.Setting.int_value:type_name -> proto.IntSetting
+	31, // 20: proto.Setting.string_value:type_name -> proto.StringSetting
+	32, // 21: proto.Setting.bool_value:type_name -> proto.BoolSetting
+	33, // 22: proto.Setting.single_choice_value:type_name -> proto.SingleChoiceListSetting
+	34, // 23: proto.Setting.multi_choice_value:type_name -> proto.MultiChoiceListSetting
+	36, // 24: proto.Setting.permission_value:type_name -> proto.PermissionSetting
+	27, // 25: proto.Setting.resource:type_name -> proto.Resource
+	35, // 26: proto.SingleChoiceListSetting.options:type_name -> proto.ListOption
+	35, // 27: proto.MultiChoiceListSetting.options:type_name -> proto.ListOption
+	39, // 28: proto.ListOption.value:type_name -> proto.ListOptionValue
+	2,  // 29: proto.PermissionSetting.operation:type_name -> proto.PermissionSetting.Operation
+	3,  // 30: proto.PermissionSetting.constraint:type_name -> proto.PermissionSetting.Constraint
+	27, // 31: proto.SettingsValue.resource:type_name -> proto.Resource
+	38, // 32: proto.SettingsValue.list_value:type_name -> proto.ListValue
+	39, // 33: proto.ListValue.values:type_name -> proto.ListOptionValue
+	4,  // 34: proto.BundleService.SaveSettingsBundle:input_type -> proto.SaveSettingsBundleRequest
+	6,  // 35: proto.BundleService.GetSettingsBundle:input_type -> proto.GetSettingsBundleRequest
+	8,  // 36: proto.BundleService.ListSettingsBundles:input_type -> proto.ListSettingsBundlesRequest
+	10, // 37: proto.BundleService.AddSettingToSettingsBundle:input_type -> proto.AddSettingToSettingsBundleRequest
+	12, // 38: proto.BundleService.RemoveSettingFromSettingsBundle:input_type -> proto.RemoveSettingFromSettingsBundleRequest
+	13, // 39: proto.ValueService.SaveSettingsValue:input_type -> proto.SaveSettingsValueRequest
+	15, // 40: proto.ValueService.GetSettingsValue:input_type -> proto.GetSettingsValueRequest
+	17, // 41: proto.ValueService.ListSettingsValues:input_type -> proto.ListSettingsValuesRequest
+	8,  // 42: proto.RoleService.ListRoles:input_type -> proto.ListSettingsBundlesRequest
+	21, // 43: proto.RoleService.ListRoleAssignments:input_type -> proto.ListRoleAssignmentsRequest
+	23, // 44: proto.RoleService.AssignRoleToUser:input_type -> proto.AssignRoleToUserRequest
+	25, // 45: proto.RoleService.RemoveRoleFromUser:input_type -> proto.RemoveRoleFromUserRequest
+	5,  // 46: proto.BundleService.SaveSettingsBundle:output_type -> proto.SaveSettingsBundleResponse
+	7,  // 47: proto.BundleService.GetSettingsBundle:output_type -> proto.GetSettingsBundleResponse
+	9,  // 48: proto.BundleService.ListSettingsBundles:output_type -> proto.ListSettingsBundlesResponse
+	11, // 49: proto.BundleService.AddSettingToSettingsBundle:output_type -> proto.AddSettingToSettingsBundleResponse
+	40, // 50: proto.BundleService.RemoveSettingFromSettingsBundle:output_type -> google.protobuf.Empty
+	14, // 51: proto.ValueService.SaveSettingsValue:output_type -> proto.SaveSettingsValueResponse
+	16, // 52: proto.ValueService.GetSettingsValue:output_type -> proto.GetSettingsValueResponse
+	18, // 53: proto.ValueService.ListSettingsValues:output_type -> proto.ListSettingsValuesResponse
+	9,  // 54: proto.RoleService.ListRoles:output_type -> proto.ListSettingsBundlesResponse
+	22, // 55: proto.RoleService.ListRoleAssignments:output_type -> proto.ListRoleAssignmentsResponse
+	24, // 56: proto.RoleService.AssignRoleToUser:output_type -> proto.AssignRoleToUserResponse
+	40, // 57: proto.RoleService.RemoveRoleFromUser:output_type -> google.protobuf.Empty
+	46, // [46:58] is the sub-list for method output_type
+	34, // [34:46] is the sub-list for method input_type
+	34, // [34:34] is the sub-list for extension type_name
+	34, // [34:34] is the sub-list for extension extendee
+	0,  // [0:34] is the sub-list for field type_name
 }
 
 func init() { file_settings_proto_init() }
@@ -3022,7 +3151,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListRoleAssignmentsRequest); i {
+			switch v := v.(*SettingsValueWithIdentifier); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3034,7 +3163,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListRoleAssignmentsResponse); i {
+			switch v := v.(*Identifier); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3046,7 +3175,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AssignRoleToUserRequest); i {
+			switch v := v.(*ListRoleAssignmentsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3058,7 +3187,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AssignRoleToUserResponse); i {
+			switch v := v.(*ListRoleAssignmentsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3070,7 +3199,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RemoveRoleFromUserRequest); i {
+			switch v := v.(*AssignRoleToUserRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3082,7 +3211,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserRoleAssignment); i {
+			switch v := v.(*AssignRoleToUserResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3094,7 +3223,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Resource); i {
+			switch v := v.(*RemoveRoleFromUserRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3106,7 +3235,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SettingsBundle); i {
+			switch v := v.(*UserRoleAssignment); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3118,7 +3247,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Setting); i {
+			switch v := v.(*Resource); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3130,7 +3259,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*IntSetting); i {
+			switch v := v.(*SettingsBundle); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3142,7 +3271,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StringSetting); i {
+			switch v := v.(*Setting); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3154,7 +3283,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*BoolSetting); i {
+			switch v := v.(*IntSetting); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3166,7 +3295,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SingleChoiceListSetting); i {
+			switch v := v.(*StringSetting); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3178,7 +3307,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MultiChoiceListSetting); i {
+			switch v := v.(*BoolSetting); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3190,7 +3319,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListOption); i {
+			switch v := v.(*SingleChoiceListSetting); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3202,7 +3331,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*PermissionSetting); i {
+			switch v := v.(*MultiChoiceListSetting); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3214,7 +3343,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SettingsValue); i {
+			switch v := v.(*ListOption); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3226,7 +3355,7 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListValue); i {
+			switch v := v.(*PermissionSetting); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3238,6 +3367,30 @@ func file_settings_proto_init() {
 			}
 		}
 		file_settings_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SettingsValue); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_settings_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListValue); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_settings_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListOptionValue); i {
 			case 0:
 				return &v.state
@@ -3250,7 +3403,7 @@ func file_settings_proto_init() {
 			}
 		}
 	}
-	file_settings_proto_msgTypes[23].OneofWrappers = []interface{}{
+	file_settings_proto_msgTypes[25].OneofWrappers = []interface{}{
 		(*Setting_IntValue)(nil),
 		(*Setting_StringValue)(nil),
 		(*Setting_BoolValue)(nil),
@@ -3258,13 +3411,13 @@ func file_settings_proto_init() {
 		(*Setting_MultiChoiceValue)(nil),
 		(*Setting_PermissionValue)(nil),
 	}
-	file_settings_proto_msgTypes[31].OneofWrappers = []interface{}{
+	file_settings_proto_msgTypes[33].OneofWrappers = []interface{}{
 		(*SettingsValue_BoolValue)(nil),
 		(*SettingsValue_IntValue)(nil),
 		(*SettingsValue_StringValue)(nil),
 		(*SettingsValue_ListValue)(nil),
 	}
-	file_settings_proto_msgTypes[33].OneofWrappers = []interface{}{
+	file_settings_proto_msgTypes[35].OneofWrappers = []interface{}{
 		(*ListOptionValue_StringValue)(nil),
 		(*ListOptionValue_IntValue)(nil),
 	}
@@ -3274,7 +3427,7 @@ func file_settings_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_settings_proto_rawDesc,
 			NumEnums:      4,
-			NumMessages:   34,
+			NumMessages:   36,
 			NumExtensions: 0,
 			NumServices:   3,
 		},

@@ -478,7 +478,7 @@
     "protoGetSettingsBundleResponse": {
       "type": "object",
       "properties": {
-        "settings_bundle": {
+        "bundle": {
           "$ref": "#/definitions/protoSettingsBundle"
         }
       }
@@ -494,8 +494,22 @@
     "protoGetSettingsValueResponse": {
       "type": "object",
       "properties": {
-        "settings_value": {
-          "$ref": "#/definitions/protoSettingsValue"
+        "value": {
+          "$ref": "#/definitions/protoSettingsValueWithIdentifier"
+        }
+      }
+    },
+    "protoIdentifier": {
+      "type": "object",
+      "properties": {
+        "extension": {
+          "type": "string"
+        },
+        "bundle": {
+          "type": "string"
+        },
+        "setting": {
+          "type": "string"
         }
       }
     },
@@ -580,7 +594,7 @@
     "protoListSettingsBundlesResponse": {
       "type": "object",
       "properties": {
-        "settings_bundles": {
+        "bundles": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/protoSettingsBundle"
@@ -602,10 +616,10 @@
     "protoListSettingsValuesResponse": {
       "type": "object",
       "properties": {
-        "settings_values": {
+        "values": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/protoSettingsValue"
+            "$ref": "#/definitions/protoSettingsValueWithIdentifier"
           }
         }
       }
@@ -701,7 +715,7 @@
     "protoSaveSettingsBundleRequest": {
       "type": "object",
       "properties": {
-        "settings_bundle": {
+        "bundle": {
           "$ref": "#/definitions/protoSettingsBundle"
         }
       }
@@ -709,7 +723,7 @@
     "protoSaveSettingsBundleResponse": {
       "type": "object",
       "properties": {
-        "settings_bundle": {
+        "bundle": {
           "$ref": "#/definitions/protoSettingsBundle"
         }
       }
@@ -717,7 +731,7 @@
     "protoSaveSettingsValueRequest": {
       "type": "object",
       "properties": {
-        "settings_value": {
+        "value": {
           "$ref": "#/definitions/protoSettingsValue"
         }
       }
@@ -725,7 +739,7 @@
     "protoSaveSettingsValueResponse": {
       "type": "object",
       "properties": {
-        "settings_value": {
+        "value": {
           "$ref": "#/definitions/protoSettingsValue"
         }
       }
@@ -839,6 +853,17 @@
         },
         "list_value": {
           "$ref": "#/definitions/protoListValue"
+        }
+      }
+    },
+    "protoSettingsValueWithIdentifier": {
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "$ref": "#/definitions/protoIdentifier"
+        },
+        "value": {
+          "$ref": "#/definitions/protoSettingsValue"
         }
       }
     },

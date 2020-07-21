@@ -18,21 +18,21 @@ var (
 
 func validateSaveSettingsBundle(req *proto.SaveSettingsBundleRequest) error {
 	if err := validation.ValidateStruct(
-		req.SettingsBundle,
-		validation.Field(&req.SettingsBundle.Id, validation.When(req.SettingsBundle.Id != "", is.UUID)),
-		validation.Field(&req.SettingsBundle.Name, requireAlphanumeric...),
-		validation.Field(&req.SettingsBundle.Type, validation.NotIn(proto.SettingsBundle_TYPE_UNKNOWN)),
-		validation.Field(&req.SettingsBundle.Extension, requireAlphanumeric...),
-		validation.Field(&req.SettingsBundle.DisplayName, validation.Required),
-		validation.Field(&req.SettingsBundle.Settings, validation.Required),
+		req.Bundle,
+		validation.Field(&req.Bundle.Id, validation.When(req.Bundle.Id != "", is.UUID)),
+		validation.Field(&req.Bundle.Name, requireAlphanumeric...),
+		validation.Field(&req.Bundle.Type, validation.NotIn(proto.SettingsBundle_TYPE_UNKNOWN)),
+		validation.Field(&req.Bundle.Extension, requireAlphanumeric...),
+		validation.Field(&req.Bundle.DisplayName, validation.Required),
+		validation.Field(&req.Bundle.Settings, validation.Required),
 	); err != nil {
 		return err
 	}
-	if err := validateResource(req.SettingsBundle.Resource); err != nil {
+	if err := validateResource(req.Bundle.Resource); err != nil {
 		return err
 	}
-	for i := range req.SettingsBundle.Settings {
-		if err := validateSetting(req.SettingsBundle.Settings[i]); err != nil {
+	for i := range req.Bundle.Settings {
+		if err := validateSetting(req.Bundle.Settings[i]); err != nil {
 			return err
 		}
 	}
@@ -67,10 +67,10 @@ func validateRemoveSettingFromSettingsBundle(req *proto.RemoveSettingFromSetting
 
 func validateSaveSettingsValue(req *proto.SaveSettingsValueRequest) error {
 	if err := validation.ValidateStruct(
-		req.SettingsValue,
-		validation.Field(&req.SettingsValue.Id, validation.When(req.SettingsValue.Id != "", is.UUID)),
-		validation.Field(&req.SettingsValue.SettingId, validation.When(req.SettingsValue.SettingId != "", is.UUID)),
-		validation.Field(&req.SettingsValue.AccountUuid, is.UUID),
+		req.Value,
+		validation.Field(&req.Value.Id, validation.When(req.Value.Id != "", is.UUID)),
+		validation.Field(&req.Value.SettingId, validation.When(req.Value.SettingId != "", is.UUID)),
+		validation.Field(&req.Value.AccountUuid, is.UUID),
 	); err != nil {
 		return err
 	}

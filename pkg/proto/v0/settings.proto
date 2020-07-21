@@ -117,11 +117,11 @@ service RoleService {
 // ---
 
 message SaveSettingsBundleRequest {
-  SettingsBundle settings_bundle = 1;
+  SettingsBundle bundle = 1;
 }
 
 message SaveSettingsBundleResponse {
-  SettingsBundle settings_bundle = 1;
+  SettingsBundle bundle = 1;
 }
 
 message GetSettingsBundleRequest {
@@ -129,7 +129,7 @@ message GetSettingsBundleRequest {
 }
 
 message GetSettingsBundleResponse {
-  SettingsBundle settings_bundle = 1;
+  SettingsBundle bundle = 1;
 }
 
 message ListSettingsBundlesRequest {
@@ -137,7 +137,7 @@ message ListSettingsBundlesRequest {
 }
 
 message ListSettingsBundlesResponse {
-  repeated SettingsBundle settings_bundles = 1;
+  repeated SettingsBundle bundles = 1;
 }
 
 message AddSettingToSettingsBundleRequest {
@@ -159,11 +159,11 @@ message RemoveSettingFromSettingsBundleRequest {
 // ---
 
 message SaveSettingsValueRequest {
-  SettingsValue settings_value = 1;
+  SettingsValue value = 1;
 }
 
 message SaveSettingsValueResponse {
-  SettingsValue settings_value = 1;
+  SettingsValue value = 1;
 }
 
 message GetSettingsValueRequest {
@@ -171,7 +171,7 @@ message GetSettingsValueRequest {
 }
 
 message GetSettingsValueResponse {
-  SettingsValue settings_value = 1;
+  SettingsValueWithIdentifier value = 1;
 }
 
 message ListSettingsValuesRequest {
@@ -180,7 +180,18 @@ message ListSettingsValuesRequest {
 }
 
 message ListSettingsValuesResponse {
-  repeated SettingsValue settings_values = 1;
+  repeated SettingsValueWithIdentifier values = 1;
+}
+
+message SettingsValueWithIdentifier {
+  Identifier identifier = 1;
+  SettingsValue value = 2;
+}
+
+message Identifier {
+  string extension = 1;
+  string bundle = 2;
+  string setting = 3;
 }
 
 // ---

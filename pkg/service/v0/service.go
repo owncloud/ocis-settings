@@ -50,15 +50,15 @@ func NewService(cfg *config.Config, logger log.Logger) Service {
 
 // SaveSettingsBundle implements the BundleServiceHandler interface
 func (g Service) SaveSettingsBundle(c context.Context, req *proto.SaveSettingsBundleRequest, res *proto.SaveSettingsBundleResponse) error {
-	cleanUpResource(c, req.SettingsBundle.Resource)
+	cleanUpResource(c, req.Bundle.Resource)
 	if validationError := validateSaveSettingsBundle(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.WriteBundle(req.SettingsBundle)
+	r, err := g.manager.WriteBundle(req.Bundle)
 	if err != nil {
 		return err
 	}
-	res.SettingsBundle = r
+	res.Bundle = r
 	return nil
 }
 
@@ -71,7 +71,7 @@ func (g Service) GetSettingsBundle(c context.Context, req *proto.GetSettingsBund
 	if err != nil {
 		return err
 	}
-	res.SettingsBundle = r
+	res.Bundle = r
 	return nil
 }
 
@@ -118,7 +118,7 @@ func (g Service) ListSettingsBundles(c context.Context, req *proto.ListSettingsB
 		}
 	}
 
-	res.SettingsBundles = filteredBundles
+	res.Bundles = filteredBundles
 	return nil
 }
 
@@ -146,16 +146,16 @@ func (g Service) RemoveSettingFromSettingsBundle(c context.Context, req *proto.R
 
 // SaveSettingsValue implements the ValueServiceHandler interface
 func (g Service) SaveSettingsValue(c context.Context, req *proto.SaveSettingsValueRequest, res *proto.SaveSettingsValueResponse) error {
-	cleanUpResource(c, req.SettingsValue.Resource)
+	cleanUpResource(c, req.Value.Resource)
 	// TODO: we need to check, if the authenticated user has permission to write the value for the specified resource (e.g. global, file with id xy, ...)
 	if validationError := validateSaveSettingsValue(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.WriteValue(req.SettingsValue)
+	r, err := g.manager.WriteValue(req.Value)
 	if err != nil {
 		return err
 	}
-	res.SettingsValue = r
+	res.Value = r
 	return nil
 }
 
@@ -168,7 +168,11 @@ func (g Service) GetSettingsValue(c context.Context, req *proto.GetSettingsValue
 	if err != nil {
 		return err
 	}
-	res.SettingsValue = r
+	valueWithIdentifier, err := g.getValueWithIdentifier(r)
+	if err != nil {
+		return err
+	}
+	res.Value = valueWithIdentifier
 	return nil
 }
 
@@ -182,8 +186,34 @@ func (g Service) ListSettingsValues(c context.Context, req *proto.ListSettingsVa
 	if err != nil {
 		return err
 	}
-	res.SettingsValues = r
+	var result []*proto.SettingsValueWithIdentifier
+	for _, value := range r {
+		valueWithIdentifier, err := g.getValueWithIdentifier(value)
+		if err == nil {
+			result = append(result, valueWithIdentifier)
+		}
+	}
+	res.Values = result
 	return nil
+}
+
+func (g Service) getValueWithIdentifier(value *proto.SettingsValue) (*proto.SettingsValueWithIdentifier, error) {
+	bundle, err := g.manager.ReadBundle(value.BundleId)
+	if err != nil {
+		return nil, err
+	}
+	setting, err := g.manager.ReadSetting(value.SettingId)
+	if err != nil {
+		return nil, err
+	}
+	return &proto.SettingsValueWithIdentifier{
+		Identifier: &proto.Identifier{
+			Extension: bundle.Extension,
+			Bundle: bundle.Name,
+			Setting: setting.Name,
+		},
+		Value: value,
+	}, nil
 }
 
 // ListRoles implements the RoleServiceHandler interface
@@ -196,7 +226,7 @@ func (g Service) ListRoles(c context.Context, req *proto.ListSettingsBundlesRequ
 	if err != nil {
 		return err
 	}
-	res.SettingsBundles = r
+	res.Bundles = r
 	return nil
 }
 

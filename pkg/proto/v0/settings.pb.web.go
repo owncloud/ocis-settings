@@ -904,6 +904,78 @@ func (m *ListSettingsValuesResponse) UnmarshalJSON(b []byte) error {
 
 var _ json.Unmarshaler = (*ListSettingsValuesResponse)(nil)
 
+// SettingsValueWithIdentifierJSONMarshaler describes the default jsonpb.Marshaler used by all
+// instances of SettingsValueWithIdentifier. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var SettingsValueWithIdentifierJSONMarshaler = new(jsonpb.Marshaler)
+
+// MarshalJSON satisfies the encoding/json Marshaler interface. This method
+// uses the more correct jsonpb package to correctly marshal the message.
+func (m *SettingsValueWithIdentifier) MarshalJSON() ([]byte, error) {
+	if m == nil {
+		return json.Marshal(nil)
+	}
+
+	buf := &bytes.Buffer{}
+
+	if err := SettingsValueWithIdentifierJSONMarshaler.Marshal(buf, m); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
+var _ json.Marshaler = (*SettingsValueWithIdentifier)(nil)
+
+// SettingsValueWithIdentifierJSONUnmarshaler describes the default jsonpb.Unmarshaler used by all
+// instances of SettingsValueWithIdentifier. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var SettingsValueWithIdentifierJSONUnmarshaler = new(jsonpb.Unmarshaler)
+
+// UnmarshalJSON satisfies the encoding/json Unmarshaler interface. This method
+// uses the more correct jsonpb package to correctly unmarshal the message.
+func (m *SettingsValueWithIdentifier) UnmarshalJSON(b []byte) error {
+	return SettingsValueWithIdentifierJSONUnmarshaler.Unmarshal(bytes.NewReader(b), m)
+}
+
+var _ json.Unmarshaler = (*SettingsValueWithIdentifier)(nil)
+
+// IdentifierJSONMarshaler describes the default jsonpb.Marshaler used by all
+// instances of Identifier. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var IdentifierJSONMarshaler = new(jsonpb.Marshaler)
+
+// MarshalJSON satisfies the encoding/json Marshaler interface. This method
+// uses the more correct jsonpb package to correctly marshal the message.
+func (m *Identifier) MarshalJSON() ([]byte, error) {
+	if m == nil {
+		return json.Marshal(nil)
+	}
+
+	buf := &bytes.Buffer{}
+
+	if err := IdentifierJSONMarshaler.Marshal(buf, m); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
+var _ json.Marshaler = (*Identifier)(nil)
+
+// IdentifierJSONUnmarshaler describes the default jsonpb.Unmarshaler used by all
+// instances of Identifier. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var IdentifierJSONUnmarshaler = new(jsonpb.Unmarshaler)
+
+// UnmarshalJSON satisfies the encoding/json Unmarshaler interface. This method
+// uses the more correct jsonpb package to correctly unmarshal the message.
+func (m *Identifier) UnmarshalJSON(b []byte) error {
+	return IdentifierJSONUnmarshaler.Unmarshal(bytes.NewReader(b), m)
+}
+
+var _ json.Unmarshaler = (*Identifier)(nil)
+
 // ListRoleAssignmentsRequestJSONMarshaler describes the default jsonpb.Marshaler used by all
 // instances of ListRoleAssignmentsRequest. This struct is safe to replace or modify but
 // should not be done so concurrently.

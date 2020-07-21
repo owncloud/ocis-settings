@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/gofrs/uuid"
+	merrors "github.com/micro/go-micro/v2/errors"
 	"github.com/owncloud/ocis-settings/pkg/proto/v0"
 )
 
@@ -56,6 +57,25 @@ func (s Store) ReadBundle(bundleID string) (*proto.SettingsBundle, error) {
 
 	s.Logger.Debug().Msgf("read contents from file: %v", filePath)
 	return &record, nil
+}
+
+func (s Store) ReadSetting(settingID string) (*proto.Setting, error) {
+	// FIXME: locking should happen on the file here, not globally.
+	m.RLock()
+	defer m.RUnlock()
+
+	bundles, err := s.ListBundles(proto.SettingsBundle_TYPE_DEFAULT)
+	if err != nil {
+		return nil, err
+	}
+	for _, bundle := range bundles {
+		for _, setting := range bundle.Settings {
+			if setting.Id == settingID {
+				return setting, nil
+			}
+		}
+	}
+	return nil, merrors.NotFound(settingID, "could not read setting: %v")
 }
 
 // WriteBundle writes the given record into a file within the dataPath

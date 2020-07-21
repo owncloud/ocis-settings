@@ -25,6 +25,7 @@ type BundleManager interface {
 	ListBundles(bundleType proto.SettingsBundle_Type) ([]*proto.SettingsBundle, error)
 	ReadBundle(bundleID string) (*proto.SettingsBundle, error)
 	WriteBundle(bundle *proto.SettingsBundle) (*proto.SettingsBundle, error)
+	ReadSetting(settingID string) (*proto.Setting, error)
 	AddSettingToBundle(bundleID string, setting *proto.Setting) (*proto.Setting, error)
 	RemoveSettingFromBundle(bundleID, settingID string) error
 }
