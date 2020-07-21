@@ -23,12 +23,10 @@ func (s Store) ListRoleAssignments(accountUUID string) ([]*proto.UserRoleAssignm
 	for _, assignmentFile := range assignmentFiles {
 		record := proto.UserRoleAssignment{}
 		err = s.parseRecordFromFile(&record, filepath.Join(assignmentsFolder, assignmentFile.Name()))
-		if err != nil {
-			s.Logger.Warn().Msgf("error reading %v", assignmentFile)
-			continue
-		}
-		if record.AccountUuid == accountUUID {
-			records = append(records, &record)
+		if err == nil {
+			if record.AccountUuid == accountUUID {
+				records = append(records, &record)
+			}
 		}
 	}
 
