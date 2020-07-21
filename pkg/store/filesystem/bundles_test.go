@@ -100,7 +100,6 @@ func TestWriteSettingsBundleToFile(t *testing.T) {
 	for i := range bundleScenarios {
 		index := i
 		t.Run(bundleScenarios[index].name, func(t *testing.T) {
-			t.Parallel()
 			filePath := s.buildFilePathForBundle(bundleScenarios[index].in.record.Id, true)
 			if err := s.writeRecordToFile(bundleScenarios[index].in.record, filePath); err != nil {
 				t.Error(err)
@@ -108,4 +107,6 @@ func TestWriteSettingsBundleToFile(t *testing.T) {
 			assert.FileExists(t, filePath)
 		})
 	}
+
+	burnRoot(s.dataPath)
 }

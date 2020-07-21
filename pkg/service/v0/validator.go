@@ -101,10 +101,9 @@ func validateListRoleAssignments(req *proto.ListRoleAssignmentsRequest) error {
 
 func validateAssignRoleToUser(req *proto.AssignRoleToUserRequest) error {
 	return validation.ValidateStruct(
-		req.Assignment,
-		validation.Field(&req.Assignment.Id, validation.Empty), // Assignment has an Id field but for assigning it must be empty.
-		validation.Field(&req.Assignment.AccountUuid, is.UUID),
-		validation.Field(&req.Assignment.RoleId, is.UUID),
+		req,
+		validation.Field(&req.AccountUuid, is.UUID),
+		validation.Field(&req.RoleId, is.UUID),
 	)
 }
 

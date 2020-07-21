@@ -72,10 +72,7 @@ func TestRoleAssignments(t *testing.T) {
 		res, err := s.WriteBundle(scenarios[i].Bundle)
 		assert.NoError(t, err)
 
-		roleAssignment, err := s.WriteRoleAssignment(&proto.UserRoleAssignment{
-			AccountUuid: scenarios[i].AccountUUID,
-			RoleId:      res.Id,
-		})
+		roleAssignment, err := s.WriteRoleAssignment(scenarios[i].AccountUUID, res.Id)
 
 		assert.NoError(t, err)
 		assert.FileExists(t, filepath.Join(dataRoot, "role-assignments", roleAssignment.Id+".json"))
@@ -119,6 +116,7 @@ func TestRoleAssignments(t *testing.T) {
 }
 
 func burnRoot(path string) {
+	os.RemoveAll(filepath.Join(path, "values"))
 	os.RemoveAll(filepath.Join(path, "role-assignments"))
 	os.RemoveAll(filepath.Join(path, "bundles"))
 }
