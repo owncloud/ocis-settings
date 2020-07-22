@@ -33,7 +33,7 @@ var bundleScenarios = []struct {
 						Id:   "bleep",
 					},
 					Value: &proto.Setting_IntValue{
-						IntValue: &proto.IntSetting{
+						IntValue: &proto.Int{
 							Min: 0,
 							Max: 42,
 						},
