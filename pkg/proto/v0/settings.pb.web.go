@@ -5,7 +5,6 @@ package proto
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"net/http"
 
@@ -37,7 +36,7 @@ func (h *webBundleServiceHandler) SaveSettingsBundle(w http.ResponseWriter, r *h
 	}
 
 	if err := h.h.SaveSettingsBundle(
-		context.Background(),
+		r.Context(),
 		req,
 		resp,
 	); err != nil {
@@ -61,7 +60,7 @@ func (h *webBundleServiceHandler) GetSettingsBundle(w http.ResponseWriter, r *ht
 	}
 
 	if err := h.h.GetSettingsBundle(
-		context.Background(),
+		r.Context(),
 		req,
 		resp,
 	); err != nil {
@@ -85,7 +84,7 @@ func (h *webBundleServiceHandler) ListSettingsBundles(w http.ResponseWriter, r *
 	}
 
 	if err := h.h.ListSettingsBundles(
-		context.Background(),
+		r.Context(),
 		req,
 		resp,
 	); err != nil {
@@ -109,7 +108,7 @@ func (h *webBundleServiceHandler) AddSettingToSettingsBundle(w http.ResponseWrit
 	}
 
 	if err := h.h.AddSettingToSettingsBundle(
-		context.Background(),
+		r.Context(),
 		req,
 		resp,
 	); err != nil {
@@ -132,7 +131,7 @@ func (h *webBundleServiceHandler) RemoveSettingFromSettingsBundle(w http.Respons
 	}
 
 	if err := h.h.RemoveSettingFromSettingsBundle(
-		context.Background(),
+		r.Context(),
 		req,
 		resp,
 	); err != nil {
@@ -178,7 +177,7 @@ func (h *webValueServiceHandler) SaveSettingsValue(w http.ResponseWriter, r *htt
 	}
 
 	if err := h.h.SaveSettingsValue(
-		context.Background(),
+		r.Context(),
 		req,
 		resp,
 	); err != nil {
@@ -202,7 +201,7 @@ func (h *webValueServiceHandler) GetSettingsValue(w http.ResponseWriter, r *http
 	}
 
 	if err := h.h.GetSettingsValue(
-		context.Background(),
+		r.Context(),
 		req,
 		resp,
 	); err != nil {
@@ -226,7 +225,7 @@ func (h *webValueServiceHandler) ListSettingsValues(w http.ResponseWriter, r *ht
 	}
 
 	if err := h.h.ListSettingsValues(
-		context.Background(),
+		r.Context(),
 		req,
 		resp,
 	); err != nil {
@@ -270,7 +269,7 @@ func (h *webRoleServiceHandler) ListRoles(w http.ResponseWriter, r *http.Request
 	}
 
 	if err := h.h.ListRoles(
-		context.Background(),
+		r.Context(),
 		req,
 		resp,
 	); err != nil {
@@ -294,7 +293,7 @@ func (h *webRoleServiceHandler) ListRoleAssignments(w http.ResponseWriter, r *ht
 	}
 
 	if err := h.h.ListRoleAssignments(
-		context.Background(),
+		r.Context(),
 		req,
 		resp,
 	); err != nil {
@@ -318,7 +317,7 @@ func (h *webRoleServiceHandler) AssignRoleToUser(w http.ResponseWriter, r *http.
 	}
 
 	if err := h.h.AssignRoleToUser(
-		context.Background(),
+		r.Context(),
 		req,
 		resp,
 	); err != nil {
@@ -341,7 +340,7 @@ func (h *webRoleServiceHandler) RemoveRoleFromUser(w http.ResponseWriter, r *htt
 	}
 
 	if err := h.h.RemoveRoleFromUser(
-		context.Background(),
+		r.Context(),
 		req,
 		resp,
 	); err != nil {
