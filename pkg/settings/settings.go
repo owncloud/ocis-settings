@@ -22,9 +22,9 @@ type Manager interface {
 
 // BundleManager is a bundle service interface for abstraction of storage implementations
 type BundleManager interface {
-	ListBundles(bundleType proto.SettingsBundle_Type) ([]*proto.SettingsBundle, error)
-	ReadBundle(bundleID string) (*proto.SettingsBundle, error)
-	WriteBundle(bundle *proto.SettingsBundle) (*proto.SettingsBundle, error)
+	ListBundles(bundleType proto.Bundle_Type) ([]*proto.Bundle, error)
+	ReadBundle(bundleID string) (*proto.Bundle, error)
+	WriteBundle(bundle *proto.Bundle) (*proto.Bundle, error)
 	ReadSetting(settingID string) (*proto.Setting, error)
 	AddSettingToBundle(bundleID string, setting *proto.Setting) (*proto.Setting, error)
 	RemoveSettingFromBundle(bundleID, settingID string) error
@@ -32,9 +32,9 @@ type BundleManager interface {
 
 // ValueManager is a value service interface for abstraction of storage implementations
 type ValueManager interface {
-	ListValues(bundleID, accountUUID string) ([]*proto.SettingsValue, error)
-	ReadValue(valueID string) (*proto.SettingsValue, error)
-	WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, error)
+	ListValues(bundleID, accountUUID string) ([]*proto.Value, error)
+	ReadValue(valueID string) (*proto.Value, error)
+	WriteValue(value *proto.Value) (*proto.Value, error)
 }
 
 // RoleAssignmentManager is a role assignment service interface for abstraction of storage implementations
