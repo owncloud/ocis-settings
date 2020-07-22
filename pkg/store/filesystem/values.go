@@ -13,8 +13,8 @@ import (
 // If the bundleId is empty, it's ignored for filtering.
 // If the accountUUID is empty, only values with empty accountUUID are returned.
 // If the accountUUID is not empty, values with an empty or with a matching accountUUID are returned.
-func (s Store) ListValues(bundleID, accountUUID string) ([]*proto.SettingsValue, error) {
-	var records []*proto.SettingsValue
+func (s Store) ListValues(bundleID, accountUUID string) ([]*proto.Value, error) {
+	var records []*proto.Value
 	valuesFolder := s.buildFolderPathForValues(false)
 	valueFiles, err := ioutil.ReadDir(valuesFolder)
 	if err != nil {
@@ -22,7 +22,7 @@ func (s Store) ListValues(bundleID, accountUUID string) ([]*proto.SettingsValue,
 	}
 
 	for _, valueFile := range valueFiles {
-		record := proto.SettingsValue{}
+		record := proto.Value{}
 		err := s.parseRecordFromFile(&record, filepath.Join(valuesFolder, valueFile.Name()))
 		if err != nil {
 			s.Logger.Warn().Msgf("error reading %v", valueFile)
@@ -46,9 +46,9 @@ func (s Store) ListValues(bundleID, accountUUID string) ([]*proto.SettingsValue,
 }
 
 // ReadValue tries to find a value by the given valueId within the dataPath
-func (s Store) ReadValue(valueID string) (*proto.SettingsValue, error) {
+func (s Store) ReadValue(valueID string) (*proto.Value, error) {
 	filePath := s.buildFilePathForValue(valueID, false)
-	record := proto.SettingsValue{}
+	record := proto.Value{}
 	if err := s.parseRecordFromFile(&record, filePath); err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (s Store) ReadValue(valueID string) (*proto.SettingsValue, error) {
 }
 
 // WriteValue writes the given value into a file within the dataPath
-func (s Store) WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, error) {
+func (s Store) WriteValue(value *proto.Value) (*proto.Value, error) {
 	s.Logger.Debug().Str("value", value.String()).Msg("writing value")
 	if value.Id == "" {
 		value.Id = uuid.Must(uuid.NewV4()).String()

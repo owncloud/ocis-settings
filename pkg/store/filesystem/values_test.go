@@ -9,56 +9,43 @@ import (
 )
 
 var valueScenarios = []struct {
-	name string
-	in   struct {
-		record   *proto.SettingsValue
-	}
-	out interface{}
+	name  string
+	value *proto.Value
 }{
 	{
 		name: "generic-test-with-system-resource",
-		in: struct {
-			record   *proto.SettingsValue
-		}{
-			record: &proto.SettingsValue{
-				Id:          value1,
-				BundleId:    bundle1,
-				SettingId:   setting1,
-				AccountUuid: accountUUID1,
-				Resource: &proto.Resource{
-					Type: proto.Resource_TYPE_SYSTEM,
-				},
-				Value: &proto.SettingsValue_StringValue{
-					StringValue: "lalala",
-				},
+		value: &proto.Value{
+			Id:          value1,
+			BundleId:    bundle1,
+			SettingId:   setting1,
+			AccountUuid: accountUUID1,
+			Resource: &proto.Resource{
+				Type: proto.Resource_TYPE_SYSTEM,
+			},
+			Value: &proto.Value_StringValue{
+				StringValue: "lalala",
 			},
 		},
-		out: nil,
 	},
 	{
 		name: "generic-test-with-file-resource",
-		in: struct {
-			record   *proto.SettingsValue
-		}{
-			record: &proto.SettingsValue{
-				Id:          value2,
-				BundleId:    bundle1,
-				SettingId:   setting2,
-				AccountUuid: accountUUID1,
-				Resource: &proto.Resource{
-					Type: proto.Resource_TYPE_FILE,
-					Id:   "adfba82d-919a-41c3-9cd1-5a3f83b2bf76",
-				},
-				Value: &proto.SettingsValue_StringValue{
-					StringValue: "tralala",
-				},
+		value: &proto.Value{
+			Id:          value2,
+			BundleId:    bundle1,
+			SettingId:   setting2,
+			AccountUuid: accountUUID1,
+			Resource: &proto.Resource{
+				Type: proto.Resource_TYPE_FILE,
+				Id:   "adfba82d-919a-41c3-9cd1-5a3f83b2bf76",
+			},
+			Value: &proto.Value_StringValue{
+				StringValue: "tralala",
 			},
 		},
-		out: nil,
 	},
 }
 
-func TestWriteSettingsValueToFile(t *testing.T) {
+func TestValues(t *testing.T) {
 	s := Store{
 		dataPath: dataRoot,
 		Logger: olog.NewLogger(
@@ -71,8 +58,8 @@ func TestWriteSettingsValueToFile(t *testing.T) {
 		index := i
 		t.Run(valueScenarios[index].name, func(t *testing.T) {
 
-			filePath := s.buildFilePathForValue(valueScenarios[index].in.record.Id, true)
-			if err := s.writeRecordToFile(valueScenarios[index].in.record, filePath); err != nil {
+			filePath := s.buildFilePathForValue(valueScenarios[index].value.Id, true)
+			if err := s.writeRecordToFile(valueScenarios[index].value, filePath); err != nil {
 				t.Error(err)
 			}
 			assert.FileExists(t, filePath)
