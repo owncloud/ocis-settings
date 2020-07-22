@@ -1,8 +1,8 @@
 import {
   // eslint-disable-next-line camelcase
-  BundleService_ListSettingsBundles,
+  BundleService_ListBundles,
   // eslint-disable-next-line camelcase
-  ValueService_SaveSettingsValue
+  ValueService_SaveValue
 } from '../client/settings'
 import axios from 'axios'
 import keyBy from 'lodash/keyBy'
@@ -10,17 +10,17 @@ import keyBy from 'lodash/keyBy'
 const state = {
   config: null,
   initialized: false,
-  settingsBundles: {}
+  bundles: {}
 }
 
 const getters = {
   config: state => state.config,
   initialized: state => state.initialized,
   extensions: state => {
-    return [...new Set(Object.values(state.settingsBundles).map(bundle => bundle.extension))].sort()
+    return [...new Set(Object.values(state.bundles).map(bundle => bundle.extension))].sort()
   },
   getBundlesByExtension: state => extension => {
-    return Object.values(state.settingsBundles)
+    return Object.values(state.bundles)
       .filter(bundle => bundle.extension === extension)
       .sort((b1, b2) => {
         return b1.name.localeCompare(b2.name)
@@ -32,8 +32,8 @@ const mutations = {
   SET_INITIALIZED (state, value) {
     state.initialized = value
   },
-  SET_SETTINGS_BUNDLES (state, settingsBundles) {
-    state.settingsBundles = keyBy(settingsBundles, 'id')
+  SET_BUNDLES (state, bundles) {
+    state.bundles = keyBy(bundles, 'id')
   },
   LOAD_CONFIG (state, config) {
     state.config = config
@@ -54,7 +54,7 @@ const actions = {
   async fetchBundles ({ commit, dispatch, rootGetters }) {
     injectAuthToken(rootGetters)
     try {
-      const response = await BundleService_ListSettingsBundles({
+      const response = await BundleService_ListBundles({
         $domain: rootGetters.configuration.server,
         body: {
           accountUuid: 'me'
@@ -81,23 +81,23 @@ const actions = {
               }
             })
           })
-          commit('SET_SETTINGS_BUNDLES', bundles)
+          commit('SET_BUNDLES', bundles)
         } else {
-          commit('SET_SETTINGS_BUNDLES', [])
+          commit('SET_BUNDLES', [])
         }
       }
     } catch (err) {
       dispatch('showMessage', {
-        title: 'Failed to fetch settings bundles.',
+        title: 'Failed to fetch bundles.',
         status: 'danger'
       }, { root: true })
     }
   },
 
-  async saveValue ({ commit, dispatch, getters, rootGetters }, { bundle, setting, payload }) {
+  async saveValue ({ commit, dispatch, getters, rootGetters }, { setting, payload }) {
     injectAuthToken(rootGetters)
     try {
-      const response = await ValueService_SaveSettingsValue({
+      const response = await ValueService_SaveValue({
         $domain: rootGetters.configuration.server,
         body: {
           value: payload
