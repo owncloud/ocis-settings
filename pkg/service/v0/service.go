@@ -28,7 +28,7 @@ func NewService(cfg *config.Config, logger log.Logger) Service {
 		manager: store.New(cfg),
 	}
 	// FIXME: we're writing default roles per service start (i.e. twice at the moment, for http and grpc server).
-	for _, role := range generateSettingsBundlesDefaultRoles() {
+	for _, role := range generateBundlesDefaultRoles() {
 		bundleID := role.Extension + "." + role.Id
 		// check if the role already exists
 		bundle, _ := service.manager.ReadBundle(role.Id)
@@ -48,10 +48,10 @@ func NewService(cfg *config.Config, logger log.Logger) Service {
 
 // TODO: check permissions on every request
 
-// SaveSettingsBundle implements the BundleServiceHandler interface
-func (g Service) SaveSettingsBundle(c context.Context, req *proto.SaveSettingsBundleRequest, res *proto.SaveSettingsBundleResponse) error {
+// SaveBundle implements the BundleServiceHandler interface
+func (g Service) SaveBundle(c context.Context, req *proto.SaveBundleRequest, res *proto.SaveBundleResponse) error {
 	cleanUpResource(c, req.Bundle.Resource)
-	if validationError := validateSaveSettingsBundle(req); validationError != nil {
+	if validationError := validateSaveBundle(req); validationError != nil {
 		return validationError
 	}
 	r, err := g.manager.WriteBundle(req.Bundle)
@@ -62,9 +62,9 @@ func (g Service) SaveSettingsBundle(c context.Context, req *proto.SaveSettingsBu
 	return nil
 }
 
-// GetSettingsBundle implements the BundleServiceHandler interface
-func (g Service) GetSettingsBundle(c context.Context, req *proto.GetSettingsBundleRequest, res *proto.GetSettingsBundleResponse) error {
-	if validationError := validateGetSettingsBundle(req); validationError != nil {
+// GetBundle implements the BundleServiceHandler interface
+func (g Service) GetBundle(c context.Context, req *proto.GetBundleRequest, res *proto.GetBundleResponse) error {
+	if validationError := validateGetBundle(req); validationError != nil {
 		return validationError
 	}
 	r, err := g.manager.ReadBundle(req.BundleId)
@@ -75,14 +75,14 @@ func (g Service) GetSettingsBundle(c context.Context, req *proto.GetSettingsBund
 	return nil
 }
 
-// ListSettingsBundles implements the BundleServiceHandler interface
-func (g Service) ListSettingsBundles(c context.Context, req *proto.ListSettingsBundlesRequest, res *proto.ListSettingsBundlesResponse) error {
+// ListBundles implements the BundleServiceHandler interface
+func (g Service) ListBundles(c context.Context, req *proto.ListBundlesRequest, res *proto.ListBundlesResponse) error {
 	// fetch all bundles
 	req.AccountUuid = getValidatedAccountUUID(c, req.AccountUuid)
-	if validationError := validateListSettingsBundles(req); validationError != nil {
+	if validationError := validateListBundles(req); validationError != nil {
 		return validationError
 	}
-	bundles, err := g.manager.ListBundles(proto.SettingsBundle_TYPE_DEFAULT)
+	bundles, err := g.manager.ListBundles(proto.Bundle_TYPE_DEFAULT)
 	if err != nil {
 		return err
 	}
@@ -95,7 +95,7 @@ func (g Service) ListSettingsBundles(c context.Context, req *proto.ListSettingsB
 	}
 
 	// filter settings in bundles that are allowed according to roles
-	var filteredBundles []*proto.SettingsBundle
+	var filteredBundles []*proto.Bundle
 	for _, bundle := range bundles {
 		var filteredSettings []*proto.Setting
 		for _, setting := range bundle.Settings {
@@ -106,8 +106,8 @@ func (g Service) ListSettingsBundles(c context.Context, req *proto.ListSettingsB
 			if g.hasPermission(
 				rolesResponse.Assignments,
 				settingResource,
-				proto.PermissionSetting_OPERATION_UPDATE,
-				proto.PermissionSetting_CONSTRAINT_OWN,
+				proto.Permission_OPERATION_UPDATE,
+				proto.Permission_CONSTRAINT_OWN,
 			) {
 				filteredSettings = append(filteredSettings, setting)
 			}
@@ -122,10 +122,10 @@ func (g Service) ListSettingsBundles(c context.Context, req *proto.ListSettingsB
 	return nil
 }
 
-// AddSettingToSettingsBundle implements the BundleServiceHandler interface
-func (g Service) AddSettingToSettingsBundle(c context.Context, req *proto.AddSettingToSettingsBundleRequest, res *proto.AddSettingToSettingsBundleResponse) error {
+// AddSettingToBundle implements the BundleServiceHandler interface
+func (g Service) AddSettingToBundle(c context.Context, req *proto.AddSettingToBundleRequest, res *proto.AddSettingToBundleResponse) error {
 	cleanUpResource(c, req.Setting.Resource)
-	if validationError := validateAddSettingToSettingsBundle(req); validationError != nil {
+	if validationError := validateAddSettingToBundle(req); validationError != nil {
 		return validationError
 	}
 	r, err := g.manager.AddSettingToBundle(req.BundleId, req.Setting)
@@ -136,20 +136,20 @@ func (g Service) AddSettingToSettingsBundle(c context.Context, req *proto.AddSet
 	return nil
 }
 
-// RemoveSettingFromSettingsBundle implements the BundleServiceHandler interface
-func (g Service) RemoveSettingFromSettingsBundle(c context.Context, req *proto.RemoveSettingFromSettingsBundleRequest, _ *empty.Empty) error {
-	if validationError := validateRemoveSettingFromSettingsBundle(req); validationError != nil {
+// RemoveSettingFromBundle implements the BundleServiceHandler interface
+func (g Service) RemoveSettingFromBundle(c context.Context, req *proto.RemoveSettingFromBundleRequest, _ *empty.Empty) error {
+	if validationError := validateRemoveSettingFromBundle(req); validationError != nil {
 		return validationError
 	}
 	return g.manager.RemoveSettingFromBundle(req.BundleId, req.SettingId)
 }
 
-// SaveSettingsValue implements the ValueServiceHandler interface
-func (g Service) SaveSettingsValue(c context.Context, req *proto.SaveSettingsValueRequest, res *proto.SaveSettingsValueResponse) error {
+// SaveValue implements the ValueServiceHandler interface
+func (g Service) SaveValue(c context.Context, req *proto.SaveValueRequest, res *proto.SaveValueResponse) error {
 	req.Value.AccountUuid = getValidatedAccountUUID(c, req.Value.AccountUuid)
 	cleanUpResource(c, req.Value.Resource)
 	// TODO: we need to check, if the authenticated user has permission to write the value for the specified resource (e.g. global, file with id xy, ...)
-	if validationError := validateSaveSettingsValue(req); validationError != nil {
+	if validationError := validateSaveValue(req); validationError != nil {
 		return validationError
 	}
 	r, err := g.manager.WriteValue(req.Value)
@@ -164,9 +164,9 @@ func (g Service) SaveSettingsValue(c context.Context, req *proto.SaveSettingsVal
 	return nil
 }
 
-// GetSettingsValue implements the ValueServiceHandler interface
-func (g Service) GetSettingsValue(c context.Context, req *proto.GetSettingsValueRequest, res *proto.GetSettingsValueResponse) error {
-	if validationError := validateGetSettingsValue(req); validationError != nil {
+// GetValue implements the ValueServiceHandler interface
+func (g Service) GetValue(c context.Context, req *proto.GetValueRequest, res *proto.GetValueResponse) error {
+	if validationError := validateGetValue(req); validationError != nil {
 		return validationError
 	}
 	r, err := g.manager.ReadValue(req.Id)
@@ -181,17 +181,17 @@ func (g Service) GetSettingsValue(c context.Context, req *proto.GetSettingsValue
 	return nil
 }
 
-// ListSettingsValues implements the ValueServiceHandler interface
-func (g Service) ListSettingsValues(c context.Context, req *proto.ListSettingsValuesRequest, res *proto.ListSettingsValuesResponse) error {
+// ListValues implements the ValueServiceHandler interface
+func (g Service) ListValues(c context.Context, req *proto.ListValuesRequest, res *proto.ListValuesResponse) error {
 	req.AccountUuid = getValidatedAccountUUID(c, req.AccountUuid)
-	if validationError := validateListSettingsValues(req); validationError != nil {
+	if validationError := validateListValues(req); validationError != nil {
 		return validationError
 	}
 	r, err := g.manager.ListValues(req.BundleId, req.AccountUuid)
 	if err != nil {
 		return err
 	}
-	var result []*proto.SettingsValueWithIdentifier
+	var result []*proto.ValueWithIdentifier
 	for _, value := range r {
 		valueWithIdentifier, err := g.getValueWithIdentifier(value)
 		if err == nil {
@@ -202,7 +202,7 @@ func (g Service) ListSettingsValues(c context.Context, req *proto.ListSettingsVa
 	return nil
 }
 
-func (g Service) getValueWithIdentifier(value *proto.SettingsValue) (*proto.SettingsValueWithIdentifier, error) {
+func (g Service) getValueWithIdentifier(value *proto.Value) (*proto.ValueWithIdentifier, error) {
 	bundle, err := g.manager.ReadBundle(value.BundleId)
 	if err != nil {
 		return nil, err
@@ -211,7 +211,7 @@ func (g Service) getValueWithIdentifier(value *proto.SettingsValue) (*proto.Sett
 	if err != nil {
 		return nil, err
 	}
-	return &proto.SettingsValueWithIdentifier{
+	return &proto.ValueWithIdentifier{
 		Identifier: &proto.Identifier{
 			Extension: bundle.Extension,
 			Bundle:    bundle.Name,
@@ -222,12 +222,12 @@ func (g Service) getValueWithIdentifier(value *proto.SettingsValue) (*proto.Sett
 }
 
 // ListRoles implements the RoleServiceHandler interface
-func (g Service) ListRoles(c context.Context, req *proto.ListSettingsBundlesRequest, res *proto.ListSettingsBundlesResponse) error {
+func (g Service) ListRoles(c context.Context, req *proto.ListBundlesRequest, res *proto.ListBundlesResponse) error {
 	req.AccountUuid = getValidatedAccountUUID(c, req.AccountUuid)
 	if validationError := validateListRoles(req); validationError != nil {
 		return validationError
 	}
-	r, err := g.manager.ListBundles(proto.SettingsBundle_TYPE_ROLE)
+	r, err := g.manager.ListBundles(proto.Bundle_TYPE_ROLE)
 	if err != nil {
 		return err
 	}
