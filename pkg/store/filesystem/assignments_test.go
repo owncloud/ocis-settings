@@ -20,14 +20,14 @@ var (
 	)
 
 	assignmentScenarios = []struct {
-		Bundle      *proto.SettingsBundle
+		Bundle      *proto.Bundle
 		AccountUUID string
 	}{
 		{
 			AccountUUID: einstein,
-			Bundle: &proto.SettingsBundle{
+			Bundle: &proto.Bundle{
 				Id:          "f36db5e6-a03c-40df-8413-711c67e40b47",
-				Type:        proto.SettingsBundle_TYPE_ROLE,
+				Type:        proto.Bundle_TYPE_ROLE,
 				DisplayName: "test role - reads | update",
 				Name:        "TEST_ROLE",
 				Extension:   "ocis-settings",
@@ -38,16 +38,16 @@ var (
 					{
 						Name: "update",
 						Value: &proto.Setting_PermissionValue{
-							PermissionValue: &proto.PermissionSetting{
-								Operation: proto.PermissionSetting_OPERATION_UPDATE,
+							PermissionValue: &proto.Permission{
+								Operation: proto.Permission_OPERATION_UPDATE,
 							},
 						},
 					},
 					{
 						Name: "read",
 						Value: &proto.Setting_PermissionValue{
-							PermissionValue: &proto.PermissionSetting{
-								Operation: proto.PermissionSetting_OPERATION_READ,
+							PermissionValue: &proto.Permission{
+								Operation: proto.Permission_OPERATION_READ,
 							},
 						},
 					},
