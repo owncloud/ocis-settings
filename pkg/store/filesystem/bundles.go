@@ -15,12 +15,12 @@ import (
 var m = &sync.RWMutex{}
 
 // ListBundles returns all bundles in the dataPath folder that match the given type.
-func (s Store) ListBundles(bundleType proto.SettingsBundle_Type) ([]*proto.SettingsBundle, error) {
+func (s Store) ListBundles(bundleType proto.Bundle_Type) ([]*proto.Bundle, error) {
 	// FIXME: list requests should be ran against a cache, not FS
 	m.RLock()
 	defer m.RUnlock()
 
-	var records []*proto.SettingsBundle
+	var records []*proto.Bundle
 	bundlesFolder := s.buildFolderPathForBundles(false)
 	bundleFiles, err := ioutil.ReadDir(bundlesFolder)
 	if err != nil {
@@ -28,7 +28,7 @@ func (s Store) ListBundles(bundleType proto.SettingsBundle_Type) ([]*proto.Setti
 	}
 
 	for _, bundleFile := range bundleFiles {
-		record := proto.SettingsBundle{}
+		record := proto.Bundle{}
 		err = s.parseRecordFromFile(&record, filepath.Join(bundlesFolder, bundleFile.Name()))
 		if err != nil {
 			s.Logger.Warn().Msgf("error reading %v", bundleFile)
@@ -44,13 +44,13 @@ func (s Store) ListBundles(bundleType proto.SettingsBundle_Type) ([]*proto.Setti
 }
 
 // ReadBundle tries to find a bundle by the given id within the dataPath.
-func (s Store) ReadBundle(bundleID string) (*proto.SettingsBundle, error) {
+func (s Store) ReadBundle(bundleID string) (*proto.Bundle, error) {
 	// FIXME: locking should happen on the file here, not globally.
 	m.RLock()
 	defer m.RUnlock()
 
 	filePath := s.buildFilePathForBundle(bundleID, false)
-	record := proto.SettingsBundle{}
+	record := proto.Bundle{}
 	if err := s.parseRecordFromFile(&record, filePath); err != nil {
 		return nil, err
 	}
@@ -65,7 +65,7 @@ func (s Store) ReadSetting(settingID string) (*proto.Setting, error) {
 	m.RLock()
 	defer m.RUnlock()
 
-	bundles, err := s.ListBundles(proto.SettingsBundle_TYPE_DEFAULT)
+	bundles, err := s.ListBundles(proto.Bundle_TYPE_DEFAULT)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (s Store) ReadSetting(settingID string) (*proto.Setting, error) {
 }
 
 // WriteBundle writes the given record into a file within the dataPath.
-func (s Store) WriteBundle(record *proto.SettingsBundle) (*proto.SettingsBundle, error) {
+func (s Store) WriteBundle(record *proto.Bundle) (*proto.Bundle, error) {
 	// FIXME: locking should happen on the file here, not globally.
 	m.Lock()
 	defer m.Unlock()
@@ -126,7 +126,7 @@ func (s Store) RemoveSettingFromBundle(bundleID string, settingID string) error 
 
 // indexOfSetting finds the index of the given setting within the given bundle.
 // returns -1 if the setting was not found.
-func indexOfSetting(bundle *proto.SettingsBundle, settingID string) int {
+func indexOfSetting(bundle *proto.Bundle, settingID string) int {
 	for index := range bundle.Settings {
 		s := bundle.Settings[index]
 		if s.Id == settingID {
@@ -137,7 +137,7 @@ func indexOfSetting(bundle *proto.SettingsBundle, settingID string) int {
 }
 
 // setSetting will append or overwrite the given setting within the given bundle
-func setSetting(bundle *proto.SettingsBundle, setting *proto.Setting) {
+func setSetting(bundle *proto.Bundle, setting *proto.Setting) {
 	m.Lock()
 	defer m.Unlock()
 	index := indexOfSetting(bundle, setting.Id)
@@ -149,7 +149,7 @@ func setSetting(bundle *proto.SettingsBundle, setting *proto.Setting) {
 }
 
 // removeSetting will remove the given setting from the given bundle
-func removeSetting(bundle *proto.SettingsBundle, settingID string) bool {
+func removeSetting(bundle *proto.Bundle, settingID string) bool {
 	m.Lock()
 	defer m.Unlock()
 	index := indexOfSetting(bundle, settingID)

@@ -10,13 +10,13 @@ import (
 
 var bundleScenarios = []struct {
 	name   string
-	bundle *proto.SettingsBundle
+	bundle *proto.Bundle
 }{
 	{
 		name: "generic-test-file-resource",
-		bundle: &proto.SettingsBundle{
+		bundle: &proto.Bundle{
 			Id:          bundle1,
-			Type:        proto.SettingsBundle_TYPE_DEFAULT,
+			Type:        proto.Bundle_TYPE_DEFAULT,
 			Extension:   extension1,
 			DisplayName: "test1",
 			Resource: &proto.Resource{
@@ -44,9 +44,9 @@ var bundleScenarios = []struct {
 	},
 	{
 		name: "generic-test-system-resource",
-		bundle: &proto.SettingsBundle{
+		bundle: &proto.Bundle{
 			Id:          bundle2,
-			Type:        proto.SettingsBundle_TYPE_DEFAULT,
+			Type:        proto.Bundle_TYPE_DEFAULT,
 			Extension:   extension2,
 			DisplayName: "test1",
 			Resource: &proto.Resource{
@@ -61,7 +61,7 @@ var bundleScenarios = []struct {
 						Type: proto.Resource_TYPE_SYSTEM,
 					},
 					Value: &proto.Setting_IntValue{
-						IntValue: &proto.IntSetting{
+						IntValue: &proto.Int{
 							Min: 0,
 							Max: 42,
 						},
@@ -72,9 +72,9 @@ var bundleScenarios = []struct {
 	},
 	{
 		name: "generic-test-role-bundle",
-		bundle: &proto.SettingsBundle{
+		bundle: &proto.Bundle{
 			Id:          bundle3,
-			Type:        proto.SettingsBundle_TYPE_ROLE,
+			Type:        proto.Bundle_TYPE_ROLE,
 			Extension:   extension1,
 			DisplayName: "Role1",
 			Resource: &proto.Resource{
@@ -90,9 +90,9 @@ var bundleScenarios = []struct {
 						Id:   setting1,
 					},
 					Value: &proto.Setting_PermissionValue{
-						PermissionValue: &proto.PermissionSetting{
-							Operation:  proto.PermissionSetting_OPERATION_READ,
-							Constraint: proto.PermissionSetting_CONSTRAINT_OWN,
+						PermissionValue: &proto.Permission{
+							Operation:  proto.Permission_OPERATION_READ,
+							Constraint: proto.Permission_CONSTRAINT_OWN,
 						},
 					},
 				},
@@ -101,7 +101,7 @@ var bundleScenarios = []struct {
 	},
 }
 
-func TestSettingsBundles(t *testing.T) {
+func TestBundles(t *testing.T) {
 	s := Store{
 		dataPath: dataRoot,
 		Logger: olog.NewLogger(
@@ -124,21 +124,21 @@ func TestSettingsBundles(t *testing.T) {
 	}
 
 	// check that ListBundles only returns bundles with type DEFAULT
-	bundles, err := s.ListBundles(proto.SettingsBundle_TYPE_DEFAULT)
+	bundles, err := s.ListBundles(proto.Bundle_TYPE_DEFAULT)
 	if err != nil {
 		t.Error(err)
 	}
 	for i := range bundles {
-		assert.Equal(t, proto.SettingsBundle_TYPE_DEFAULT, bundles[i].Type)
+		assert.Equal(t, proto.Bundle_TYPE_DEFAULT, bundles[i].Type)
 	}
 
 	// check that ListRoles only returns bundles with type ROLE
-	roles, err := s.ListBundles(proto.SettingsBundle_TYPE_ROLE)
+	roles, err := s.ListBundles(proto.Bundle_TYPE_ROLE)
 	if err != nil {
 		t.Error(err)
 	}
 	for i := range roles {
-		assert.Equal(t, proto.SettingsBundle_TYPE_ROLE, roles[i].Type)
+		assert.Equal(t, proto.Bundle_TYPE_ROLE, roles[i].Type)
 	}
 
 	burnRoot()
