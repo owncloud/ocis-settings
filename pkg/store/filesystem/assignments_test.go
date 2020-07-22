@@ -19,7 +19,7 @@ var (
 		olog.Level("info"),
 	)
 
-	scenarios = []struct {
+	assignmentScenarios = []struct {
 		Bundle      *proto.SettingsBundle
 		AccountUUID string
 	}{
@@ -66,20 +66,20 @@ func TestRoleAssignments(t *testing.T) {
 	}
 
 	// write role assignments
-	for i := range scenarios {
-		res, err := s.WriteBundle(scenarios[i].Bundle)
+	for i := range assignmentScenarios {
+		res, err := s.WriteBundle(assignmentScenarios[i].Bundle)
 		assert.NoError(t, err)
 
-		roleAssignment, err := s.WriteRoleAssignment(scenarios[i].AccountUUID, res.Id)
+		roleAssignment, err := s.WriteRoleAssignment(assignmentScenarios[i].AccountUUID, res.Id)
 
 		assert.NoError(t, err)
 		assert.FileExists(t, filepath.Join(dataRoot, "assignments", roleAssignment.Id+".json"))
 	}
 
 	// list roles
-	for i := range scenarios {
+	for i := range assignmentScenarios {
 		// list role assignment for the current account
-		roleAssignments, err := s.ListRoleAssignments(scenarios[i].AccountUUID)
+		roleAssignments, err := s.ListRoleAssignments(assignmentScenarios[i].AccountUUID)
 		if err != nil {
 			t.Error(err)
 		}
@@ -90,13 +90,13 @@ func TestRoleAssignments(t *testing.T) {
 			role, err := s.ReadBundle(roleAssignments[j].RoleId)
 
 			assert.NoError(t, err)
-			assert.Equal(t, role.GetName(), scenarios[i].Bundle.GetName())
+			assert.Equal(t, role.GetName(), assignmentScenarios[i].Bundle.GetName())
 		}
 	}
 
 	// Remove Assignment
-	for i := range scenarios {
-		roleAssignments, err := s.ListRoleAssignments(scenarios[i].AccountUUID)
+	for i := range assignmentScenarios {
+		roleAssignments, err := s.ListRoleAssignments(assignmentScenarios[i].AccountUUID)
 		if err != nil {
 			t.Error(err)
 		}
@@ -107,7 +107,7 @@ func TestRoleAssignments(t *testing.T) {
 				t.Error(err)
 			}
 			assert.NoFileExists(t, filepath.Join(dataRoot, "assignments", roleAssignments[i].Id+".json"))
-			assert.FileExists(t, filepath.Join(dataRoot, "bundles", scenarios[i].Bundle.Id+".json"))
+			assert.FileExists(t, filepath.Join(dataRoot, "bundles", assignmentScenarios[i].Bundle.Id+".json"))
 		}
 	}
 	burnRoot()
