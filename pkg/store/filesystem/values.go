@@ -9,7 +9,10 @@ import (
 	"github.com/owncloud/ocis-settings/pkg/proto/v0"
 )
 
-// ListValues reads all values that match the given bundleId and accountUUID
+// ListValues reads all values that match the given bundleId and accountUUID.
+// If the bundleId is empty, it's ignored for filtering.
+// If the accountUUID is empty, only values with empty accountUUID are returned.
+// If the accountUUID is not empty, values with an empty or with a matching accountUUID are returned.
 func (s Store) ListValues(bundleID, accountUUID string) ([]*proto.SettingsValue, error) {
 	var records []*proto.SettingsValue
 	valuesFolder := s.buildFolderPathForValues(false)
@@ -54,7 +57,7 @@ func (s Store) ReadValue(valueID string) (*proto.SettingsValue, error) {
 	return &record, nil
 }
 
-// WriteValue writes the given SettingsValue into a file within the dataPath
+// WriteValue writes the given value into a file within the dataPath
 func (s Store) WriteValue(value *proto.SettingsValue) (*proto.SettingsValue, error) {
 	s.Logger.Debug().Str("value", value.String()).Msg("writing value")
 	if value.Id == "" {

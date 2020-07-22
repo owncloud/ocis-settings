@@ -14,7 +14,7 @@ import (
 
 var m = &sync.RWMutex{}
 
-// ListBundles returns all bundles in the dataPath folder belonging to the given extension
+// ListBundles returns all bundles in the dataPath folder that match the given type.
 func (s Store) ListBundles(bundleType proto.SettingsBundle_Type) ([]*proto.SettingsBundle, error) {
 	// FIXME: list requests should be ran against a cache, not FS
 	m.RLock()
@@ -43,8 +43,7 @@ func (s Store) ListBundles(bundleType proto.SettingsBundle_Type) ([]*proto.Setti
 	return records, nil
 }
 
-// ReadBundle tries to find a bundle by the given identifier within the dataPath.
-// Extension and BundleKey within the identifier are required.
+// ReadBundle tries to find a bundle by the given id within the dataPath.
 func (s Store) ReadBundle(bundleID string) (*proto.SettingsBundle, error) {
 	// FIXME: locking should happen on the file here, not globally.
 	m.RLock()
@@ -60,6 +59,7 @@ func (s Store) ReadBundle(bundleID string) (*proto.SettingsBundle, error) {
 	return &record, nil
 }
 
+// ReadSetting tries to find a setting by the given id within the dataPath.
 func (s Store) ReadSetting(settingID string) (*proto.Setting, error) {
 	// FIXME: locking should happen on the file here, not globally.
 	m.RLock()
@@ -79,8 +79,7 @@ func (s Store) ReadSetting(settingID string) (*proto.Setting, error) {
 	return nil, merrors.NotFound(settingID, fmt.Sprintf("could not read setting: %v", settingID))
 }
 
-// WriteBundle writes the given record into a file within the dataPath
-// Extension and BundleKey within the record identifier are required.
+// WriteBundle writes the given record into a file within the dataPath.
 func (s Store) WriteBundle(record *proto.SettingsBundle) (*proto.SettingsBundle, error) {
 	// FIXME: locking should happen on the file here, not globally.
 	m.Lock()
@@ -97,7 +96,7 @@ func (s Store) WriteBundle(record *proto.SettingsBundle) (*proto.SettingsBundle,
 	return record, nil
 }
 
-// AddSettingToBundle adds the given setting to the settings bundle which was identified by the given identifier and resource
+// AddSettingToBundle adds the given setting to the bundle with the given bundleID.
 func (s Store) AddSettingToBundle(bundleID string, setting *proto.Setting) (*proto.Setting, error) {
 	bundle, err := s.ReadBundle(bundleID)
 	if err != nil {
@@ -114,7 +113,7 @@ func (s Store) AddSettingToBundle(bundleID string, setting *proto.Setting) (*pro
 	return setting, nil
 }
 
-// RemoveSettingFromBundle removes the setting that was identified by the given identifier and resource
+// RemoveSettingFromBundle removes the setting from the bundle with the given ids.
 func (s Store) RemoveSettingFromBundle(bundleID string, settingID string) error {
 	bundle, err := s.ReadBundle(bundleID)
 	if err != nil {
