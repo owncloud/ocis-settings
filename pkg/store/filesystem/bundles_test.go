@@ -12,7 +12,6 @@ var bundleScenarios = []struct {
 	name string
 	in   struct {
 		record   *proto.SettingsBundle
-		filePath string
 	}
 	out interface{}
 }{
@@ -20,7 +19,6 @@ var bundleScenarios = []struct {
 		name: "generic-test-file-resource",
 		in: struct {
 			record   *proto.SettingsBundle
-			filePath string
 		}{
 			record: &proto.SettingsBundle{
 				Id:          bundle1,
@@ -48,7 +46,6 @@ var bundleScenarios = []struct {
 					},
 				},
 			},
-			filePath: "/var/tmp/herecomesthesun", // TODO replace this with a testing temp file.
 		},
 		out: nil,
 	},
@@ -56,7 +53,6 @@ var bundleScenarios = []struct {
 		name: "generic-test-system-resource",
 		in: struct {
 			record   *proto.SettingsBundle
-			filePath string
 		}{
 			record: &proto.SettingsBundle{
 				Id:          bundle2,
@@ -82,7 +78,6 @@ var bundleScenarios = []struct {
 					},
 				},
 			},
-			filePath: "/var/tmp/herecomesthesun", // TODO replace this with a testing temp file.
 		},
 		out: nil,
 	},
@@ -90,7 +85,7 @@ var bundleScenarios = []struct {
 
 func TestWriteSettingsBundleToFile(t *testing.T) {
 	s := Store{
-		dataPath: "/var/tmp/herecomesthesun",
+		dataPath: dataRoot,
 		Logger: olog.NewLogger(
 			olog.Color(true),
 			olog.Pretty(true),

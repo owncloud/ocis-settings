@@ -12,7 +12,6 @@ var valueScenarios = []struct {
 	name string
 	in   struct {
 		record   *proto.SettingsValue
-		filePath string
 	}
 	out interface{}
 }{
@@ -20,7 +19,6 @@ var valueScenarios = []struct {
 		name: "generic-test-with-system-resource",
 		in: struct {
 			record   *proto.SettingsValue
-			filePath string
 		}{
 			record: &proto.SettingsValue{
 				Id:          value1,
@@ -34,7 +32,6 @@ var valueScenarios = []struct {
 					StringValue: "lalala",
 				},
 			},
-			filePath: "/var/tmp/herecomesthesun", // TODO replace this with a testing temp file.
 		},
 		out: nil,
 	},
@@ -42,7 +39,6 @@ var valueScenarios = []struct {
 		name: "generic-test-with-file-resource",
 		in: struct {
 			record   *proto.SettingsValue
-			filePath string
 		}{
 			record: &proto.SettingsValue{
 				Id:          value2,
@@ -57,7 +53,6 @@ var valueScenarios = []struct {
 					StringValue: "tralala",
 				},
 			},
-			filePath: "/var/tmp/herecomesthesun", // TODO replace this with a testing temp file.
 		},
 		out: nil,
 	},
@@ -65,7 +60,7 @@ var valueScenarios = []struct {
 
 func TestWriteSettingsValueToFile(t *testing.T) {
 	s := Store{
-		dataPath: "/var/tmp/herecomesthesun",
+		dataPath: dataRoot,
 		Logger: olog.NewLogger(
 			olog.Color(true),
 			olog.Pretty(true),
