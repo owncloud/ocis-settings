@@ -282,13 +282,9 @@ func cleanUpResource(c context.Context, resource *proto.Resource) {
 // the result of this function will always be a valid lower-case UUID or an empty string.
 func getValidatedAccountUUID(c context.Context, accountUUID string) string {
 	if accountUUID == "me" {
-		ownAccountUUID := c.Value(middleware.UUIDKey)
-		if ownAccountUUID != nil && len(ownAccountUUID.(string)) > 0 {
-			return strings.ToLower(ownAccountUUID.(string))
+		if ownAccountUUID, ok := c.Value(middleware.UUIDKey).(string); ok {
+			accountUUID = ownAccountUUID
 		}
-		// might be valid for the request not having an AccountUUID in the context.
-		// but clear it, instead of passing on the provided `me`.
-		return ""
 	}
 	return strings.ToLower(accountUUID)
 }
