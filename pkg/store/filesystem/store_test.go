@@ -1,5 +1,10 @@
 package store
 
+import (
+	"os"
+	"path/filepath"
+)
+
 const (
 	// account UUIDs
 	accountUUID1 = "c4572da7-6142-4383-8fc6-efde3d463036"
@@ -23,3 +28,9 @@ const (
 	value2 = "2a0bd9b0-ca1d-491a-8c56-d2ddfd68ded8"
 	//value3 = "b42702d2-5e4d-4d73-b133-e1f9e285355e"
 )
+
+func burnRoot(path string) {
+	os.RemoveAll(filepath.Join(path, "values"))
+	os.RemoveAll(filepath.Join(path, "assignments"))
+	os.RemoveAll(filepath.Join(path, "bundles"))
+}

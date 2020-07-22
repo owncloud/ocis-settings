@@ -1,7 +1,6 @@
 package store
 
 import (
-	"os"
 	"path/filepath"
 	"testing"
 
@@ -113,10 +112,4 @@ func TestRoleAssignments(t *testing.T) {
 		}
 	}
 	burnRoot(s.dataPath)
-}
-
-func burnRoot(path string) {
-	os.RemoveAll(filepath.Join(path, "values"))
-	os.RemoveAll(filepath.Join(path, "assignments"))
-	os.RemoveAll(filepath.Join(path, "bundles"))
 }
