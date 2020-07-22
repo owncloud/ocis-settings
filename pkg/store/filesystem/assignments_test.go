@@ -12,7 +12,6 @@ import (
 var (
 	einstein = "a4d07560-a670-4be9-8d60-9b547751a208"
 	marie    = "3c054db3-eec1-4ca4-b985-bc56dcf560cb"
-	dataRoot = "/var/tmp/herecomesthesun"
 
 	logger = olog.NewLogger(
 		olog.Color(true),
@@ -111,5 +110,5 @@ func TestRoleAssignments(t *testing.T) {
 			assert.FileExists(t, filepath.Join(dataRoot, "bundles", scenarios[i].Bundle.Id+".json"))
 		}
 	}
-	burnRoot(s.dataPath)
+	burnRoot()
 }

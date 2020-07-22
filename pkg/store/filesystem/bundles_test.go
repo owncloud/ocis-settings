@@ -108,5 +108,5 @@ func TestWriteSettingsBundleToFile(t *testing.T) {
 		})
 	}
 
-	burnRoot(s.dataPath)
+	burnRoot()
 }

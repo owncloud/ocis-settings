@@ -27,10 +27,12 @@ const (
 	value1 = "fd3b6221-dc13-4a22-824d-2480495f1cdb"
 	value2 = "2a0bd9b0-ca1d-491a-8c56-d2ddfd68ded8"
 	//value3 = "b42702d2-5e4d-4d73-b133-e1f9e285355e"
+
+	dataRoot = "/var/tmp/herecomesthesun"
 )
 
-func burnRoot(path string) {
-	os.RemoveAll(filepath.Join(path, "values"))
-	os.RemoveAll(filepath.Join(path, "assignments"))
-	os.RemoveAll(filepath.Join(path, "bundles"))
+func burnRoot() {
+	os.RemoveAll(filepath.Join(dataRoot, "values"))
+	os.RemoveAll(filepath.Join(dataRoot, "assignments"))
+	os.RemoveAll(filepath.Join(dataRoot, "bundles"))
 }

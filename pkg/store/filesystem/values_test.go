@@ -84,5 +84,5 @@ func TestWriteSettingsValueToFile(t *testing.T) {
 		})
 	}
 
-	burnRoot(s.dataPath)
+	burnRoot()
 }
