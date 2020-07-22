@@ -7,7 +7,7 @@ import (
 
 const folderNameBundles = "bundles"
 const folderNameValues = "values"
-const folderNameRoleAssignments = "role-assignments"
+const folderNameAssignments = "assignments"
 
 // buildFolderPathForBundles builds the folder path for storing settings bundles. If mkdir is true, folders in the path will be created if necessary.
 func (s Store) buildFolderPathForBundles(mkdir bool) string {
@@ -41,7 +41,7 @@ func (s Store) buildFilePathForValue(valueID string, mkdir bool) string {
 
 // buildFolderPathForRoleAssignments builds the folder path for storing role assignments. If mkdir is true, folders in the path will be created if necessary.
 func (s Store) buildFolderPathForRoleAssignments(mkdir bool) string {
-	roleAssignmentsFolder := filepath.Join(s.dataPath, folderNameRoleAssignments)
+	roleAssignmentsFolder := filepath.Join(s.dataPath, folderNameAssignments)
 	if mkdir {
 		s.ensureFolderExists(roleAssignmentsFolder)
 	}

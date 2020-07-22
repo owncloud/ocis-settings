@@ -75,7 +75,7 @@ func TestRoleAssignments(t *testing.T) {
 		roleAssignment, err := s.WriteRoleAssignment(scenarios[i].AccountUUID, res.Id)
 
 		assert.NoError(t, err)
-		assert.FileExists(t, filepath.Join(dataRoot, "role-assignments", roleAssignment.Id+".json"))
+		assert.FileExists(t, filepath.Join(dataRoot, "assignments", roleAssignment.Id+".json"))
 	}
 
 	// list roles
@@ -108,7 +108,7 @@ func TestRoleAssignments(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			assert.NoFileExists(t, filepath.Join(dataRoot, "role-assignments", roleAssignments[i].Id+".json"))
+			assert.NoFileExists(t, filepath.Join(dataRoot, "assignments", roleAssignments[i].Id+".json"))
 			assert.FileExists(t, filepath.Join(dataRoot, "bundles", scenarios[i].Bundle.Id+".json"))
 		}
 	}
@@ -117,6 +117,6 @@ func TestRoleAssignments(t *testing.T) {
 
 func burnRoot(path string) {
 	os.RemoveAll(filepath.Join(path, "values"))
-	os.RemoveAll(filepath.Join(path, "role-assignments"))
+	os.RemoveAll(filepath.Join(path, "assignments"))
 	os.RemoveAll(filepath.Join(path, "bundles"))
 }
