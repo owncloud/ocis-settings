@@ -16,12 +16,12 @@ var (
 	}
 )
 
-func validateSaveSettingsBundle(req *proto.SaveSettingsBundleRequest) error {
+func validateSaveBundle(req *proto.SaveBundleRequest) error {
 	if err := validation.ValidateStruct(
 		req.Bundle,
 		validation.Field(&req.Bundle.Id, validation.When(req.Bundle.Id != "", is.UUID)),
 		validation.Field(&req.Bundle.Name, requireAlphanumeric...),
-		validation.Field(&req.Bundle.Type, validation.NotIn(proto.SettingsBundle_TYPE_UNKNOWN)),
+		validation.Field(&req.Bundle.Type, validation.NotIn(proto.Bundle_TYPE_UNKNOWN)),
 		validation.Field(&req.Bundle.Extension, requireAlphanumeric...),
 		validation.Field(&req.Bundle.DisplayName, validation.Required),
 		validation.Field(&req.Bundle.Settings, validation.Required),
@@ -39,15 +39,15 @@ func validateSaveSettingsBundle(req *proto.SaveSettingsBundleRequest) error {
 	return nil
 }
 
-func validateGetSettingsBundle(req *proto.GetSettingsBundleRequest) error {
+func validateGetBundle(req *proto.GetBundleRequest) error {
 	return validation.Validate(&req.BundleId, is.UUID)
 }
 
-func validateListSettingsBundles(req *proto.ListSettingsBundlesRequest) error {
+func validateListBundles(req *proto.ListBundlesRequest) error {
 	return validation.Validate(&req.AccountUuid, is.UUID)
 }
 
-func validateAddSettingToSettingsBundle(req *proto.AddSettingToSettingsBundleRequest) error {
+func validateAddSettingToBundle(req *proto.AddSettingToBundleRequest) error {
 	if err := validation.ValidateStruct(
 		req,
 		validation.Field(&req.BundleId, is.UUID),
@@ -57,7 +57,7 @@ func validateAddSettingToSettingsBundle(req *proto.AddSettingToSettingsBundleReq
 	return validateSetting(req.Setting)
 }
 
-func validateRemoveSettingFromSettingsBundle(req *proto.RemoveSettingFromSettingsBundleRequest) error {
+func validateRemoveSettingFromBundle(req *proto.RemoveSettingFromBundleRequest) error {
 	return validation.ValidateStruct(
 		req,
 		validation.Field(&req.BundleId, is.UUID),
@@ -65,7 +65,7 @@ func validateRemoveSettingFromSettingsBundle(req *proto.RemoveSettingFromSetting
 	)
 }
 
-func validateSaveSettingsValue(req *proto.SaveSettingsValueRequest) error {
+func validateSaveValue(req *proto.SaveValueRequest) error {
 	if err := validation.ValidateStruct(
 		req.Value,
 		validation.Field(&req.Value.Id, validation.When(req.Value.Id != "", is.UUID)),
@@ -84,11 +84,11 @@ func validateSaveSettingsValue(req *proto.SaveSettingsValueRequest) error {
 	return nil
 }
 
-func validateGetSettingsValue(req *proto.GetSettingsValueRequest) error {
+func validateGetValue(req *proto.GetValueRequest) error {
 	return validation.Validate(req.Id, is.UUID)
 }
 
-func validateListSettingsValues(req *proto.ListSettingsValuesRequest) error {
+func validateListValues(req *proto.ListValuesRequest) error {
 	return validation.ValidateStruct(
 		req,
 		validation.Field(&req.BundleId, validation.When(req.BundleId != "", is.UUID)),
@@ -96,7 +96,7 @@ func validateListSettingsValues(req *proto.ListSettingsValuesRequest) error {
 	)
 }
 
-func validateListRoles(req *proto.ListSettingsBundlesRequest) error {
+func validateListRoles(req *proto.ListBundlesRequest) error {
 	return validation.Validate(&req.AccountUuid, is.UUID)
 }
 
