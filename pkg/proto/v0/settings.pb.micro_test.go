@@ -30,7 +30,7 @@ var (
 				Type: proto.Resource_TYPE_BUNDLE,
 			},
 			Value: &proto.Setting_IntValue{
-				IntValue: &proto.IntSetting{
+				IntValue: &proto.Int{
 					Default: 42,
 				},
 			},
@@ -213,21 +213,21 @@ func TestSettingsBundleProperties(t *testing.T) {
 	for _, scenario := range scenarios {
 		scenario := scenario
 		t.Run(scenario.name, func(t *testing.T) {
-			bundle := proto.SettingsBundle{
+			bundle := proto.Bundle{
 				Name:        scenario.bundleName,
 				Extension:   scenario.extensionName,
 				DisplayName: scenario.displayName,
-				Type:        proto.SettingsBundle_TYPE_DEFAULT,
+				Type:        proto.Bundle_TYPE_DEFAULT,
 				Resource: &proto.Resource{
 					Type: proto.Resource_TYPE_BUNDLE,
 				},
 				Settings: settingsStub,
 			}
-			createRequest := proto.SaveSettingsBundleRequest{
+			createRequest := proto.SaveBundleRequest{
 				Bundle: &bundle,
 			}
 
-			cresponse, err := cl.SaveSettingsBundle(context.Background(), &createRequest)
+			cresponse, err := cl.SaveBundle(context.Background(), &createRequest)
 			if err != nil || (CustomError{} != scenario.expectedError) {
 				assert.Error(t, err)
 				var errorData CustomError
@@ -242,8 +242,8 @@ func TestSettingsBundleProperties(t *testing.T) {
 			} else {
 				assert.Equal(t, scenario.extensionName, cresponse.Bundle.Extension)
 				assert.Equal(t, scenario.displayName, cresponse.Bundle.DisplayName)
-				getRequest := proto.GetSettingsBundleRequest{BundleId: cresponse.Bundle.Id}
-				getResponse, err := cl.GetSettingsBundle(context.Background(), &getRequest)
+				getRequest := proto.GetBundleRequest{BundleId: cresponse.Bundle.Id}
+				getResponse, err := cl.GetBundle(context.Background(), &getRequest)
 				assert.NoError(t, err)
 				assert.Equal(t, scenario.displayName, getResponse.Bundle.DisplayName)
 			}
@@ -256,12 +256,12 @@ func TestSettingsBundleWithoutSettings(t *testing.T) {
 	client := service.Client()
 	cl := proto.NewBundleService("com.owncloud.api.settings", client)
 
-	createRequest := proto.SaveSettingsBundleRequest{
-		Bundle: &proto.SettingsBundle{
+	createRequest := proto.SaveBundleRequest{
+		Bundle: &proto.Bundle{
 			DisplayName: "Alice's Bundle",
 		},
 	}
-	response, err := cl.SaveSettingsBundle(context.Background(), &createRequest)
+	response, err := cl.SaveBundle(context.Background(), &createRequest)
 	assert.Error(t, err)
 	assert.Nil(t, response)
 	var errorData CustomError
@@ -295,13 +295,13 @@ func TestSaveGetListSettingsBundle(t *testing.T) {
 		},
 	}
 
-	//MultiChoiceListSetting
-	multipleChoiceSetting := proto.MultiChoiceListSetting{
+	//MultiChoiceList
+	multipleChoiceSetting := proto.MultiChoiceList{
 		Options: options,
 	}
 
-	//SingleChoiceListSetting
-	singleChoiceSetting := proto.SingleChoiceListSetting{
+	//SingleChoiceList
+	singleChoiceSetting := proto.SingleChoiceList{
 		Options: options,
 	}
 
@@ -311,7 +311,7 @@ func TestSaveGetListSettingsBundle(t *testing.T) {
 			DisplayName: "an integer value",
 			Description: "with some description",
 			Value: &proto.Setting_IntValue{
-				IntValue: &proto.IntSetting{
+				IntValue: &proto.Int{
 					Default:     1,
 					Min:         1,
 					Max:         124,
@@ -328,7 +328,7 @@ func TestSaveGetListSettingsBundle(t *testing.T) {
 			DisplayName: "a string value",
 			Description: "with some description",
 			Value: &proto.Setting_StringValue{
-				StringValue: &proto.StringSetting{
+				StringValue: &proto.String{
 					Default:     "thedefaultvalue",
 					Required:    false,
 					MinLength:   2,
@@ -345,7 +345,7 @@ func TestSaveGetListSettingsBundle(t *testing.T) {
 			DisplayName: "a bool value",
 			Description: "with some description",
 			Value: &proto.Setting_BoolValue{
-				BoolValue: &proto.BoolSetting{
+				BoolValue: &proto.Bool{
 					Default: false,
 					Label:   "bool setting",
 				},
@@ -378,33 +378,33 @@ func TestSaveGetListSettingsBundle(t *testing.T) {
 		},
 	}
 
-	bundle := proto.SettingsBundle{
+	bundle := proto.Bundle{
 		Name:        "test",
 		DisplayName: "bundleDisplayName",
 		Extension:   "testExtension",
-		Type:        proto.SettingsBundle_TYPE_DEFAULT,
+		Type:        proto.Bundle_TYPE_DEFAULT,
 		Settings:    settings,
 		Resource: &proto.Resource{
 			Type: proto.Resource_TYPE_BUNDLE,
 		},
 	}
-	saveRequest := proto.SaveSettingsBundleRequest{
+	saveRequest := proto.SaveBundleRequest{
 		Bundle: &bundle,
 	}
 
 	client := service.Client()
 	cl := proto.NewBundleService("com.owncloud.api.settings", client)
 
-	// assert that SaveSettingsBundle returns the same bundle as we have sent
-	saveResponse, err := cl.SaveSettingsBundle(context.Background(), &saveRequest)
+	// assert that SaveBundle returns the same bundle as we have sent
+	saveResponse, err := cl.SaveBundle(context.Background(), &saveRequest)
 	assert.NoError(t, err)
 	receivedBundle, _ := json.Marshal(saveResponse.Bundle.Settings)
 	expectedBundle, _ := json.Marshal(&bundle.Settings)
 	assert.Equal(t, receivedBundle, expectedBundle)
 
-	//assert that GetSettingsBundle returns the same bundle as saved
-	getRequest := proto.GetSettingsBundleRequest{BundleId: saveResponse.Bundle.Id}
-	getResponse, err := cl.GetSettingsBundle(context.Background(), &getRequest)
+	//assert that GetBundle returns the same bundle as saved
+	getRequest := proto.GetBundleRequest{BundleId: saveResponse.Bundle.Id}
+	getResponse, err := cl.GetBundle(context.Background(), &getRequest)
 	assert.NoError(t, err)
 	receivedBundle, _ = json.Marshal(getResponse.Bundle.Settings)
 	assert.Equal(t, expectedBundle, receivedBundle)
@@ -422,7 +422,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 			Description: "intValue default is out of range",
 			Value: &proto.Setting_IntValue{
-				IntValue: &proto.IntSetting{
+				IntValue: &proto.Int{
 					Default: 30,
 					Min:     10,
 					Max:     20,
@@ -436,7 +436,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 			Description: "intValue min gt max",
 			Value: &proto.Setting_IntValue{
-				IntValue: &proto.IntSetting{
+				IntValue: &proto.Int{
 					Default: 100,
 					Min:     100,
 					Max:     20,
@@ -450,7 +450,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 			Description: "intValue step gt max-min",
 			Value: &proto.Setting_IntValue{
-				IntValue: &proto.IntSetting{
+				IntValue: &proto.Int{
 					Min:  10,
 					Max:  20,
 					Step: 100,
@@ -464,7 +464,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 			Description: "intValue step eq 0",
 			Value: &proto.Setting_IntValue{
-				IntValue: &proto.IntSetting{
+				IntValue: &proto.Int{
 					Min:  10,
 					Max:  20,
 					Step: 0,
@@ -478,7 +478,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 			Description: "intValue step lt 0",
 			Value: &proto.Setting_IntValue{
-				IntValue: &proto.IntSetting{
+				IntValue: &proto.Int{
 					Min:  10,
 					Max:  20,
 					Step: -10,
@@ -492,7 +492,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 			Description: "stringValue MinLength gt MaxLength",
 			Value: &proto.Setting_StringValue{
-				StringValue: &proto.StringSetting{
+				StringValue: &proto.String{
 					MinLength: 255,
 					MaxLength: 1,
 				},
@@ -505,7 +505,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 			Description: "stringValue MaxLength eq 0",
 			Value: &proto.Setting_StringValue{
-				StringValue: &proto.StringSetting{
+				StringValue: &proto.String{
 					MaxLength: 0,
 				},
 			},
@@ -517,7 +517,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 			Description: "stringValue MinLength lt 0",
 			Value: &proto.Setting_StringValue{
-				StringValue: &proto.StringSetting{
+				StringValue: &proto.String{
 					MinLength: -1,
 				},
 			},
@@ -529,7 +529,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 			Description: "stringValue MaxLength lt 0",
 			Value: &proto.Setting_StringValue{
-				StringValue: &proto.StringSetting{
+				StringValue: &proto.String{
 					MaxLength: -1,
 				},
 			},
@@ -541,7 +541,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 			Description: "multiChoice multiple options are default",
 			Value: &proto.Setting_MultiChoiceValue{
-				MultiChoiceValue: &proto.MultiChoiceListSetting{
+				MultiChoiceValue: &proto.MultiChoiceList{
 					Options: []*proto.ListOption{
 						{
 							Value: &proto.ListOptionValue{
@@ -566,7 +566,7 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			},
 			Description: "singleChoice multiple options are default",
 			Value: &proto.Setting_SingleChoiceValue{
-				SingleChoiceValue: &proto.SingleChoiceListSetting{
+				SingleChoiceValue: &proto.SingleChoiceList{
 					Options: []*proto.ListOption{
 						{
 							Value: &proto.ListOptionValue{
@@ -593,25 +593,25 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 			var settings []*proto.Setting
 
 			settings = append(settings, &tests[index])
-			bundle := proto.SettingsBundle{
+			bundle := proto.Bundle{
 				Name:        "bundle",
 				Extension:   "bundleExtension",
 				DisplayName: "bundledisplayname",
-				Type:        proto.SettingsBundle_TYPE_DEFAULT,
+				Type:        proto.Bundle_TYPE_DEFAULT,
 				Resource: &proto.Resource{
 					Type: proto.Resource_TYPE_BUNDLE,
 				},
 				Settings: settings,
 			}
-			saveRequest := proto.SaveSettingsBundleRequest{
+			saveRequest := proto.SaveBundleRequest{
 				Bundle: &bundle,
 			}
 
 			client := service.Client()
 			cl := proto.NewBundleService("com.owncloud.api.settings", client)
 
-			//assert that SaveSettingsBundle returns the same bundle as we have sent there
-			saveResponse, err := cl.SaveSettingsBundle(context.Background(), &saveRequest)
+			//assert that SaveBundle returns the same bundle as we have sent there
+			saveResponse, err := cl.SaveBundle(context.Background(), &saveRequest)
 			assert.NoError(t, err)
 			receivedBundle, _ := json.Marshal(saveResponse.Bundle.Settings)
 			expectedBundle, _ := json.Marshal(&bundle.Settings)
@@ -625,9 +625,9 @@ func TestSaveSettingsBundleWithInvalidSettingValues(t *testing.T) {
 func TestGetSettingsBundleCreatesFolder(t *testing.T) {
 	client := service.Client()
 	cl := proto.NewBundleService("com.owncloud.api.settings", client)
-	getRequest := proto.GetSettingsBundleRequest{BundleId: "non-existing-bundle"}
+	getRequest := proto.GetBundleRequest{BundleId: "non-existing-bundle"}
 
-	_, _ = cl.GetSettingsBundle(context.Background(), &getRequest)
+	_, _ = cl.GetBundle(context.Background(), &getRequest)
 	assert.NoDirExists(t, store.Name+"/bundles/non-existing-bundle")
 	assert.NoFileExists(t, store.Name+"/bundles/non-existing-bundle/not-existing-bundle.json")
 	os.RemoveAll(dataStore)
@@ -638,10 +638,10 @@ func TestCreateRoleAndAssign(t *testing.T) {
 	c := mgrpc.NewClient()
 	bundleC := proto.NewBundleService("com.owncloud.api.settings", c)
 
-	res, err := bundleC.SaveSettingsBundle(context.Background(), &proto.SaveSettingsBundleRequest{
-		Bundle: &proto.SettingsBundle{
+	res, err := bundleC.SaveBundle(context.Background(), &proto.SaveBundleRequest{
+		Bundle: &proto.Bundle{
 			// Id:          "f36db5e6-a03c-40df-8413-711c67e40b47", // bug: providing the ID ignores its value for the filename.
-			Type:        proto.SettingsBundle_TYPE_ROLE,
+			Type:        proto.Bundle_TYPE_ROLE,
 			DisplayName: "test role - update",
 			Name:        "TEST_ROLE",
 			Extension:   "ocis-settings",
@@ -653,9 +653,9 @@ func TestCreateRoleAndAssign(t *testing.T) {
 						Type: proto.Resource_TYPE_SETTING,
 					},
 					Value: &proto.Setting_PermissionValue{
-						&proto.PermissionSetting{
-							Operation:  proto.PermissionSetting_OPERATION_UPDATE,
-							Constraint: proto.PermissionSetting_CONSTRAINT_OWN,
+						&proto.Permission{
+							Operation:  proto.Permission_OPERATION_UPDATE,
+							Constraint: proto.Permission_CONSTRAINT_OWN,
 						},
 					},
 				},
@@ -686,24 +686,24 @@ func TestCreateRoleAndAssign(t *testing.T) {
 // 	cl := proto.NewBundleService("com.owncloud.api.settings", client)
 // 	rc := proto.NewRoleService("com.owncloud.api.settings", client2)
 
-// 	_, err := cl.SaveSettingsBundle(context.Background(), &proto.SaveSettingsBundleRequest{
-// 		Bundle: &proto.SettingsBundle{
+// 	_, err := cl.SaveBundle(context.Background(), &proto.SaveBundleRequest{
+// 		Bundle: &proto.Bundle{
 // 			DisplayName: "Alice's Bundle",
 // 			Name:        "bundle1",
 // 			Extension:   "extension1",
 // 			Resource: &proto.Resource{
 // 				Type: proto.Resource_TYPE_BUNDLE,
 // 			},
-// 			Type:     proto.SettingsBundle_TYPE_DEFAULT,
+// 			Type:     proto.Bundle_TYPE_DEFAULT,
 // 			Settings: settingsStub,
 // 		},
 // 	})
 // 	assert.NoError(t, err)
 
-// res, err := cl.SaveSettingsBundle(context.Background(), &proto.SaveSettingsBundleRequest{
-// 	Bundle: &proto.SettingsBundle{
+// res, err := cl.SaveBundle(context.Background(), &proto.SaveBundleRequest{
+// 	Bundle: &proto.Bundle{
 // 		// Id:          "f36db5e6-a03c-40df-8413-711c67e40b47", // bug: providing the ID ignores its value for the filename.
-// 		Type:        proto.SettingsBundle_TYPE_ROLE,
+// 		Type:        proto.Bundle_TYPE_ROLE,
 // 		DisplayName: "test role - update",
 // 		Name:        "TEST_ROLE",
 // 		Extension:   "ocis-settings",
@@ -715,7 +715,7 @@ func TestCreateRoleAndAssign(t *testing.T) {
 // 					Type: proto.Resource_TYPE_SETTING,
 // 				},
 // 				Value: &proto.Setting_PermissionValue{
-// 					&proto.PermissionSetting{
+// 					&proto.Permission{
 // 						Operation:  proto.PermissionSetting_OPERATION_UPDATE,
 // 						Constraint: proto.PermissionSetting_CONSTRAINT_OWN,
 // 					},
