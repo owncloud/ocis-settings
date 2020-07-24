@@ -83,6 +83,12 @@ service ValueService {
       body: "*"
     };
   }
+  rpc GetValueByUniqueIdentifiers(GetValueByUniqueIdentifiersRequest) returns (GetValueResponse) {
+    option (google.api.http) = {
+      post: "/api/v0/settings/values-get-by-unique-identifiers",
+      body: "*"
+    };
+  }
 }
 
 service RoleService {
@@ -168,6 +174,7 @@ message SaveValueResponse {
 
 message GetValueRequest {
   string id = 1;
+
 }
 
 message GetValueResponse {
@@ -194,7 +201,12 @@ message Identifier {
   string setting = 3;
 }
 
-// ---
+message GetValueByUniqueIdentifiersRequest{
+  string account_uuid = 1;
+  string setting_id = 2;
+}
+
+// --
 // requests and responses for role assignments
 // ---
 

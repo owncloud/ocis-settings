@@ -34,6 +34,7 @@ type BundleManager interface {
 type ValueManager interface {
 	ListValues(bundleID, accountUUID string) ([]*proto.Value, error)
 	ReadValue(valueID string) (*proto.Value, error)
+	ReadValueByUniqueIdentifiers(accountUUID, settingID string) (*proto.Value, error)
 	WriteValue(value *proto.Value) (*proto.Value, error)
 }
 

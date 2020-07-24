@@ -237,6 +237,30 @@ func (h *webValueServiceHandler) ListValues(w http.ResponseWriter, r *http.Reque
 	render.JSON(w, r, resp)
 }
 
+func (h *webValueServiceHandler) GetValueByUniqueIdentifiers(w http.ResponseWriter, r *http.Request) {
+
+	req := &GetValueByUniqueIdentifiersRequest{}
+
+	resp := &GetValueResponse{}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, err.Error(), http.StatusPreconditionFailed)
+		return
+	}
+
+	if err := h.h.GetValueByUniqueIdentifiers(
+		r.Context(),
+		req,
+		resp,
+	); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	render.Status(r, http.StatusCreated)
+	render.JSON(w, r, resp)
+}
+
 func RegisterValueServiceWeb(r chi.Router, i ValueServiceHandler, middlewares ...func(http.Handler) http.Handler) {
 	handler := &webValueServiceHandler{
 		r: r,
@@ -246,6 +270,7 @@ func RegisterValueServiceWeb(r chi.Router, i ValueServiceHandler, middlewares ..
 	r.MethodFunc("POST", "/api/v0/settings/values-save", handler.SaveValue)
 	r.MethodFunc("POST", "/api/v0/settings/values-get", handler.GetValue)
 	r.MethodFunc("POST", "/api/v0/settings/values-list", handler.ListValues)
+	r.MethodFunc("POST", "/api/v0/settings/values-get-by-unique-identifiers", handler.GetValueByUniqueIdentifiers)
 }
 
 type webRoleServiceHandler struct {
@@ -975,6 +1000,42 @@ func (m *Identifier) UnmarshalJSON(b []byte) error {
 }
 
 var _ json.Unmarshaler = (*Identifier)(nil)
+
+// GetValueByUniqueIdentifiersRequestJSONMarshaler describes the default jsonpb.Marshaler used by all
+// instances of GetValueByUniqueIdentifiersRequest. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var GetValueByUniqueIdentifiersRequestJSONMarshaler = new(jsonpb.Marshaler)
+
+// MarshalJSON satisfies the encoding/json Marshaler interface. This method
+// uses the more correct jsonpb package to correctly marshal the message.
+func (m *GetValueByUniqueIdentifiersRequest) MarshalJSON() ([]byte, error) {
+	if m == nil {
+		return json.Marshal(nil)
+	}
+
+	buf := &bytes.Buffer{}
+
+	if err := GetValueByUniqueIdentifiersRequestJSONMarshaler.Marshal(buf, m); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
+var _ json.Marshaler = (*GetValueByUniqueIdentifiersRequest)(nil)
+
+// GetValueByUniqueIdentifiersRequestJSONUnmarshaler describes the default jsonpb.Unmarshaler used by all
+// instances of GetValueByUniqueIdentifiersRequest. This struct is safe to replace or modify but
+// should not be done so concurrently.
+var GetValueByUniqueIdentifiersRequestJSONUnmarshaler = new(jsonpb.Unmarshaler)
+
+// UnmarshalJSON satisfies the encoding/json Unmarshaler interface. This method
+// uses the more correct jsonpb package to correctly unmarshal the message.
+func (m *GetValueByUniqueIdentifiersRequest) UnmarshalJSON(b []byte) error {
+	return GetValueByUniqueIdentifiersRequestJSONUnmarshaler.Unmarshal(bytes.NewReader(b), m)
+}
+
+var _ json.Unmarshaler = (*GetValueByUniqueIdentifiersRequest)(nil)
 
 // ListRoleAssignmentsRequestJSONMarshaler describes the default jsonpb.Marshaler used by all
 // instances of ListRoleAssignmentsRequest. This struct is safe to replace or modify but

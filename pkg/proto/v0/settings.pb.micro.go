@@ -259,6 +259,13 @@ func NewValueServiceEndpoints() []*api.Endpoint {
 			Body:    "*",
 			Handler: "rpc",
 		},
+		&api.Endpoint{
+			Name:    "ValueService.GetValueByUniqueIdentifiers",
+			Path:    []string{"/api/v0/settings/values-get-by-unique-identifiers"},
+			Method:  []string{"POST"},
+			Body:    "*",
+			Handler: "rpc",
+		},
 	}
 }
 
@@ -268,6 +275,7 @@ type ValueService interface {
 	SaveValue(ctx context.Context, in *SaveValueRequest, opts ...client.CallOption) (*SaveValueResponse, error)
 	GetValue(ctx context.Context, in *GetValueRequest, opts ...client.CallOption) (*GetValueResponse, error)
 	ListValues(ctx context.Context, in *ListValuesRequest, opts ...client.CallOption) (*ListValuesResponse, error)
+	GetValueByUniqueIdentifiers(ctx context.Context, in *GetValueByUniqueIdentifiersRequest, opts ...client.CallOption) (*GetValueResponse, error)
 }
 
 type valueService struct {
@@ -312,12 +320,23 @@ func (c *valueService) ListValues(ctx context.Context, in *ListValuesRequest, op
 	return out, nil
 }
 
+func (c *valueService) GetValueByUniqueIdentifiers(ctx context.Context, in *GetValueByUniqueIdentifiersRequest, opts ...client.CallOption) (*GetValueResponse, error) {
+	req := c.c.NewRequest(c.name, "ValueService.GetValueByUniqueIdentifiers", in)
+	out := new(GetValueResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for ValueService service
 
 type ValueServiceHandler interface {
 	SaveValue(context.Context, *SaveValueRequest, *SaveValueResponse) error
 	GetValue(context.Context, *GetValueRequest, *GetValueResponse) error
 	ListValues(context.Context, *ListValuesRequest, *ListValuesResponse) error
+	GetValueByUniqueIdentifiers(context.Context, *GetValueByUniqueIdentifiersRequest, *GetValueResponse) error
 }
 
 func RegisterValueServiceHandler(s server.Server, hdlr ValueServiceHandler, opts ...server.HandlerOption) error {
@@ -325,6 +344,7 @@ func RegisterValueServiceHandler(s server.Server, hdlr ValueServiceHandler, opts
 		SaveValue(ctx context.Context, in *SaveValueRequest, out *SaveValueResponse) error
 		GetValue(ctx context.Context, in *GetValueRequest, out *GetValueResponse) error
 		ListValues(ctx context.Context, in *ListValuesRequest, out *ListValuesResponse) error
+		GetValueByUniqueIdentifiers(ctx context.Context, in *GetValueByUniqueIdentifiersRequest, out *GetValueResponse) error
 	}
 	type ValueService struct {
 		valueService
@@ -351,6 +371,13 @@ func RegisterValueServiceHandler(s server.Server, hdlr ValueServiceHandler, opts
 		Body:    "*",
 		Handler: "rpc",
 	}))
+	opts = append(opts, api.WithEndpoint(&api.Endpoint{
+		Name:    "ValueService.GetValueByUniqueIdentifiers",
+		Path:    []string{"/api/v0/settings/values-get-by-unique-identifiers"},
+		Method:  []string{"POST"},
+		Body:    "*",
+		Handler: "rpc",
+	}))
 	return s.Handle(s.NewHandler(&ValueService{h}, opts...))
 }
 
@@ -368,6 +395,10 @@ func (h *valueServiceHandler) GetValue(ctx context.Context, in *GetValueRequest,
 
 func (h *valueServiceHandler) ListValues(ctx context.Context, in *ListValuesRequest, out *ListValuesResponse) error {
 	return h.ValueServiceHandler.ListValues(ctx, in, out)
+}
+
+func (h *valueServiceHandler) GetValueByUniqueIdentifiers(ctx context.Context, in *GetValueByUniqueIdentifiersRequest, out *GetValueResponse) error {
+	return h.ValueServiceHandler.GetValueByUniqueIdentifiers(ctx, in, out)
 }
 
 // Api Endpoints for RoleService service

@@ -344,6 +344,38 @@
         ]
       }
     },
+    "/api/v0/settings/values-get-by-unique-identifiers": {
+      "post": {
+        "operationId": "ValueService_GetValueByUniqueIdentifiers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoGetValueResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/protoGetValueByUniqueIdentifiersRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ValueService"
+        ]
+      }
+    },
     "/api/v0/settings/values-list": {
       "post": {
         "operationId": "ValueService_ListValues",
@@ -522,6 +554,17 @@
       "properties": {
         "bundle": {
           "$ref": "#/definitions/protoBundle"
+        }
+      }
+    },
+    "protoGetValueByUniqueIdentifiersRequest": {
+      "type": "object",
+      "properties": {
+        "account_uuid": {
+          "type": "string"
+        },
+        "setting_id": {
+          "type": "string"
         }
       }
     },

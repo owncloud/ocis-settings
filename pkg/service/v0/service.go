@@ -181,6 +181,24 @@ func (g Service) GetValue(c context.Context, req *proto.GetValueRequest, res *pr
 	return nil
 }
 
+// GetValueByUniqueIdentifiers implements the ValueService interface
+func (g Service) GetValueByUniqueIdentifiers(ctx context.Context, in *proto.GetValueByUniqueIdentifiersRequest, res *proto.GetValueResponse) error {
+	v, err := g.manager.ReadValueByUniqueIdentifiers(in.AccountUuid, in.SettingId)
+	if err != nil {
+		return err
+	}
+
+	if v.BundleId != "" {
+		valueWithIdentifier, err := g.getValueWithIdentifier(v)
+		if err != nil {
+			return err
+		}
+
+		res.Value = valueWithIdentifier
+	}
+	return nil
+}
+
 // ListValues implements the ValueServiceHandler interface
 func (g Service) ListValues(c context.Context, req *proto.ListValuesRequest, res *proto.ListValuesResponse) error {
 	req.AccountUuid = getValidatedAccountUUID(c, req.AccountUuid)

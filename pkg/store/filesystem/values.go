@@ -57,6 +57,30 @@ func (s Store) ReadValue(valueID string) (*proto.Value, error) {
 	return &record, nil
 }
 
+// ReadValueByUniqueIdentifiers tries to find a value given a set of unique identifiers
+func (s Store) ReadValueByUniqueIdentifiers(accountUUID, settingID string) (*proto.Value, error) {
+	valuesFolder := s.buildFolderPathForValues(false)
+	files, err := ioutil.ReadDir(valuesFolder)
+	if err != nil {
+		return nil, err
+	}
+	for i := range files {
+		if !files[i].IsDir() {
+			r := proto.Value{}
+			s.Logger.Info().Msgf("reading contents from file: %v", filepath.Join(valuesFolder, files[i].Name()))
+			if err := s.parseRecordFromFile(&r, filepath.Join(valuesFolder, files[i].Name())); err != nil {
+				return &proto.Value{}, nil
+			}
+
+			if r.AccountUuid == accountUUID && r.SettingId == settingID {
+				return &r, nil
+			}
+		}
+	}
+
+	return &proto.Value{}, nil
+}
+
 // WriteValue writes the given value into a file within the dataPath
 func (s Store) WriteValue(value *proto.Value) (*proto.Value, error) {
 	s.Logger.Debug().Str("value", value.String()).Msg("writing value")
