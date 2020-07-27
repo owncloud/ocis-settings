@@ -69,6 +69,7 @@ func (s Store) ReadValueByUniqueIdentifiers(accountUUID, settingID string) (*pro
 			r := proto.Value{}
 			s.Logger.Debug().Msgf("reading contents from file: %v", filepath.Join(valuesFolder, files[i].Name()))
 			if err := s.parseRecordFromFile(&r, filepath.Join(valuesFolder, files[i].Name())); err != nil {
+				s.Logger.Debug().Msgf("match found: %v", filepath.Join(valuesFolder, files[i].Name()))
 				return &proto.Value{}, nil
 			}
 
