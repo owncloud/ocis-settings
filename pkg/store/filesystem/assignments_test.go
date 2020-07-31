@@ -1,7 +1,9 @@
 package store
 
 import (
+	"errors"
 	"log"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -89,7 +91,7 @@ func setupRoles() {
 	}
 }
 
-func TestRoleAssignments(t *testing.T) {
+func TestAssignmentUniqueness(t *testing.T) {
 	var scenarios = []struct {
 		name       string
 		userID     string
@@ -128,6 +130,48 @@ func TestRoleAssignments(t *testing.T) {
 			assert.Equal(t, secondAssignment.RoleId, scenario.secondRole)
 			assert.NoFileExists(t, filepath.Join(dataRoot, "assignments", firstAssignment.Id+".json"))
 			assert.FileExists(t, filepath.Join(dataRoot, "assignments", secondAssignment.Id+".json"))
+		})
+	}
+	burnRoot()
+}
+
+func TestDeleteAssignment(t *testing.T) {
+	var scenarios = []struct {
+		name       string
+		userID     string
+		firstRole  string
+		secondRole string
+	}{
+		{
+			"roles assignments",
+			einstein,
+			"f36db5e6-a03c-40df-8413-711c67e40b47",
+			"44f1a664-0a7f-461a-b0be-5b59e46bbc7a",
+		},
+	}
+
+	for _, scenario := range scenarios {
+		scenario := scenario
+		t.Run(scenario.name, func(t *testing.T) {
+			assignment, err := s.WriteRoleAssignment(scenario.userID, scenario.firstRole)
+			assert.NoError(t, err)
+			assert.Equal(t, assignment.RoleId, scenario.firstRole)
+			assert.FileExists(t, filepath.Join(dataRoot, "assignments", assignment.Id+".json"))
+
+			list, err := s.ListRoleAssignments(scenario.userID)
+			assert.NoError(t, err)
+			assert.Equal(t, 1, len(list))
+
+			err = s.RemoveRoleAssignment(assignment.Id)
+			assert.NoError(t, err)
+
+			list, err = s.ListRoleAssignments(scenario.userID)
+			assert.NoError(t, err)
+			assert.Equal(t, 0, len(list))
+
+			err = s.RemoveRoleAssignment(assignment.Id)
+			merr := &os.PathError{}
+			assert.Equal(t, true, errors.As(err, &merr))
 		})
 	}
 	burnRoot()
