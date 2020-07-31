@@ -35,13 +35,23 @@ func (s Store) ListRoleAssignments(accountUUID string) ([]*proto.UserRoleAssignm
 
 // WriteRoleAssignment appends the given role assignment to the existing assignments of the respective account.
 func (s Store) WriteRoleAssignment(accountUUID, roleID string) (*proto.UserRoleAssignment, error) {
+	// as per https://jira.owncloud.com/browse/OCIS-117 "Each user can have exactly one role"
+	list, err := s.ListRoleAssignments(accountUUID)
+	if err != nil {
+		return nil, err
+	}
+	if len(list) > 0 {
+		filePath := s.buildFilePathForRoleAssignment(list[0].Id, true)
+		if err := os.Remove(filePath); err != nil {
+			return nil, err
+		}
+	}
+
 	assignment := &proto.UserRoleAssignment{
 		Id:          uuid.Must(uuid.NewV4()).String(),
 		AccountUuid: accountUUID,
 		RoleId:      roleID,
 	}
-	// TODO: we need to search for existing role assignments by roleId and accountUuid to avoid duplicate assignments.
-	// wait with implementation until we have a proper index for search queries.
 	filePath := s.buildFilePathForRoleAssignment(assignment.Id, true)
 	if err := s.writeRecordToFile(assignment, filePath); err != nil {
 		return nil, err
