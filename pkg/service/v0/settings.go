@@ -28,7 +28,7 @@ func generateBundleAdminRole() *settings.Bundle {
 		Name:        "admin",
 		Type:        settings.Bundle_TYPE_ROLE,
 		Extension:   "ocis-roles",
-		DisplayName: "Admin role",
+		DisplayName: "Admin",
 		Resource: &settings.Resource{
 			Type: settings.Resource_TYPE_SYSTEM,
 		},
@@ -42,7 +42,7 @@ func generateBundleUserRole() *settings.Bundle {
 		Name:        "user",
 		Type:        settings.Bundle_TYPE_ROLE,
 		Extension:   "ocis-roles",
-		DisplayName: "User role",
+		DisplayName: "User",
 		Resource: &settings.Resource{
 			Type: settings.Resource_TYPE_SYSTEM,
 		},
@@ -56,7 +56,7 @@ func generateBundleGuestRole() *settings.Bundle {
 		Name:        "guest",
 		Type:        settings.Bundle_TYPE_ROLE,
 		Extension:   "ocis-roles",
-		DisplayName: "Guest role",
+		DisplayName: "Guest",
 		Resource: &settings.Resource{
 			Type: settings.Resource_TYPE_SYSTEM,
 		},
