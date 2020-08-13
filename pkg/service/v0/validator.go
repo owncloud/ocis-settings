@@ -9,6 +9,11 @@ import (
 )
 
 var (
+	regexForAccountUUID = regexp.MustCompile(`^[A-Za-z0-9\-_.+@]+$`)
+	requireAccountId    = []validation.Rule{
+		validation.Required,// use rule for validation error message consistency (".. must not be blank" on empty strings)
+		validation.Match(regexForAccountUUID),
+	}
 	regexForKeys        = regexp.MustCompile(`^[A-Za-z0-9\-_]*$`)
 	requireAlphanumeric = []validation.Rule{
 		validation.Required,
@@ -40,11 +45,11 @@ func validateSaveBundle(req *proto.SaveBundleRequest) error {
 }
 
 func validateGetBundle(req *proto.GetBundleRequest) error {
-	return validation.Validate(&req.BundleId, is.UUID)
+	return validation.Validate(&req.BundleId, requireAccountId...)
 }
 
 func validateListBundles(req *proto.ListBundlesRequest) error {
-	return validation.Validate(&req.AccountUuid, is.UUID)
+	return validation.Validate(&req.AccountUuid, requireAccountId...)
 }
 
 func validateAddSettingToBundle(req *proto.AddSettingToBundleRequest) error {
@@ -71,7 +76,7 @@ func validateSaveValue(req *proto.SaveValueRequest) error {
 		validation.Field(&req.Value.Id, validation.When(req.Value.Id != "", is.UUID)),
 		validation.Field(&req.Value.BundleId, is.UUID),
 		validation.Field(&req.Value.SettingId, is.UUID),
-		validation.Field(&req.Value.AccountUuid, is.UUID),
+		validation.Field(&req.Value.AccountUuid, requireAccountId...),
 	); err != nil {
 		return err
 	}
@@ -92,22 +97,22 @@ func validateListValues(req *proto.ListValuesRequest) error {
 	return validation.ValidateStruct(
 		req,
 		validation.Field(&req.BundleId, validation.When(req.BundleId != "", is.UUID)),
-		validation.Field(&req.AccountUuid, validation.When(req.AccountUuid != "", is.UUID)),
+		validation.Field(&req.AccountUuid, validation.When(req.AccountUuid != "", validation.Match(regexForAccountUUID))),
 	)
 }
 
 func validateListRoles(req *proto.ListBundlesRequest) error {
-	return validation.Validate(&req.AccountUuid, is.UUID)
+	return validation.Validate(&req.AccountUuid, requireAccountId...)
 }
 
 func validateListRoleAssignments(req *proto.ListRoleAssignmentsRequest) error {
-	return validation.Validate(req.AccountUuid, is.UUID)
+	return validation.Validate(req.AccountUuid, requireAccountId...)
 }
 
 func validateAssignRoleToUser(req *proto.AssignRoleToUserRequest) error {
 	return validation.ValidateStruct(
 		req,
-		validation.Field(&req.AccountUuid, is.UUID),
+		validation.Field(&req.AccountUuid, requireAccountId...),
 		validation.Field(&req.RoleId, is.UUID),
 	)
 }
