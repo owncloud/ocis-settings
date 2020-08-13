@@ -10,7 +10,7 @@ import (
 
 var (
 	regexForAccountUUID = regexp.MustCompile(`^[A-Za-z0-9\-_.+@]+$`)
-	requireAccountId    = []validation.Rule{
+	requireAccountID    = []validation.Rule{
 		validation.Required,// use rule for validation error message consistency (".. must not be blank" on empty strings)
 		validation.Match(regexForAccountUUID),
 	}
@@ -45,11 +45,11 @@ func validateSaveBundle(req *proto.SaveBundleRequest) error {
 }
 
 func validateGetBundle(req *proto.GetBundleRequest) error {
-	return validation.Validate(&req.BundleId, requireAccountId...)
+	return validation.Validate(&req.BundleId, requireAccountID...)
 }
 
 func validateListBundles(req *proto.ListBundlesRequest) error {
-	return validation.Validate(&req.AccountUuid, requireAccountId...)
+	return validation.Validate(&req.AccountUuid, requireAccountID...)
 }
 
 func validateAddSettingToBundle(req *proto.AddSettingToBundleRequest) error {
@@ -76,7 +76,7 @@ func validateSaveValue(req *proto.SaveValueRequest) error {
 		validation.Field(&req.Value.Id, validation.When(req.Value.Id != "", is.UUID)),
 		validation.Field(&req.Value.BundleId, is.UUID),
 		validation.Field(&req.Value.SettingId, is.UUID),
-		validation.Field(&req.Value.AccountUuid, requireAccountId...),
+		validation.Field(&req.Value.AccountUuid, requireAccountID...),
 	); err != nil {
 		return err
 	}
@@ -102,17 +102,17 @@ func validateListValues(req *proto.ListValuesRequest) error {
 }
 
 func validateListRoles(req *proto.ListBundlesRequest) error {
-	return validation.Validate(&req.AccountUuid, requireAccountId...)
+	return validation.Validate(&req.AccountUuid, requireAccountID...)
 }
 
 func validateListRoleAssignments(req *proto.ListRoleAssignmentsRequest) error {
-	return validation.Validate(req.AccountUuid, requireAccountId...)
+	return validation.Validate(req.AccountUuid, requireAccountID...)
 }
 
 func validateAssignRoleToUser(req *proto.AssignRoleToUserRequest) error {
 	return validation.ValidateStruct(
 		req,
-		validation.Field(&req.AccountUuid, requireAccountId...),
+		validation.Field(&req.AccountUuid, requireAccountID...),
 		validation.Field(&req.RoleId, is.UUID),
 	)
 }
