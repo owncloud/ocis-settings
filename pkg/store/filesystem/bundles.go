@@ -24,7 +24,7 @@ func (s Store) ListBundles(bundleType proto.Bundle_Type) ([]*proto.Bundle, error
 	bundlesFolder := s.buildFolderPathForBundles(false)
 	bundleFiles, err := ioutil.ReadDir(bundlesFolder)
 	if err != nil {
-		return records, nil
+		return records, merrors.FromError(err)
 	}
 
 	for _, bundleFile := range bundleFiles {
