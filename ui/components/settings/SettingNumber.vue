@@ -11,7 +11,7 @@
         @keydown.esc="cancel"
       />
     </div>
-    <div v-if="isChanged">
+    <div v-if="isChanged" class="uk-flex">
       <oc-button @click="cancel" class="uk-margin-xsmall-left">
         <translate>Cancel</translate>
       </oc-button>

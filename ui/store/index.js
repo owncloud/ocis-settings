@@ -63,21 +63,23 @@ const actions = {
         const bundles = response.data.bundles
         if (bundles) {
           bundles.forEach(bundle => {
-            bundle.settings.forEach(setting => {
-              if (setting.intValue) {
-                setting.type = 'number'
-              } else if (setting.stringValue) {
-                setting.type = 'string'
-              } else if (setting.boolValue) {
-                setting.type = 'boolean'
-              } else if (setting.singleChoiceValue) {
-                setting.type = 'singleChoice'
-              } else if (setting.multiChoiceValue) {
-                setting.type = 'multiChoice'
-              } else {
-                setting.type = 'unknown'
-              }
-            })
+            if (bundle.settings) {
+              bundle.settings.forEach(setting => {
+                if (setting.intValue) {
+                  setting.type = 'number'
+                } else if (setting.stringValue) {
+                  setting.type = 'string'
+                } else if (setting.boolValue) {
+                  setting.type = 'boolean'
+                } else if (setting.singleChoiceValue) {
+                  setting.type = 'singleChoice'
+                } else if (setting.multiChoiceValue) {
+                  setting.type = 'multiChoice'
+                } else {
+                  setting.type = 'unknown'
+                }
+              })
+            }
           })
           commit('SET_BUNDLES', bundles)
         } else {
