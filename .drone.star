@@ -6,8 +6,9 @@ def main(ctx):
 
   stages = [
     docker(ctx, 'amd64'),
-    docker(ctx, 'arm64'),
-    docker(ctx, 'arm'),
+    # Comment out until we support arm builds on the internal CI
+    # docker(ctx, 'arm64'),
+    # docker(ctx, 'arm'),
     binary(ctx, 'linux'),
     binary(ctx, 'darwin'),
     binary(ctx, 'windows'),
@@ -432,8 +433,9 @@ def manifest(ctx):
     ],
     'depends_on': [
       'amd64',
-      'arm64',
-      'arm',
+      # Comment out until we support arm builds on the internal CI
+      # 'arm64',
+      # 'arm',
       'linux',
       'darwin',
       'windows',
