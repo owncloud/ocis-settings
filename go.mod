@@ -17,8 +17,10 @@ require (
 	github.com/micro/go-micro/v2 v2.9.1
 	github.com/mitchellh/gox v1.0.1
 	github.com/oklog/run v1.0.0
+	github.com/olekukonko/tablewriter v0.0.1
 	github.com/openzipkin/zipkin-go v0.2.2
 	github.com/owncloud/ocis-pkg/v2 v2.4.1-0.20200902134813-1e87c6173ada
+	github.com/prometheus/client_golang v1.7.1
 	github.com/restic/calens v0.2.0
 	github.com/spf13/viper v1.6.3
 	github.com/stretchr/testify v1.6.1

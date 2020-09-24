@@ -16,6 +16,7 @@ import (
 	zipkinhttp "github.com/openzipkin/zipkin-go/reporter/http"
 	"github.com/owncloud/ocis-settings/pkg/config"
 	"github.com/owncloud/ocis-settings/pkg/flagset"
+	"github.com/owncloud/ocis-settings/pkg/metrics"
 	"github.com/owncloud/ocis-settings/pkg/server/debug"
 	"github.com/owncloud/ocis-settings/pkg/server/grpc"
 	"github.com/owncloud/ocis-settings/pkg/server/http"
@@ -128,16 +129,20 @@ func Server(cfg *config.Config) *cli.Command {
 			var (
 				gr          = run.Group{}
 				ctx, cancel = context.WithCancel(context.Background())
+				mtrcs       = metrics.New()
 			)
 
 			defer cancel()
 
+			mtrcs.BuildInfo.WithLabelValues(cfg.Service.Version).Set(1)
+
 			{
 				server := http.Server(
-					http.Name("settings"),
+					http.Name(cfg.Service.Name),
 					http.Logger(logger),
 					http.Context(ctx),
 					http.Config(cfg),
+					http.Metrics(mtrcs),
 					http.Flags(flagset.RootWithConfig(cfg)),
 					http.Flags(flagset.ServerWithConfig(cfg)),
 				)
@@ -153,10 +158,11 @@ func Server(cfg *config.Config) *cli.Command {
 
 			{
 				server := grpc.Server(
-					grpc.Name("settings"),
+					grpc.Name(cfg.Service.Name),
 					grpc.Logger(logger),
 					grpc.Context(ctx),
 					grpc.Config(cfg),
+					grpc.Metrics(mtrcs),
 				)
 
 				gr.Add(server.Run, func(_ error) {
